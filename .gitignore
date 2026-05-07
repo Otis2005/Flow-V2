@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+
+# Environment variables (keep secrets out of git)
+.env
+.env.local
+.env.production
+
+# Database files
+*.db
+*.sqlite
+
+# Uploaded files
+uploads/
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Build output
+dist/
+build/
