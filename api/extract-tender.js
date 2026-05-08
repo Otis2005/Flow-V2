@@ -1,17 +1,19 @@
 // Vercel serverless function: POST /api/extract-tender
 //
-// Receives a multipart/form-data PDF, sends it to Claude for structured
-// extraction, and returns the extracted tender fields as JSON. Authentication:
-// requires a Supabase access token belonging to an email on the admin
-// allowlist. The Anthropic API key is server-side only.
+// Body: { storage_path: string } — path of an already-uploaded file in the
+// "tender-pdfs" Supabase Storage bucket. The function downloads the file
+// server-side, sends it to Claude for structured field extraction, and
+// returns the extracted tender data as JSON.
+//
+// Auth: requires a Supabase access token belonging to an email on the
+// admin allowlist (ADMIN_EMAILS env var).
 
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@supabase/supabase-js';
 
 export const config = {
-  api: {
-    bodyParser: false
-  }
+  api: { bodyParser: { sizeLimit: '1mb' } },
+  maxDuration: 60
 };
 
 const ADMIN_EMAILS = (process.env.ADMIN_EMAILS || 'kennedynange@gmail.com')
@@ -46,161 +48,144 @@ Output a single JSON object with EXACTLY these fields. Use null when a field is 
 
 Return ONLY the JSON object. No prose. No markdown fences.`;
 
-async function readBody(req) {
-  return new Promise((resolve, reject) => {
-    const chunks = [];
-    req.on('data', c => chunks.push(c));
-    req.on('end', () => resolve(Buffer.concat(chunks)));
-    req.on('error', reject);
-  });
-}
-
-// Tiny multipart parser — only needs to extract the first file part.
-function parseMultipart(buffer, boundary) {
-  const boundaryBuf = Buffer.from('--' + boundary);
-  const parts = [];
-  let start = 0;
-  let idx;
-  while ((idx = buffer.indexOf(boundaryBuf, start)) !== -1) {
-    if (start !== 0) {
-      parts.push(buffer.slice(start, idx - 2)); // strip trailing \r\n
-    }
-    start = idx + boundaryBuf.length;
-    if (buffer.slice(start, start + 2).toString() === '--') break;
-    start += 2; // skip \r\n after boundary
-  }
-
-  for (const part of parts) {
-    const headerEnd = part.indexOf('\r\n\r\n');
-    if (headerEnd === -1) continue;
-    const headers = part.slice(0, headerEnd).toString('utf8');
-    const body = part.slice(headerEnd + 4);
-    const dispMatch = headers.match(/Content-Disposition:\s*form-data;\s*name="([^"]+)"(?:;\s*filename="([^"]+)")?/i);
-    if (!dispMatch) continue;
-    const [, name, filename] = dispMatch;
-    const ctMatch = headers.match(/Content-Type:\s*([^\r\n]+)/i);
-    if (filename) {
-      return {
-        filename,
-        contentType: ctMatch ? ctMatch[1].trim() : 'application/octet-stream',
-        data: body,
-        fieldName: name
-      };
-    }
-  }
-  return null;
-}
-
 export default async function handler(req, res) {
-  if (req.method !== 'POST') {
-    res.status(405).json({ error: 'Method not allowed' });
-    return;
-  }
+  // Always set JSON content type so any error response stays parseable.
+  res.setHeader('Content-Type', 'application/json');
 
-  // 1. Authenticate via Supabase access token
-  const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
-  const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
-  if (!supabaseUrl || !supabaseKey) {
-    res.status(500).json({ error: 'Server is missing Supabase env vars (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY).' });
-    return;
-  }
-  const supabase = createClient(supabaseUrl, supabaseKey);
-
-  const auth = req.headers.authorization || '';
-  const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
-  if (!token) {
-    res.status(401).json({ error: 'Missing access token' });
-    return;
-  }
-
-  const { data: userData, error: userErr } = await supabase.auth.getUser(token);
-  if (userErr || !userData?.user) {
-    res.status(401).json({ error: 'Invalid session' });
-    return;
-  }
-  const email = (userData.user.email || '').toLowerCase();
-  if (!ADMIN_EMAILS.includes(email)) {
-    res.status(403).json({ error: 'Not an admin email' });
-    return;
-  }
-
-  // 2. Parse multipart body
-  const ct = req.headers['content-type'] || '';
-  const bMatch = ct.match(/boundary=(?:"([^"]+)"|([^;]+))/i);
-  const boundary = bMatch ? (bMatch[1] || bMatch[2]).trim() : null;
-  if (!boundary) {
-    res.status(400).json({ error: 'Missing multipart boundary' });
-    return;
-  }
-
-  let buffer;
-  try { buffer = await readBody(req); } catch { res.status(400).json({ error: 'Could not read body' }); return; }
-  const file = parseMultipart(buffer, boundary);
-  if (!file || !file.data?.length) {
-    res.status(400).json({ error: 'No file uploaded' });
-    return;
-  }
-  if (file.data.length > 25 * 1024 * 1024) {
-    res.status(413).json({ error: 'File exceeds 25 MB' });
-    return;
-  }
-
-  // 3. Send to Claude
-  const apiKey = process.env.ANTHROPIC_API_KEY;
-  if (!apiKey) {
-    res.status(500).json({ error: 'ANTHROPIC_API_KEY not set' });
-    return;
-  }
-  const anthropic = new Anthropic({ apiKey });
-
-  const isPdf =
-    file.contentType?.toLowerCase().includes('pdf') ||
-    file.filename?.toLowerCase().endsWith('.pdf');
-
-  let content;
-  if (isPdf) {
-    content = [
-      {
-        type: 'document',
-        source: {
-          type: 'base64',
-          media_type: 'application/pdf',
-          data: file.data.toString('base64')
-        }
-      },
-      { type: 'text', text: EXTRACTION_PROMPT }
-    ];
-  } else {
-    // Best-effort: treat as text
-    content = [
-      { type: 'text', text: file.data.toString('utf8').slice(0, 200_000) },
-      { type: 'text', text: EXTRACTION_PROMPT }
-    ];
-  }
-
-  let extracted;
   try {
-    const response = await anthropic.messages.create({
-      model: 'claude-sonnet-4-6',
-      max_tokens: 2048,
-      messages: [{ role: 'user', content }]
-    });
+    if (req.method !== 'POST') {
+      return res.status(405).json({ error: 'Method not allowed' });
+    }
+
+    // ─── Auth ───────────────────────────────────────────────
+    const supabaseUrl = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !serviceKey) {
+      return res.status(500).json({
+        error: 'Server is missing Supabase env vars (SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY).'
+      });
+    }
+    const supabase = createClient(supabaseUrl, serviceKey);
+
+    const auth = req.headers.authorization || '';
+    const token = auth.startsWith('Bearer ') ? auth.slice(7) : null;
+    if (!token) {
+      return res.status(401).json({ error: 'Missing access token' });
+    }
+
+    const { data: userData, error: userErr } = await supabase.auth.getUser(token);
+    if (userErr || !userData?.user) {
+      return res.status(401).json({ error: 'Invalid session' });
+    }
+    const email = (userData.user.email || '').toLowerCase();
+    if (!ADMIN_EMAILS.includes(email)) {
+      return res.status(403).json({ error: 'Not an admin email' });
+    }
+
+    // ─── Body ──────────────────────────────────────────────
+    const body = typeof req.body === 'string' ? safeJsonParse(req.body) : req.body;
+    const storagePath = body?.storage_path;
+    if (!storagePath || typeof storagePath !== 'string') {
+      return res.status(400).json({ error: 'Missing storage_path in body' });
+    }
+
+    // ─── Download file from Supabase Storage ───────────────
+    const { data: fileBlob, error: dlError } = await supabase.storage
+      .from('tender-pdfs')
+      .download(storagePath);
+    if (dlError || !fileBlob) {
+      return res.status(404).json({
+        error: `Could not download file from storage: ${dlError?.message || 'not found'}`
+      });
+    }
+    const arrayBuf = await fileBlob.arrayBuffer();
+    const fileBuffer = Buffer.from(arrayBuf);
+    if (fileBuffer.length > 25 * 1024 * 1024) {
+      return res.status(413).json({ error: 'File exceeds 25 MB' });
+    }
+
+    const isPdf =
+      (fileBlob.type || '').toLowerCase().includes('pdf') ||
+      storagePath.toLowerCase().endsWith('.pdf');
+
+    // ─── Call Claude ───────────────────────────────────────
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+    if (!apiKey) {
+      return res.status(500).json({ error: 'ANTHROPIC_API_KEY not set' });
+    }
+    const anthropic = new Anthropic({ apiKey });
+
+    let content;
+    if (isPdf) {
+      content = [
+        {
+          type: 'document',
+          source: {
+            type: 'base64',
+            media_type: 'application/pdf',
+            data: fileBuffer.toString('base64')
+          }
+        },
+        { type: 'text', text: EXTRACTION_PROMPT }
+      ];
+    } else {
+      content = [
+        { type: 'text', text: fileBuffer.toString('utf8').slice(0, 200_000) },
+        { type: 'text', text: EXTRACTION_PROMPT }
+      ];
+    }
+
+    let response;
+    try {
+      response = await anthropic.messages.create({
+        model: 'claude-sonnet-4-5',
+        max_tokens: 2048,
+        messages: [{ role: 'user', content }]
+      });
+    } catch (e) {
+      console.error('[extract-tender] Anthropic error:', e);
+      return res.status(502).json({
+        error: `Claude API error: ${e?.message || 'unknown'}`,
+        status: e?.status,
+        type: e?.error?.type
+      });
+    }
+
     const text = response.content
       .filter(c => c.type === 'text')
       .map(c => c.text)
       .join('\n')
       .trim();
+
     const jsonStart = text.indexOf('{');
     const jsonEnd = text.lastIndexOf('}');
     if (jsonStart === -1 || jsonEnd === -1) {
-      throw new Error('Model did not return JSON');
+      return res.status(502).json({
+        error: 'Model did not return JSON',
+        sample: text.slice(0, 500)
+      });
     }
-    extracted = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
-  } catch (e) {
-    console.error('[extract-tender] Claude error:', e);
-    res.status(502).json({ error: 'Extraction failed: ' + (e.message || 'unknown error') });
-    return;
-  }
 
-  res.status(200).json(extracted);
+    let extracted;
+    try {
+      extracted = JSON.parse(text.slice(jsonStart, jsonEnd + 1));
+    } catch (e) {
+      return res.status(502).json({
+        error: 'Model returned malformed JSON',
+        sample: text.slice(0, 500)
+      });
+    }
+
+    return res.status(200).json(extracted);
+  } catch (e) {
+    // Last-resort handler so the client always gets JSON.
+    console.error('[extract-tender] Unhandled error:', e);
+    return res.status(500).json({
+      error: e?.message || String(e)
+    });
+  }
+}
+
+function safeJsonParse(s) {
+  try { return JSON.parse(s); } catch { return null; }
 }

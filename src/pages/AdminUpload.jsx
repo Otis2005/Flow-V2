@@ -102,21 +102,31 @@ export default function AdminUpload() {
         : f
       ));
 
-      // 2. Call extraction API only for PDFs
+      // 2. Call extraction API only for PDFs.
+      // We send the storage path, not the file — the API downloads it
+      // server-side. This avoids Vercel's request body size limit and
+      // halves total bandwidth.
       if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
         setExtracting(true);
         try {
-          const formData = new FormData();
-          formData.append('file', file);
           const session = await supabase.auth.getSession();
           const token = session.data.session?.access_token || '';
           const res = await fetch('/api/extract-tender', {
             method: 'POST',
-            headers: { Authorization: `Bearer ${token}` },
-            body: formData
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ storage_path: path })
           });
-          const json = await res.json();
-          if (!res.ok) throw new Error(json.error || 'Extraction failed');
+          const raw = await res.text();
+          let json;
+          try { json = JSON.parse(raw); } catch {
+            throw new Error(
+              `API returned non-JSON (HTTP ${res.status}). First 200 chars: ${raw.slice(0, 200)}`
+            );
+          }
+          if (!res.ok) throw new Error(json.error || `Extraction failed (HTTP ${res.status})`);
 
           // Merge extracted fields into form, preferring AI values where current ones are empty
           setForm(prev => ({
