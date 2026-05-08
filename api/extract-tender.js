@@ -10,6 +10,14 @@
 
 import Anthropic from '@anthropic-ai/sdk';
 import { createClient } from '@supabase/supabase-js';
+import { PDFDocument } from 'pdf-lib';
+
+// Claude's document content block accepts up to 100 PDF pages per request.
+// Tender documents are often 100s of pages (technical specs, annexes,
+// drawings) but every field we want — title, issuer, dates, value, scope —
+// lives in the first few pages. Clipping keeps us well under the limit
+// and shrinks the API payload.
+const MAX_PDF_PAGES = 50;
 
 export const config = {
   api: { bodyParser: { sizeLimit: '1mb' } },
@@ -108,6 +116,26 @@ export default async function handler(req, res) {
       (fileBlob.type || '').toLowerCase().includes('pdf') ||
       storagePath.toLowerCase().endsWith('.pdf');
 
+    // Clip large PDFs to first N pages — Claude rejects anything over 100.
+    let pdfPayload = fileBuffer;
+    let clippedFromPages = null;
+    if (isPdf) {
+      try {
+        const src = await PDFDocument.load(fileBuffer, { ignoreEncryption: true });
+        const total = src.getPageCount();
+        if (total > MAX_PDF_PAGES) {
+          const out = await PDFDocument.create();
+          const idx = Array.from({ length: MAX_PDF_PAGES }, (_, i) => i);
+          const copied = await out.copyPages(src, idx);
+          copied.forEach(p => out.addPage(p));
+          pdfPayload = Buffer.from(await out.save());
+          clippedFromPages = total;
+        }
+      } catch (e) {
+        console.warn('[extract-tender] pdf-lib clip failed, using original:', e?.message);
+      }
+    }
+
     // ─── Call Claude ───────────────────────────────────────
     const apiKey = process.env.ANTHROPIC_API_KEY;
     if (!apiKey) {
@@ -117,16 +145,19 @@ export default async function handler(req, res) {
 
     let content;
     if (isPdf) {
+      const promptWithContext = clippedFromPages
+        ? `${EXTRACTION_PROMPT}\n\nNote: this PDF originally had ${clippedFromPages} pages; you are seeing the first ${MAX_PDF_PAGES}. Make best-effort extraction from those.`
+        : EXTRACTION_PROMPT;
       content = [
         {
           type: 'document',
           source: {
             type: 'base64',
             media_type: 'application/pdf',
-            data: fileBuffer.toString('base64')
+            data: pdfPayload.toString('base64')
           }
         },
-        { type: 'text', text: EXTRACTION_PROMPT }
+        { type: 'text', text: promptWithContext }
       ];
     } else {
       content = [
