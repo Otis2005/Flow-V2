@@ -1,26 +1,35 @@
 # Dependencies
 node_modules/
 
-# Environment variables (keep secrets out of git)
+# Environment variables
 .env
 .env.local
 .env.production
+.env*.local
 
-# Database files
-*.db
-*.sqlite
+# Build output
+dist/
+build/
 
-# Uploaded files
-uploads/
+# Vite/Vercel
+.vercel/
+*.local
 
 # Logs
 *.log
 npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
 
 # OS files
 .DS_Store
 Thumbs.db
 
-# Build output
-dist/
-build/
+# IDE
+.vscode/
+.idea/
+
+# Reference materials (not part of shipping code)
+_design_zip/
+_design_reference/
+uploads/
