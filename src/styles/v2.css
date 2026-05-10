@@ -112,27 +112,35 @@
 .tf-stars {
   display: inline-flex;
   align-items: center;
-  gap: 2px;
-  font-family: var(--mono);
-  font-size: 12px;
-  color: var(--muted);
+  gap: 6px;
+  font-family: var(--sans);
+  color: var(--ink);
   letter-spacing: 0;
 }
 .tf-stars-icons {
   display: inline-flex;
-  gap: 1px;
-  margin-right: 6px;
+  gap: 2px;
 }
 .tf-stars-icons svg {
-  width: 14px;
-  height: 14px;
+  width: var(--star-px, 18px);
+  height: var(--star-px, 18px);
   display: block;
 }
 .tf-stars-icons .filled { fill: #d8a73b; }
-.tf-stars-icons .empty { fill: rgba(20, 30, 40, 0.15); }
+.tf-stars-icons .empty { fill: rgba(20, 30, 40, 0.22); }
+.tf-stars-num {
+  font-family: var(--serif);
+  font-size: 16px;
+  color: var(--navy);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1;
+}
 
-.tf-stars-large .tf-stars-icons svg { width: 22px; height: 22px; }
-.tf-stars-large { font-size: 14px; color: var(--ink); }
+.tf-stars-sm .tf-stars-num { font-size: 14px; }
+.tf-stars-md .tf-stars-num { font-size: 16px; }
+.tf-stars-lg .tf-stars-num { font-size: 22px; }
+.tf-stars-lg { gap: 8px; }
 
 .tf-stars-input {
   display: inline-flex;
@@ -160,12 +168,21 @@
   font-style: italic;
   font-weight: 500;
 }
-.tf-card-rating {
+.tf-card-issuer-row {
   display: flex;
   align-items: center;
-  margin-top: 8px;
-  padding-top: 8px;
-  border-top: 1px dashed rgba(20, 30, 40, 0.08);
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.tf-card-issuer-name {
+  font-weight: 600;
+  color: var(--navy);
+}
+.tf-card-issuer-row .tf-stars {
+  padding: 2px 8px;
+  background: rgba(216, 167, 59, 0.10);
+  border: 1px solid rgba(216, 167, 59, 0.30);
+  border-radius: 999px;
 }
 
 /* ── Issuer logo backdrop on detail page ──────────────────────── */
@@ -261,6 +278,15 @@
   background: var(--cream);
 }
 
+/* ── Tender detail aside: stop the keyfacts card from sticking.
+   The original design had position: sticky which caused the hire CTA
+   below it to drift visually as you scrolled. Both cards now flow
+   naturally with the page. ─────────────────────────────────────── */
+.tf-detail-keyfacts {
+  position: static !important;
+  top: auto !important;
+}
+
 /* ── Hire-consultant CTA on tender detail ─────────────────────── */
 .tf-hire-card {
   margin-top: 16px;
@@ -321,6 +347,17 @@
 }
 
 /* ── Checklist on tender detail ───────────────────────────────── */
+.tf-checklist-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 16px;
+  align-items: center;
+}
+.tf-checklist-head .tf-cta { white-space: nowrap; }
+@media (max-width: 640px) {
+  .tf-checklist-head { grid-template-columns: 1fr; }
+}
+
 .tf-checklist {
   margin-top: 20px;
   padding: 22px;

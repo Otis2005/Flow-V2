@@ -20,6 +20,7 @@ import Consultants from './pages/Consultants.jsx';
 import ConsultantDetail from './pages/ConsultantDetail.jsx';
 import ConsultantSignup from './pages/ConsultantSignup.jsx';
 import ConsultantDashboard from './pages/ConsultantDashboard.jsx';
+import ConsultantEdit from './pages/ConsultantEdit.jsx';
 import Hire from './pages/Hire.jsx';
 
 import AdminDashboard from './pages/AdminDashboard.jsx';
@@ -76,11 +77,12 @@ export default function App() {
 
           <Route path="/dashboard" element={<AuthGuard><Dashboard /></AuthGuard>} />
 
-          <Route path="/consultants" element={<Consultants />} />
-          <Route path="/consultants/:id" element={<ConsultantDetail />} />
+          <Route path="/consultants" element={<AuthGuard><Consultants /></AuthGuard>} />
+          <Route path="/consultants/:id" element={<AuthGuard><ConsultantDetail /></AuthGuard>} />
           <Route path="/consultant-signup" element={<ConsultantSignup />} />
           <Route path="/consultant-dashboard" element={<AuthGuard><ConsultantDashboard /></AuthGuard>} />
-          <Route path="/hire" element={<Hire />} />
+          <Route path="/consultant-edit" element={<AuthGuard><ConsultantEdit /></AuthGuard>} />
+          <Route path="/hire" element={<AuthGuard><Hire /></AuthGuard>} />
 
           <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
           <Route path="/admin/upload" element={<AdminGuard><AdminUpload /></AdminGuard>} />

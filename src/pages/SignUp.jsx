@@ -1,11 +1,13 @@
 import { useState } from 'react';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/AuthProvider.jsx';
 import { isSupabaseConfigured } from '../lib/supabaseClient.js';
 
 export default function SignUp() {
   const { signUpWithPassword, user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
+  const returnTo = location.state?.from || '/dashboard';
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -14,7 +16,7 @@ export default function SignUp() {
   const [createdSession, setCreatedSession] = useState(false);
   const [needsConfirm, setNeedsConfirm] = useState(false);
 
-  if (user) return <Navigate to="/dashboard" replace />;
+  if (user) return <Navigate to={returnTo} replace />;
 
   async function handleSubmit(e) {
     e.preventDefault();
@@ -35,7 +37,7 @@ export default function SignUp() {
     // or no session (if confirm-email is on).
     if (data?.session) {
       setCreatedSession(true);
-      setTimeout(() => navigate('/dashboard'), 600);
+      setTimeout(() => navigate(returnTo), 600);
     } else {
       setNeedsConfirm(true);
     }

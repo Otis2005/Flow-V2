@@ -155,6 +155,27 @@ export default function ConsultantSignup() {
       setError(res.error.message);
       return;
     }
+
+    // Best-effort admin email notification. We deliberately do not await this
+    // in a way that could block UX feedback; failures are logged but the user
+    // proceeds to the success screen regardless.
+    try {
+      const session = await supabase.auth.getSession();
+      const token = session.data.session?.access_token;
+      if (token && res.data?.id) {
+        fetch('/api/notify-consultant', {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ consultant_id: res.data.id })
+        }).catch(err => console.warn('[notify-consultant] notify failed', err));
+      }
+    } catch (e) {
+      console.warn('[notify-consultant] could not dispatch', e);
+    }
+
     setDone(true);
   }
 

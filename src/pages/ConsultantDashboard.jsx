@@ -107,7 +107,7 @@ export default function ConsultantDashboard() {
               </div>
             </div>
             <span style={{ flex: 1 }} />
-            <Link to="/consultant-signup" className="tf-cta-ghost" style={{ textDecoration: 'none' }}>
+            <Link to="/consultant-edit" className="tf-cta-ghost" style={{ textDecoration: 'none' }}>
               Edit profile
             </Link>
           </div>

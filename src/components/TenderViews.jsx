@@ -15,12 +15,18 @@ export function TenderCard({ tender }) {
   const days = daysUntil(tender.closes);
   const bs = formatBidSecurity(tender);
   const noneNeeded = /not\s*required|none|n\/?a/i.test(bs);
+  const rating = tender.issuer_rating ?? tender.issuerRating;
   return (
     <Link to={`/tenders/${tender.id}`} style={{ textDecoration: 'none' }}>
       <article className="tf-card">
         <div className="tf-card-meta-top">
           <div className="tf-card-issuer">
-            <div>{tender.issuer}</div>
+            <div className="tf-card-issuer-row">
+              <span className="tf-card-issuer-name">{tender.issuer}</span>
+              {rating != null && rating > 0 && (
+                <Stars value={rating} size="md" />
+              )}
+            </div>
             <div style={{ fontSize: 11, opacity: 0.7, marginTop: 2 }}>
               {tender.country} · {tender.sector}
             </div>
@@ -45,11 +51,6 @@ export function TenderCard({ tender }) {
             </div>
           </span>
         </div>
-        {(tender.issuer_rating != null || tender.issuerRating != null) && (
-          <div className="tf-card-rating">
-            <Stars value={tender.issuer_rating ?? tender.issuerRating} />
-          </div>
-        )}
       </article>
     </Link>
   );
