@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import AdminBar from '../components/AdminBar.jsx';
+import { StarsInput } from '../components/StarRating.jsx';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient.js';
 import { SOURCES, CURRENCIES, SECTORS, COUNTRIES } from '../lib/constants.js';
 
@@ -19,7 +20,12 @@ const EMPTY = {
   summary: '',
   scope: '',
   eligibility: '',
-  submission: ''
+  submission: '',
+  bid_security: '',
+  issuer_rating: 0,
+  issuer_logo_url: '',
+  issuer_logo_path: '',
+  checklist: []
 };
 
 export default function AdminUpload() {
@@ -28,15 +34,16 @@ export default function AdminUpload() {
   const editId = searchParams.get('edit');
 
   const fileRef = useRef(null);
-  const [files, setFiles] = useState([]); // [{ name, size, status, storage_path, url }]
+  const logoRef = useRef(null);
+  const [files, setFiles] = useState([]);
   const [extracting, setExtracting] = useState(false);
   const [extractionMeta, setExtractionMeta] = useState(null);
   const [form, setForm] = useState(EMPTY);
   const [saving, setSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState(null);
   const [extractError, setExtractError] = useState(null);
+  const [logoUploading, setLogoUploading] = useState(false);
 
-  // Load draft for editing if ?edit=ID
   useEffect(() => {
     if (!editId || !isSupabaseConfigured) return;
     (async () => {
@@ -58,7 +65,12 @@ export default function AdminUpload() {
           summary: data.summary || '',
           scope: data.scope || '',
           eligibility: data.eligibility || '',
-          submission: data.submission || ''
+          submission: data.submission || '',
+          bid_security: data.bid_security || '',
+          issuer_rating: data.issuer_rating ?? 0,
+          issuer_logo_url: data.issuer_logo_url || '',
+          issuer_logo_path: data.issuer_logo_path || '',
+          checklist: data.checklist || []
         });
         setFiles((data.documents || []).map(d => ({ ...d, status: 'done' })));
       }
@@ -84,7 +96,6 @@ export default function AdminUpload() {
       };
       setFiles(prev => [...prev, tempEntry]);
 
-      // 1. Upload to Storage
       const path = `${Date.now()}-${slug(file.name)}`;
       const { error: upErr } = await supabase.storage
         .from('tender-pdfs')
@@ -102,10 +113,6 @@ export default function AdminUpload() {
         : f
       ));
 
-      // 2. Call extraction API only for PDFs.
-      // We send the storage path, not the file — the API downloads it
-      // server-side. This avoids Vercel's request body size limit and
-      // halves total bandwidth.
       if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
         setExtracting(true);
         try {
@@ -128,13 +135,13 @@ export default function AdminUpload() {
           }
           if (!res.ok) throw new Error(json.error || `Extraction failed (HTTP ${res.status})`);
 
-          // Merge extracted fields into form, preferring AI values where current ones are empty
           setForm(prev => ({
+            ...prev,
             title: prev.title || json.title || '',
             issuer: prev.issuer || json.issuer || '',
             country: json.country || prev.country,
             region: prev.region || json.region || '',
-            source: json.source || prev.source,
+            source: json.source && SOURCES.includes(json.source) ? json.source : prev.source,
             sector: json.sector || prev.sector,
             ref_no: prev.ref_no || json.ref_no || '',
             value: prev.value || json.value || '',
@@ -144,7 +151,9 @@ export default function AdminUpload() {
             summary: prev.summary || json.summary || '',
             scope: prev.scope || json.scope || '',
             eligibility: prev.eligibility || json.eligibility || '',
-            submission: prev.submission || json.submission || ''
+            submission: prev.submission || json.submission || '',
+            bid_security: prev.bid_security || json.bid_security || '',
+            checklist: (Array.isArray(json.checklist) && json.checklist.length) ? json.checklist : prev.checklist
           }));
           setExtractionMeta({
             fieldsDetected: json.fields_detected ?? null,
@@ -162,6 +171,24 @@ export default function AdminUpload() {
         f.storage_path === path ? { ...f, status: 'done' } : f
       ));
     }
+  }
+
+  async function handleLogoUpload(file) {
+    if (!file) return;
+    if (!isSupabaseConfigured) { alert('Supabase not configured'); return; }
+    setLogoUploading(true);
+    const path = `logos/${Date.now()}-${slug(file.name)}`;
+    const { error } = await supabase.storage
+      .from('tender-pdfs')
+      .upload(path, file, { contentType: file.type, upsert: false });
+    if (error) {
+      alert('Logo upload failed: ' + error.message);
+      setLogoUploading(false);
+      return;
+    }
+    const { data } = supabase.storage.from('tender-pdfs').getPublicUrl(path);
+    setForm(f => ({ ...f, issuer_logo_path: path, issuer_logo_url: data?.publicUrl || '' }));
+    setLogoUploading(false);
   }
 
   async function handleSave(status) {
@@ -192,6 +219,11 @@ export default function AdminUpload() {
       scope: form.scope || null,
       eligibility: form.eligibility || null,
       submission: form.submission || null,
+      bid_security: form.bid_security || null,
+      issuer_rating: form.issuer_rating || null,
+      issuer_logo_url: form.issuer_logo_url || null,
+      issuer_logo_path: form.issuer_logo_path || null,
+      checklist: form.checklist || [],
       documents,
       status
     };
@@ -220,7 +252,7 @@ export default function AdminUpload() {
   }
 
   return (
-    <div className="tf-admin">
+    <div className="tf-admin tf-page-anim">
       <AdminBar />
       <div className="tf-container">
         <div style={{ paddingTop: 32 }}>
@@ -230,8 +262,9 @@ export default function AdminUpload() {
           <div>
             <h1 className="tf-admin-h1">{editId ? 'Edit tender' : 'Upload a tender document'}</h1>
             <p className="tf-admin-sub">
-              Drop the source PDF or document. TenderFlow will extract the key fields —
-              title, issuer, value, deadlines — for you to review and publish.
+              Drop the source PDF or document. TenderFlow will extract the key fields:
+              title, issuer, value, deadlines, plus a requirements checklist for you
+              to review and publish.
             </p>
 
             <div
@@ -246,7 +279,7 @@ export default function AdminUpload() {
             >
               <div className="tf-dropzone-icon"></div>
               <h4>Drop tender documents here</h4>
-              <p>PDF, DOCX, XLSX up to 25 MB · or click to browse</p>
+              <p>PDF, DOCX, XLSX up to 25 MB. Or click to browse.</p>
               <input
                 type="file"
                 ref={fileRef}
@@ -319,12 +352,12 @@ export default function AdminUpload() {
           </div>
 
           <div className="tf-admin-form">
-            <h3>Extracted information — review before publishing</h3>
+            <h3>Extracted information. Review before publishing.</h3>
             {extractionMeta ? (
               <div className="tf-extracted">
                 <span className="tf-extracted-tag">Auto-extracted</span>
                 <div style={{ marginTop: 4 }}>
-                  {extractionMeta.fieldsDetected ?? '—'} fields detected
+                  {extractionMeta.fieldsDetected ?? '–'} fields detected
                   {extractionMeta.needsReview?.length ? ` · ${extractionMeta.needsReview.length} need${extractionMeta.needsReview.length === 1 ? 's' : ''} review` : ''}
                   {extractionMeta.confidence != null ? ` · confidence ${Math.round(extractionMeta.confidence * 100)}%` : ''}
                 </div>
@@ -398,6 +431,22 @@ export default function AdminUpload() {
               </div>
             </div>
 
+            <div className="tf-form-row full">
+              <div className="tf-form-field">
+                <label>
+                  Bid security
+                  <span style={{ fontSize: 11, color: 'var(--muted)', fontWeight: 400, marginLeft: 6 }}>
+                    (e.g. "USD 50,000", "2% of bid", or leave blank if not required)
+                  </span>
+                </label>
+                <input
+                  value={form.bid_security}
+                  onChange={e => set('bid_security', e.target.value)}
+                  placeholder='Leave blank for "Not Required"'
+                />
+              </div>
+            </div>
+
             <div className="tf-form-row">
               <div className="tf-form-field">
                 <label>Published date</label>
@@ -416,6 +465,64 @@ export default function AdminUpload() {
                   onChange={e => set('closes_at', e.target.value)}
                   style={extractionMeta?.needsReview?.includes('closes_at') ? { borderColor: 'var(--gold)' } : undefined}
                 />
+              </div>
+            </div>
+
+            <div className="tf-form-row full">
+              <div className="tf-form-field">
+                <label>Issuer rating</label>
+                <StarsInput value={form.issuer_rating} onChange={v => set('issuer_rating', v)} />
+                <p style={{ fontSize: 11, color: 'var(--muted)', margin: '6px 0 0' }}>
+                  Optional. Reflects how easy this organisation is to work with based on
+                  past dealings.
+                </p>
+              </div>
+            </div>
+
+            <div className="tf-form-row full">
+              <div className="tf-form-field">
+                <label>Issuer logo</label>
+                <div className="tf-photo-uploader">
+                  <div
+                    className="tf-photo-uploader-preview"
+                    style={form.issuer_logo_url ? {
+                      backgroundImage: `url(${form.issuer_logo_url})`,
+                      backgroundSize: 'contain',
+                      backgroundRepeat: 'no-repeat'
+                    } : undefined}
+                  />
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
+                    <button
+                      type="button"
+                      className="tf-cta-ghost"
+                      style={{ padding: '8px 14px', fontSize: 12 }}
+                      onClick={() => logoRef.current?.click()}
+                      disabled={logoUploading}
+                    >
+                      {logoUploading ? 'Uploading…' : (form.issuer_logo_url ? 'Replace logo' : 'Upload logo')}
+                    </button>
+                    {form.issuer_logo_url && (
+                      <button
+                        type="button"
+                        className="tf-cta-ghost"
+                        style={{ padding: '6px 12px', fontSize: 11, color: 'var(--danger)' }}
+                        onClick={() => set('issuer_logo_url', '') || set('issuer_logo_path', '')}
+                      >
+                        Remove
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    type="file"
+                    ref={logoRef}
+                    accept="image/*"
+                    style={{ display: 'none' }}
+                    onChange={e => handleLogoUpload(e.target.files?.[0])}
+                  />
+                </div>
+                <p style={{ fontSize: 11, color: 'var(--muted)', margin: '8px 0 0' }}>
+                  Optional. Shows as a faded backdrop on the tender detail page.
+                </p>
               </div>
             </div>
 
@@ -459,11 +566,86 @@ export default function AdminUpload() {
               </div>
             </div>
 
+            <div className="tf-form-row full">
+              <div className="tf-form-field">
+                <label>
+                  Tender requirements checklist
+                  <span style={{ fontSize: 11, color: 'var(--muted)', fontWeight: 400, marginLeft: 6 }}>
+                    ({form.checklist.length} items, auto-generated from PDF)
+                  </span>
+                </label>
+                <ChecklistEditor
+                  items={form.checklist}
+                  onChange={v => set('checklist', v)}
+                />
+              </div>
+            </div>
+
             <p style={{ fontSize: 11.5, color: 'var(--muted)', marginTop: 4 }}>
               Fields above are pre-filled from the uploaded document. Review and edit before publishing.
             </p>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function ChecklistEditor({ items, onChange }) {
+  const [draft, setDraft] = useState('');
+
+  function addItem() {
+    if (!draft.trim()) return;
+    onChange([...items, { text: draft.trim() }]);
+    setDraft('');
+  }
+
+  return (
+    <div style={{ border: '1px solid var(--rule)', padding: 12, background: 'var(--paper)' }}>
+      {items.length === 0 ? (
+        <p style={{ fontSize: 12, color: 'var(--muted)', margin: 0 }}>
+          No checklist items yet. They populate automatically when you upload a PDF, or
+          add them manually below.
+        </p>
+      ) : (
+        <ul style={{ listStyle: 'none', padding: 0, margin: 0 }}>
+          {items.map((it, i) => (
+            <li key={i} style={{ display: 'flex', gap: 10, alignItems: 'flex-start', padding: '6px 0', borderBottom: i < items.length - 1 ? '1px solid var(--rule-soft)' : '0' }}>
+              <span style={{ fontFamily: 'var(--mono)', fontSize: 11, color: 'var(--muted)', marginTop: 2 }}>
+                {String(i + 1).padStart(2, '0')}
+              </span>
+              <input
+                value={it.text || ''}
+                onChange={e => {
+                  const next = [...items];
+                  next[i] = { ...next[i], text: e.target.value };
+                  onChange(next);
+                }}
+                style={{ flex: 1, padding: '4px 8px', fontSize: 13, border: '1px solid transparent', background: 'transparent' }}
+              />
+              <button
+                type="button"
+                onClick={() => onChange(items.filter((_, j) => j !== i))}
+                style={{ background: 'none', border: 0, color: 'var(--muted)', cursor: 'pointer', fontSize: 14 }}
+                aria-label="Remove"
+              >
+                ×
+              </button>
+            </li>
+          ))}
+        </ul>
+      )}
+      <div style={{ display: 'flex', gap: 8, marginTop: 12, paddingTop: 8, borderTop: items.length ? '1px solid var(--rule-soft)' : 'none' }}>
+        <input
+          value={draft}
+          onChange={e => setDraft(e.target.value)}
+          onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addItem(); } }}
+          placeholder="Add a requirement (e.g. Tax compliance certificate)"
+          style={{ flex: 1, padding: '6px 10px', fontSize: 13, border: '1px solid var(--rule)', background: 'var(--cream)' }}
+        />
+        <button type="button" className="tf-cta-ghost" style={{ padding: '6px 12px', fontSize: 12 }} onClick={addItem}>
+          Add
+        </button>
       </div>
     </div>
   );

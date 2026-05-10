@@ -1,17 +1,8 @@
 import { createContext, useContext, useEffect, useState, useCallback } from 'react';
 import { supabase, isSupabaseConfigured } from './supabaseClient.js';
 
-const AuthContext = createContext({
-  user: null,
-  session: null,
-  isAdmin: false,
-  loading: true,
-  signInWithMagicLink: async () => ({ error: new Error('Supabase not configured') }),
-  signOut: async () => {}
-});
+const AuthContext = createContext(null);
 
-// Read admin allowlist from build-time env. Falls back to the canonical admin
-// so the gate still works in dev before Supabase is wired up.
 const RAW_ADMIN_LIST = import.meta.env.VITE_ADMIN_EMAILS || 'kennedynange@gmail.com';
 const ADMIN_EMAILS = RAW_ADMIN_LIST.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
 
@@ -36,16 +27,42 @@ export function AuthProvider({ children }) {
     return () => unsub?.unsubscribe();
   }, []);
 
-  const signInWithMagicLink = useCallback(async (email) => {
+  const signInWithMagicLink = useCallback(async (email, redirectPath = '/admin') => {
     if (!isSupabaseConfigured) {
       return { error: new Error('Supabase not configured. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY to .env.local') };
     }
-    const redirectTo = `${window.location.origin}/admin`;
+    const redirectTo = `${window.location.origin}${redirectPath}`;
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: { emailRedirectTo: redirectTo }
     });
     return { error };
+  }, []);
+
+  const signInWithPassword = useCallback(async (email, password) => {
+    if (!isSupabaseConfigured) {
+      return { error: new Error('Supabase not configured') };
+    }
+    const { error } = await supabase.auth.signInWithPassword({
+      email: email.trim().toLowerCase(),
+      password
+    });
+    return { error };
+  }, []);
+
+  const signUpWithPassword = useCallback(async (email, password, fullName) => {
+    if (!isSupabaseConfigured) {
+      return { error: new Error('Supabase not configured') };
+    }
+    const { error, data } = await supabase.auth.signUp({
+      email: email.trim().toLowerCase(),
+      password,
+      options: {
+        data: { full_name: fullName },
+        emailRedirectTo: `${window.location.origin}/dashboard`
+      }
+    });
+    return { error, data };
   }, []);
 
   const signOut = useCallback(async () => {
@@ -58,7 +75,16 @@ export function AuthProvider({ children }) {
 
   return (
     <AuthContext.Provider
-      value={{ user, session, isAdmin, loading, signInWithMagicLink, signOut }}
+      value={{
+        user,
+        session,
+        isAdmin,
+        loading,
+        signInWithMagicLink,
+        signInWithPassword,
+        signUpWithPassword,
+        signOut
+      }}
     >
       {children}
     </AuthContext.Provider>
@@ -66,7 +92,20 @@ export function AuthProvider({ children }) {
 }
 
 export function useAuth() {
-  return useContext(AuthContext);
+  const ctx = useContext(AuthContext);
+  if (!ctx) {
+    return {
+      user: null,
+      session: null,
+      isAdmin: false,
+      loading: false,
+      signInWithMagicLink: async () => ({ error: new Error('AuthProvider missing') }),
+      signInWithPassword: async () => ({ error: new Error('AuthProvider missing') }),
+      signUpWithPassword: async () => ({ error: new Error('AuthProvider missing') }),
+      signOut: async () => {}
+    };
+  }
+  return ctx;
 }
 
 export { ADMIN_EMAILS };

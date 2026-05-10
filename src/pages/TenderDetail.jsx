@@ -1,17 +1,39 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Badge from '../components/Badge.jsx';
+import FadeIn from '../components/FadeIn.jsx';
+import { Stars } from '../components/StarRating.jsx';
 import { TenderCard } from '../components/TenderViews.jsx';
 import { useTender, useTenders } from '../lib/useTenders.js';
 import { daysUntil, fmtDate, fmtValue } from '../lib/format.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient.js';
+import { useAuth } from '../lib/AuthProvider.jsx';
+import TenderChecklist from '../components/TenderChecklist.jsx';
 
 export default function TenderDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { tender, loading } = useTender(id);
   const { tenders } = useTenders();
+  const { user } = useAuth();
   const [savedToast, setSavedToast] = useState(null);
+  const [onWatchlist, setOnWatchlist] = useState(false);
+
+  useEffect(() => {
+    if (!tender) return;
+    if (user && isSupabaseConfigured) {
+      supabase
+        .from('watchlist')
+        .select('tender_id')
+        .eq('user_id', user.id)
+        .eq('tender_id', tender.id)
+        .maybeSingle()
+        .then(({ data }) => setOnWatchlist(Boolean(data)));
+    } else {
+      const list = JSON.parse(localStorage.getItem('tf-watchlist') || '[]');
+      setOnWatchlist(list.includes(tender.id));
+    }
+  }, [tender, user]);
 
   if (loading) {
     return (
@@ -25,15 +47,19 @@ export default function TenderDetail() {
     return (
       <main className="tf-container" style={{ padding: '120px 0', maxWidth: 640 }}>
         <div className="tf-eyebrow tf-eyebrow-rule">Not found</div>
-        <h1 className="tf-section-title" style={{ marginTop: 12 }}>This tender doesn't exist or has been removed.</h1>
+        <h1 className="tf-section-title" style={{ marginTop: 12 }}>This tender does not exist or has been removed.</h1>
         <button className="tf-cta" onClick={() => navigate('/tenders')} style={{ marginTop: 24 }}>Back to all tenders</button>
       </main>
     );
   }
 
   const days = daysUntil(tender.closes);
+  const bidSecurity = tender.bid_security && tender.bid_security.trim() ? tender.bid_security : 'Not Required';
+
+  // Similar tenders, latest uploaded first.
   const related = tenders
     .filter(t => t.id !== tender.id && (t.sector === tender.sector || t.country === tender.country))
+    .sort((a, b) => new Date(b.published) - new Date(a.published))
     .slice(0, 3);
 
   async function handleDownload(doc) {
@@ -59,27 +85,53 @@ export default function TenderDetail() {
     }
   }
 
-  function handleSaveWatchlist() {
-    // Stored in localStorage so it works without account.
-    const list = JSON.parse(localStorage.getItem('tf-watchlist') || '[]');
-    if (list.includes(tender.id)) {
-      setSavedToast('Already on your watchlist.');
+  async function handleSaveWatchlist() {
+    if (user && isSupabaseConfigured) {
+      if (onWatchlist) {
+        await supabase.from('watchlist').delete().eq('user_id', user.id).eq('tender_id', tender.id);
+        setOnWatchlist(false);
+        setSavedToast('Removed from watchlist.');
+      } else {
+        await supabase.from('watchlist').insert({ user_id: user.id, tender_id: tender.id });
+        setOnWatchlist(true);
+        setSavedToast('Saved to watchlist.');
+      }
     } else {
-      localStorage.setItem('tf-watchlist', JSON.stringify([...list, tender.id]));
-      setSavedToast('Saved to watchlist.');
+      const list = JSON.parse(localStorage.getItem('tf-watchlist') || '[]');
+      if (list.includes(tender.id)) {
+        const next = list.filter(x => x !== tender.id);
+        localStorage.setItem('tf-watchlist', JSON.stringify(next));
+        setOnWatchlist(false);
+        setSavedToast('Removed from watchlist.');
+      } else {
+        localStorage.setItem('tf-watchlist', JSON.stringify([...list, tender.id]));
+        setOnWatchlist(true);
+        setSavedToast('Saved locally. Sign up to sync across devices.');
+      }
     }
     setTimeout(() => setSavedToast(null), 3000);
   }
 
   return (
-    <main>
+    <main className="tf-page-anim">
       <div className="tf-detail-head">
+        {tender.issuer_logo_url && (
+          <div
+            className="tf-detail-logo-backdrop"
+            style={{ backgroundImage: `url(${tender.issuer_logo_url})` }}
+          />
+        )}
         <div className="tf-container">
           <div className="tf-detail-back" onClick={() => navigate('/tenders')}>← Back to all tenders</div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginTop: 18, flexWrap: 'wrap' }}>
             <Badge source={tender.source} />
             <span style={{ fontSize: 12, color: 'var(--muted)', fontFamily: 'var(--mono)' }}>Ref: {tender.refNo}</span>
             <span style={{ fontSize: 12, color: 'var(--muted)' }}>· Published {fmtDate(tender.published)}</span>
+            {tender.issuer_rating && (
+              <span style={{ marginLeft: 'auto' }}>
+                <Stars value={tender.issuer_rating} size="lg" />
+              </span>
+            )}
           </div>
           <h1 className="tf-detail-title">{tender.title}</h1>
           <div className="tf-detail-issuer">
@@ -90,26 +142,26 @@ export default function TenderDetail() {
 
       <div className="tf-container tf-detail-grid">
         <div>
-          <div className="tf-detail-section">
+          <FadeIn className="tf-detail-section">
             <h3>Summary</h3>
             <p>{tender.summary}</p>
-          </div>
+          </FadeIn>
 
           {tender.scope && (
-            <div className="tf-detail-section">
+            <FadeIn className="tf-detail-section">
               <h3>Scope of work</h3>
               <p>{tender.scope}</p>
-            </div>
+            </FadeIn>
           )}
 
           {tender.eligibility && (
-            <div className="tf-detail-section">
+            <FadeIn className="tf-detail-section">
               <h3>Eligibility</h3>
               <p>{tender.eligibility}</p>
-            </div>
+            </FadeIn>
           )}
 
-          <div className="tf-detail-section">
+          <FadeIn className="tf-detail-section">
             <h3>Key dates</h3>
             <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
               <tbody>
@@ -124,10 +176,10 @@ export default function TenderDetail() {
                 ))}
               </tbody>
             </table>
-          </div>
+          </FadeIn>
 
           {Array.isArray(tender.documents) && tender.documents.length > 0 && (
-            <div className="tf-detail-section">
+            <FadeIn className="tf-detail-section">
               <h3>Tender documents</h3>
               <ul className="tf-doc-list">
                 {tender.documents.map((d, i) => (
@@ -148,8 +200,10 @@ export default function TenderDetail() {
                   </li>
                 ))}
               </ul>
-            </div>
+            </FadeIn>
           )}
+
+          <TenderChecklist tender={tender} user={user} />
         </div>
 
         <aside>
@@ -162,6 +216,8 @@ export default function TenderDetail() {
               </div>
             </div>
             <dl>
+              <dt>Bid security</dt>
+              <dd>{bidSecurity}</dd>
               <dt>Estimated value</dt>
               <dd>{fmtValue(tender.value, tender.currency)}</dd>
               <dt>Source type</dt>
@@ -195,7 +251,7 @@ export default function TenderDetail() {
                 style={{ width: '100%', marginTop: 8 }}
                 onClick={handleSaveWatchlist}
               >
-                Save to watchlist
+                {onWatchlist ? '✓ On your watchlist' : 'Save to watchlist'}
               </button>
               {savedToast && (
                 <p style={{ marginTop: 12, fontSize: 12, color: 'var(--muted)', textAlign: 'center' }}>
@@ -204,16 +260,36 @@ export default function TenderDetail() {
               )}
             </div>
           </div>
+
+          <div className="tf-hire-card">
+            <h4>Need help with this tender?</h4>
+            <p>
+              Match with a vetted consultant who can prepare and submit your bid for you.
+              Free to enquire, you only pay if you proceed.
+            </p>
+            <button
+              className="tf-cta"
+              onClick={() => navigate(`/hire?tender=${tender.id}`)}
+            >
+              Get this tender done for me →
+            </button>
+          </div>
         </aside>
       </div>
 
       {related.length > 0 && (
         <section style={{ padding: '32px 0 24px', borderTop: '1px solid var(--rule)', marginTop: 40 }}>
           <div className="tf-container">
-            <div className="tf-eyebrow tf-eyebrow-rule">Related</div>
-            <h2 className="tf-section-title" style={{ marginTop: 12, marginBottom: 24 }}>Similar tenders</h2>
+            <FadeIn>
+              <div className="tf-eyebrow tf-eyebrow-rule">Related</div>
+              <h2 className="tf-section-title" style={{ marginTop: 12, marginBottom: 24 }}>Similar tenders</h2>
+            </FadeIn>
             <div className="tf-cards-grid">
-              {related.map(t => <TenderCard key={t.id} tender={t} />)}
+              {related.map((t, i) => (
+                <FadeIn key={t.id} delay={i * 80}>
+                  <TenderCard tender={t} />
+                </FadeIn>
+              ))}
             </div>
           </div>
         </section>

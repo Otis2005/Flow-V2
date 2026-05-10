@@ -240,7 +240,7 @@ button { font-family: inherit; }
   font-family: var(--sans);
 }
 .tf-badge[data-source="Government"] { color: var(--govt-c); background: var(--govt-soft); border-color: transparent; }
-.tf-badge[data-source="Private"]    { color: var(--priv-c); background: var(--priv-soft); border-color: transparent; }
+.tf-badge[data-source="NGO"]    { color: var(--priv-c); background: var(--priv-soft); border-color: transparent; }
 .tf-badge[data-source="SME"]        { color: var(--amber); background: var(--sme-soft); border-color: transparent; }
 
 /* Prominent variant — solid fills */
@@ -249,7 +249,7 @@ body[data-badges="prominent"] .tf-badge {
   color: var(--paper);
 }
 body[data-badges="prominent"] .tf-badge[data-source="Government"] { background: var(--govt-c); }
-body[data-badges="prominent"] .tf-badge[data-source="Private"]    { background: var(--teal); }
+body[data-badges="prominent"] .tf-badge[data-source="NGO"]    { background: var(--teal); }
 body[data-badges="prominent"] .tf-badge[data-source="SME"]        { background: var(--amber); }
 
 /* Subtle variant — just a small dot */
@@ -269,7 +269,7 @@ body[data-badges="subtle"] .tf-badge::before {
   background: currentColor;
 }
 body[data-badges="subtle"] .tf-badge[data-source="Government"] { color: var(--govt-c); }
-body[data-badges="subtle"] .tf-badge[data-source="Private"]    { color: var(--teal); }
+body[data-badges="subtle"] .tf-badge[data-source="NGO"]    { color: var(--teal); }
 body[data-badges="subtle"] .tf-badge[data-source="SME"]        { color: var(--amber); }
 
 /* ── Tender card (default / cards layout) ──────────────────────── */

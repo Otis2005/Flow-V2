@@ -12,13 +12,13 @@ export default function About() {
           </h1>
           <p style={{ fontSize: 17, color: 'var(--ink)', lineHeight: 1.65, marginTop: 32, maxWidth: '62ch' }}>
             Every working day, hundreds of tender notices are published across the
-            continent — buried in ministry websites, corporate portals, newspaper
+            continent,buried in ministry websites, corporate portals, newspaper
             classifieds, and WhatsApp groups. Most of the people who could win the
             work never see them.
           </p>
           <p style={{ fontSize: 17, color: 'var(--ink)', lineHeight: 1.65, marginTop: 16, maxWidth: '62ch' }}>
             TenderFlow is the first platform to bring government, private, NGO and
-            SME tenders together in one searchable feed. We don't just index — we
+            SME tenders together in one searchable feed. We don't just index,we
             extract the fields that matter, so you spend less time reading PDFs and
             more time bidding.
           </p>

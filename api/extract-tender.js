@@ -34,25 +34,29 @@ const EXTRACTION_PROMPT = `You are extracting structured tender data from a proc
 Output a single JSON object with EXACTLY these fields. Use null when a field is not stated in the document. Do not invent values.
 
 {
-  "title": string — the tender title or subject line,
-  "issuer": string — the issuing organisation, ministry, or company,
-  "country": string — the African country (e.g. "Kenya", "Nigeria"),
-  "region": string — "East Africa" | "West Africa" | "Southern Africa" | "Central Africa" | "North Africa",
-  "source": "Government" | "Private" | "SME" — best classification of the issuer,
-  "sector": string — one of: Construction, ICT, Energy, Healthcare, Logistics, Water & Sanitation, Apparel, Hospitality, Professional Services, Creative, Agriculture, Education, Security, Media, Consulting, Supplies,
-  "ref_no": string — the tender reference number,
-  "value": number — estimated value in numeric form (no currency symbol). 0 if "refer to BoQ" or not stated,
-  "currency": "USD" | "EUR" | "KES" | "NGN" | "ZAR" | "GHS" | "RWF" | "UGX" | "TZS",
-  "published_at": "YYYY-MM-DD" — date the tender was published,
-  "closes_at": "YYYY-MM-DD" — bid submission deadline,
-  "summary": string — 2-3 sentence neutral summary of what is being procured,
-  "scope": string — paragraph describing scope of work (or null),
-  "eligibility": string — paragraph describing bidder eligibility (or null),
-  "submission": string — how/where to submit (e.g. "eGP portal", "Sealed bids — HQ Nairobi"),
-  "fields_detected": number — how many of the above fields you populated with non-null values,
-  "needs_review": string[] — names of fields where confidence is low (e.g. ["closes_at", "value"]),
-  "confidence": number — overall confidence between 0 and 1
+  "title": string  the tender title or subject line,
+  "issuer": string  the issuing organisation, ministry, or company,
+  "country": string  the African country (e.g. "Kenya", "Nigeria"),
+  "region": string  one of "East Africa", "West Africa", "Southern Africa", "Central Africa", "North Africa",
+  "source": one of "Government", "NGO", "SME"  best classification of the issuer. Use "Government" for any state body or parastatal, "NGO" for non-governmental organisations, donor-funded projects, foundations, and large corporate / institutional buyers, "SME" only for small private buyers,
+  "sector": string  one of Construction, ICT, Energy, Healthcare, Logistics, Water & Sanitation, Apparel, Hospitality, Professional Services, Creative, Agriculture, Education, Security, Media, Consulting, Supplies,
+  "ref_no": string  the tender reference number,
+  "value": number  estimated value in numeric form (no currency symbol). 0 if "refer to BoQ" or not stated,
+  "currency": one of "USD", "EUR", "KES", "NGN", "ZAR", "GHS", "RWF", "UGX", "TZS",
+  "published_at": "YYYY-MM-DD"  date the tender was published,
+  "closes_at": "YYYY-MM-DD"  bid submission deadline,
+  "summary": string  2-3 sentence neutral summary of what is being procured,
+  "scope": string  paragraph describing scope of work (or null),
+  "eligibility": string  paragraph describing bidder eligibility (or null),
+  "submission": string  how/where to submit (e.g. "eGP portal", "Sealed bids, HQ Nairobi"),
+  "bid_security": string  the bid security or bid bond amount as stated, e.g. "USD 50,000" or "2% of bid sum". Return null if no bid security is required.,
+  "checklist": array of objects [{"text": string}]  a comprehensive checklist of mandatory documents and requirements a bidder must submit. Pull from sections titled "Mandatory Requirements", "Eligibility", "Documents Required", "Submission Requirements", and similar. Each item should be one concrete, actionable requirement (e.g. "Valid Tax Compliance Certificate", "Audited financial statements for the last 2 years", "Bid security of USD 50,000"). Aim for 8-20 items. Return [] if you cannot find any.,
+  "fields_detected": number  how many of the above fields you populated with non-null values,
+  "needs_review": string[]  names of fields where confidence is low (e.g. ["closes_at", "value"]),
+  "confidence": number  overall confidence between 0 and 1
 }
+
+Important: do not use em-dashes anywhere in the strings. Use commas, periods, or colons instead.
 
 Return ONLY the JSON object. No prose. No markdown fences.`;
 

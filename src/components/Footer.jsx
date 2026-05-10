@@ -7,8 +7,8 @@ export default function Footer() {
         <div>
           <span className="tf-logo-text">Tender<em>Flow</em></span>
           <p className="tf-footer-blurb">
-            We consolidate scattered opportunities into one place — government,
-            private, NGO, and SME tenders, side by side.
+            We consolidate scattered opportunities into one place. Government, NGO,
+            and SME tenders, side by side.
           </p>
         </div>
         <div>
@@ -16,7 +16,7 @@ export default function Footer() {
           <ul>
             <li><Link to="/tenders">All tenders</Link></li>
             <li><Link to="/tenders?source=Government">Government</Link></li>
-            <li><Link to="/tenders?source=Private">Private</Link></li>
+            <li><Link to="/tenders?source=NGO">NGO</Link></li>
             <li><Link to="/tenders?source=SME">SME-friendly</Link></li>
             <li><Link to="/tenders">By sector</Link></li>
             <li><Link to="/tenders">By country</Link></li>
@@ -26,6 +26,7 @@ export default function Footer() {
           <h5>Resources</h5>
           <ul>
             <li><Link to="/how-it-works">How it works</Link></li>
+            <li><Link to="/consultants">Find a consultant</Link></li>
             <li><Link to="/guide">Bid-writing guide</Link></li>
             <li><Link to="/glossary">Glossary</Link></li>
             <li><Link to="/faq">FAQ</Link></li>
@@ -36,6 +37,7 @@ export default function Footer() {
           <ul>
             <li><Link to="/about">About</Link></li>
             <li><Link to="/submit-tender">Submit a tender</Link></li>
+            <li><Link to="/consultant-signup">Become a consultant</Link></li>
             <li><Link to="/contact">Contact</Link></li>
             <li><Link to="/press">Press</Link></li>
           </ul>

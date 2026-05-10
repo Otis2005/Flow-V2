@@ -7,7 +7,7 @@ export function daysUntil(dateStr) {
 }
 
 export function fmtDate(dateStr) {
-  if (!dateStr) return '—';
+  if (!dateStr) return '–';
   const d = new Date(dateStr);
   return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' });
 }

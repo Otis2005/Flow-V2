@@ -18,9 +18,16 @@ function rowToTender(r) {
     closes: r.closes_at,
     refNo: r.ref_no,
     summary: r.summary,
+    scope: r.scope,
+    eligibility: r.eligibility,
     submission: r.submission,
     documents: r.documents ?? [],
-    status: r.status
+    status: r.status,
+    bid_security: r.bid_security,
+    issuer_rating: r.issuer_rating,
+    issuer_logo_url: r.issuer_logo_url,
+    issuer_logo_path: r.issuer_logo_path,
+    checklist: r.checklist ?? []
   };
 }
 

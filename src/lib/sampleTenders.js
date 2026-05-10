@@ -19,10 +19,10 @@ export const SAMPLE_TENDERS = [
     summary:
       'The Retirement Benefits Authority invites sealed tenders for the supply, delivery and deployment of VMware licences under open competitive (National) method. Bid documents available free from the eGP portal.',
     documents: [
-      { name: 'Invitation to Tender — RBA VMware.pdf', size: '184 KB' },
+      { name: 'Invitation to Tender,RBA VMware.pdf', size: '184 KB' },
       { name: 'Tender Document (eGP).pdf', size: '1.6 MB' }
     ],
-    submission: 'Electronic — eGP Kenya portal · Public opening: Rahimtulla Towers, 14th Floor Boardroom'
+    submission: 'Electronic,eGP Kenya portal · Public opening: Rahimtulla Towers, 14th Floor Boardroom'
   },
   {
     id: 'TF-2026-0412',
@@ -44,7 +44,7 @@ export const SAMPLE_TENDERS = [
       { name: 'Technical Specifications.pdf', size: '2.1 MB' },
       { name: 'Bill of Quantities.xlsx', size: '186 KB' }
     ],
-    submission: 'Sealed bids — REREC HQ, Nairobi'
+    submission: 'Sealed bids,REREC HQ, Nairobi'
   },
   {
     id: 'TF-2026-0411',
@@ -52,7 +52,7 @@ export const SAMPLE_TENDERS = [
     issuer: 'Jumia Logistics Nigeria Ltd',
     country: 'Nigeria',
     region: 'West Africa',
-    source: 'Private',
+    source: 'NGO',
     sector: 'Logistics',
     value: 850_000,
     currency: 'USD',
@@ -65,11 +65,11 @@ export const SAMPLE_TENDERS = [
       { name: 'RFP Document.pdf', size: '780 KB' },
       { name: 'Service Level Agreement.pdf', size: '240 KB' }
     ],
-    submission: 'Online — vendor portal'
+    submission: 'Online,vendor portal'
   },
   {
     id: 'TF-2026-0410',
-    title: 'Digitisation of Patient Records — Phase II',
+    title: 'Digitisation of Patient Records,Phase II',
     issuer: 'Ministry of Health, Republic of Rwanda',
     country: 'Rwanda',
     region: 'East Africa',
@@ -83,11 +83,11 @@ export const SAMPLE_TENDERS = [
     summary:
       'Implementation partner sought for nationwide rollout of an EMR system across 47 district hospitals. Includes training, change management, and 12 months hyper-care.',
     documents: [{ name: 'Bidding Document.pdf', size: '1.4 MB' }],
-    submission: 'Online — RPPA portal'
+    submission: 'Online,RPPA portal'
   },
   {
     id: 'TF-2026-0409',
-    title: 'Catering Services for Staff Cafeteria — One-Year Contract',
+    title: 'Catering Services for Staff Cafeteria,One-Year Contract',
     issuer: 'Bamako Bites SARL',
     country: 'Mali',
     region: 'West Africa',
@@ -105,7 +105,7 @@ export const SAMPLE_TENDERS = [
   },
   {
     id: 'TF-2026-0408',
-    title: 'Supply of School Uniforms — National Tender',
+    title: 'Supply of School Uniforms,National Tender',
     issuer: 'Ministry of Education, Ghana',
     country: 'Ghana',
     region: 'West Africa',
@@ -119,15 +119,15 @@ export const SAMPLE_TENDERS = [
     summary:
       'Production and distribution of school uniforms to 312 public primary schools across all 16 regions. Local manufacturers preferred.',
     documents: [{ name: 'Tender Document.pdf', size: '980 KB' }],
-    submission: 'Sealed — Ministry HQ, Accra'
+    submission: 'Sealed,Ministry HQ, Accra'
   },
   {
     id: 'TF-2026-0407',
-    title: 'Cybersecurity Audit & Penetration Testing — Banking Group',
+    title: 'Cybersecurity Audit & Penetration Testing,Banking Group',
     issuer: 'Equity Group Holdings',
     country: 'Kenya',
     region: 'East Africa',
-    source: 'Private',
+    source: 'NGO',
     sector: 'ICT',
     value: 320_000,
     currency: 'USD',
@@ -141,7 +141,7 @@ export const SAMPLE_TENDERS = [
   },
   {
     id: 'TF-2026-0406',
-    title: 'Borehole Drilling and Equipping — 12 Sites',
+    title: 'Borehole Drilling and Equipping,12 Sites',
     issuer: 'African Christian Initiatives (NGO)',
     country: 'Uganda',
     region: 'East Africa',
@@ -159,7 +159,7 @@ export const SAMPLE_TENDERS = [
   },
   {
     id: 'TF-2026-0405',
-    title: 'Construction of Office Block — Phase I (Substructure)',
+    title: 'Construction of Office Block,Phase I (Substructure)',
     issuer: 'Ministry of Works & Estates',
     country: 'Uganda',
     region: 'East Africa',
@@ -176,11 +176,11 @@ export const SAMPLE_TENDERS = [
       { name: 'Drawings.zip', size: '14 MB' },
       { name: 'BoQ.xlsx', size: '420 KB' }
     ],
-    submission: 'Sealed — MWE Procurement Office'
+    submission: 'Sealed,MWE Procurement Office'
   },
   {
     id: 'TF-2026-0404',
-    title: 'Agricultural Extension Mobile App — UX Research & Design',
+    title: 'Agricultural Extension Mobile App,UX Research & Design',
     issuer: 'GreenSprout Digital (Pty) Ltd',
     country: 'South Africa',
     region: 'Southern Africa',
@@ -223,7 +223,7 @@ export const SAMPLE_TENDERS = [
     issuer: 'Safaricom PLC',
     country: 'Kenya',
     region: 'East Africa',
-    source: 'Private',
+    source: 'NGO',
     sector: 'ICT',
     value: 5_500_000,
     currency: 'USD',

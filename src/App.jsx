@@ -3,6 +3,8 @@ import { AuthProvider } from './lib/AuthProvider.jsx';
 import Header from './components/Header.jsx';
 import Footer from './components/Footer.jsx';
 import AdminGuard from './components/AdminGuard.jsx';
+import AuthGuard from './components/AuthGuard.jsx';
+import ScrollToTop from './components/ScrollToTop.jsx';
 
 import Home from './pages/Home.jsx';
 import Listings from './pages/Listings.jsx';
@@ -11,8 +13,18 @@ import HowItWorks from './pages/HowItWorks.jsx';
 import About from './pages/About.jsx';
 import Onboard from './pages/Onboard.jsx';
 import SignIn from './pages/SignIn.jsx';
+import SignUp from './pages/SignUp.jsx';
+import Dashboard from './pages/Dashboard.jsx';
+
+import Consultants from './pages/Consultants.jsx';
+import ConsultantDetail from './pages/ConsultantDetail.jsx';
+import ConsultantSignup from './pages/ConsultantSignup.jsx';
+import ConsultantDashboard from './pages/ConsultantDashboard.jsx';
+import Hire from './pages/Hire.jsx';
+
 import AdminDashboard from './pages/AdminDashboard.jsx';
 import AdminUpload from './pages/AdminUpload.jsx';
+import AdminConsultants from './pages/AdminConsultants.jsx';
 
 import {
   Pricing, SubmitTender, Contact, FAQ, Glossary, Guide, Press,
@@ -20,7 +32,11 @@ import {
 } from './pages/InfoPages.jsx';
 
 // Routes that render their own header/footer (or are intentionally chrome-less).
-const FULL_BLEED_ROUTES = ['/admin', '/admin/upload', '/digest', '/onboard'];
+const FULL_BLEED_ROUTES = [
+  '/admin',
+  '/digest',
+  '/onboard'
+];
 
 function isFullBleed(pathname) {
   return FULL_BLEED_ROUTES.some(p => pathname === p || pathname.startsWith(p + '/'));
@@ -41,6 +57,7 @@ function ChromeWrapper({ children }) {
 export default function App() {
   return (
     <AuthProvider>
+      <ScrollToTop />
       <ChromeWrapper>
         <Routes>
           <Route path="/" element={<Home />} />
@@ -54,15 +71,20 @@ export default function App() {
 
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/login" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/signup" element={<SignUp />} />
 
-          <Route
-            path="/admin"
-            element={<AdminGuard><AdminDashboard /></AdminGuard>}
-          />
-          <Route
-            path="/admin/upload"
-            element={<AdminGuard><AdminUpload /></AdminGuard>}
-          />
+          <Route path="/dashboard" element={<AuthGuard><Dashboard /></AuthGuard>} />
+
+          <Route path="/consultants" element={<Consultants />} />
+          <Route path="/consultants/:id" element={<ConsultantDetail />} />
+          <Route path="/consultant-signup" element={<ConsultantSignup />} />
+          <Route path="/consultant-dashboard" element={<AuthGuard><ConsultantDashboard /></AuthGuard>} />
+          <Route path="/hire" element={<Hire />} />
+
+          <Route path="/admin" element={<AdminGuard><AdminDashboard /></AdminGuard>} />
+          <Route path="/admin/upload" element={<AdminGuard><AdminUpload /></AdminGuard>} />
+          <Route path="/admin/consultants" element={<AdminGuard><AdminConsultants /></AdminGuard>} />
 
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/submit-tender" element={<SubmitTender />} />

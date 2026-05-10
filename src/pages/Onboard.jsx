@@ -123,7 +123,7 @@ export default function Onboard() {
       {step === 1 && (
         <section className="tf-ob-step">
           <div className="tf-container" style={{ maxWidth: 1080 }}>
-            <div className="tf-eyebrow tf-eyebrow-rule">First — what do you bid on?</div>
+            <div className="tf-eyebrow tf-eyebrow-rule">First,what do you bid on?</div>
             <h1 className="tf-ob-h1">Pick the sectors you work in.</h1>
             <p className="tf-ob-sub">
               Choose as many as fit. We'll tune your feed so you only see tenders worth your time.
@@ -157,7 +157,7 @@ export default function Onboard() {
       {step === 2 && (
         <section className="tf-ob-step">
           <div className="tf-container" style={{ maxWidth: 1080 }}>
-            <div className="tf-eyebrow tf-eyebrow-rule">Step two — where do you operate?</div>
+            <div className="tf-eyebrow tf-eyebrow-rule">Step two,where do you operate?</div>
             <h1 className="tf-ob-h1">Pick your active markets.</h1>
             <p className="tf-ob-sub">
               We'll filter the feed to countries you can actually deliver in. If you bid pan-Africa, pick everything you'd consider.
@@ -190,7 +190,7 @@ export default function Onboard() {
       {step === 3 && (
         <section className="tf-ob-step">
           <div className="tf-container" style={{ maxWidth: 720 }}>
-            <div className="tf-eyebrow tf-eyebrow-rule">Last bit — where should we send it?</div>
+            <div className="tf-eyebrow tf-eyebrow-rule">Last bit,where should we send it?</div>
             <h1 className="tf-ob-h1">One email, every {cadence === 'daily' ? 'morning' : 'Tuesday'}.</h1>
             <p className="tf-ob-sub">
               We'll send a curated list of tenders matching your interests. No marketing, no daily spam.
@@ -206,7 +206,7 @@ export default function Onboard() {
                 onChange={(e) => setEmail(e.target.value)}
                 autoFocus
               />
-              <span className="tf-ob-label-hint">We'll send a short confirmation. No password yet — just one click.</span>
+              <span className="tf-ob-label-hint">We'll send a short confirmation. No password yet,just one click.</span>
             </label>
 
             <div className="tf-ob-cadence">
@@ -227,7 +227,7 @@ export default function Onboard() {
 
             <label className="tf-ob-checkbox">
               <input type="checkbox" checked={skipEmpty} onChange={(e) => setSkipEmpty(e.target.checked)} />
-              <span>Skip days with nothing relevant — don't send empty emails.</span>
+              <span>Skip days with nothing relevant,don't send empty emails.</span>
             </label>
 
             <div className="tf-ob-summary">
@@ -254,7 +254,7 @@ export default function Onboard() {
             </div>
 
             <p className="tf-ob-fineprint">
-              Free for SMEs. By continuing you agree to our terms — we don't share your email and unsubscribe takes one click.
+              Free for SMEs. By continuing you agree to our terms,we don't share your email and unsubscribe takes one click.
             </p>
           </div>
         </section>

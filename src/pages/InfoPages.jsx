@@ -62,7 +62,7 @@ export function Pricing() {
             blurb: 'For active bidders.',
             features: ['Everything in Free', 'Daily digest', 'AI bid-readiness score', 'Saved searches + alerts'],
             cta: 'Coming soon',
-            action: () => alert('Pro plan launches Q3 2026 — get the digest to be notified.')
+            action: () => alert('Pro plan launches Q3 2026,get the digest to be notified.')
           },
           {
             name: 'Enterprise',
@@ -175,7 +175,7 @@ export function Contact() {
     <PageShell
       eyebrow="Contact"
       title="Get in touch."
-      intro="Questions, feedback, partnerships, press — all welcome. We respond within one working day."
+      intro="Questions, feedback, partnerships, press,all welcome. We respond within one working day."
     >
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24 }}>
         <div>
@@ -212,7 +212,7 @@ const FAQS = [
   ['Is it really free?', 'Yes. Browsing tenders and the weekly digest are free for bidders, forever. We make money from suppliers paying for premium analytics and from featured-listing fees on the buyer side.'],
   ['Where do tenders come from?', 'Government portals, parastatal procurement boards, corporate vendor portals, gazette notices, and SME networks. We add new sources weekly. Submit a tender we should cover via the Submit page.'],
   ['How fast are tenders indexed?', 'Most appear within 24 hours of publication. Closing-soon tenders are reviewed twice daily.'],
-  ['Can I submit a tender myself?', 'Yes — anyone can suggest a tender via the Submit a tender page. Our team verifies before publishing.'],
+  ['Can I submit a tender myself?', 'Yes,anyone can suggest a tender via the Submit a tender page. Our team verifies before publishing.'],
   ['What countries do you cover?', 'Currently 14 countries across East, West and Southern Africa, with more being added based on demand.']
 ];
 export function FAQ() {
@@ -246,17 +246,17 @@ export function FAQ() {
 
 // ─── Glossary ──────────────────────────────────────────────────
 const TERMS = [
-  ['BoQ', 'Bill of Quantities — itemised list of materials, parts, and labour for a tender.'],
-  ['eGP', 'Electronic Government Procurement — Kenya\'s online procurement portal at egpkenya.go.ke.'],
-  ['EOI', 'Expression of Interest — first-stage filter to identify shortlisted bidders.'],
-  ['ITT', 'Invitation to Tender — formal request to suppliers to submit a bid.'],
-  ['RFP', 'Request for Proposal — solicitation for proposals, common in private-sector procurement.'],
-  ['RFQ', 'Request for Quotation — request for price quotes on standardised goods.'],
-  ['SME', 'Small and Medium Enterprise — businesses below thresholds defined per country.']
+  ['BoQ', 'Bill of Quantities,itemised list of materials, parts, and labour for a tender.'],
+  ['eGP', 'Electronic Government Procurement,Kenya\'s online procurement portal at egpkenya.go.ke.'],
+  ['EOI', 'Expression of Interest,first-stage filter to identify shortlisted bidders.'],
+  ['ITT', 'Invitation to Tender,formal request to suppliers to submit a bid.'],
+  ['RFP', 'Request for Proposal,solicitation for proposals, common in private-sector procurement.'],
+  ['RFQ', 'Request for Quotation,request for price quotes on standardised goods.'],
+  ['SME', 'Small and Medium Enterprise,businesses below thresholds defined per country.']
 ];
 export function Glossary() {
   return (
-    <PageShell eyebrow="Glossary" title="Tender terms, plain English." intro="The acronyms and jargon that show up in tender documents — explained without procurement-speak.">
+    <PageShell eyebrow="Glossary" title="Tender terms, plain English." intro="The acronyms and jargon that show up in tender documents,explained without procurement-speak.">
       <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 15 }}>
         <tbody>
           {TERMS.map(([t, d]) => (
@@ -277,14 +277,14 @@ export function Guide() {
     <PageShell
       eyebrow="Bid-writing guide"
       title="Win more tenders. Spend less time on each one."
-      intro="A working guide for SME bidders — distilled from hundreds of real tender outcomes."
+      intro="A working guide for SME bidders,distilled from hundreds of real tender outcomes."
     >
       <div style={{ display: 'flex', flexDirection: 'column', gap: 28, marginTop: 24 }}>
         {[
-          ['Read the eligibility section first', 'Most disqualifications happen at this stage. Tax compliance, registration documents, financial thresholds — verify before writing a single line.'],
+          ['Read the eligibility section first', 'Most disqualifications happen at this stage. Tax compliance, registration documents, financial thresholds,verify before writing a single line.'],
           ['Check the submission method twice', 'Emailed bids when sealed copies were required get rejected unread. The submission method is non-negotiable.'],
           ['Match the BoQ exactly', 'Use the buyer\'s line items and units. Don\'t reorder. Don\'t omit. Add a separate sheet if you need to clarify.'],
-          ['Quote with confidence', 'Underbidding to win is a trap — you lose money on delivery. Calculate a target margin, then bid above your floor, not the buyer\'s ceiling.']
+          ['Quote with confidence', 'Underbidding to win is a trap,you lose money on delivery. Calculate a target margin, then bid above your floor, not the buyer\'s ceiling.']
         ].map(([h, b]) => (
           <div key={h}>
             <h3 style={{ fontFamily: 'var(--serif)', fontSize: 24, color: 'var(--navy)', fontWeight: 500, margin: 0 }}>{h}</h3>

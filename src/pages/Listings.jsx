@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { TenderCard, TenderRow, TenderTable } from '../components/TenderViews.jsx';
+import FadeIn from '../components/FadeIn.jsx';
+import { TenderCard } from '../components/TenderViews.jsx';
 import { useTenders } from '../lib/useTenders.js';
 
 const PAGE_SIZE = 12;
@@ -8,15 +9,13 @@ const PAGE_SIZE = 12;
 export default function Listings() {
   const { tenders, loading, usingSample } = useTenders();
   const [searchParams, setSearchParams] = useSearchParams();
-  const [density, setDensity] = useState('cards');
   const [q, setQ] = useState(searchParams.get('q') || '');
   const [source, setSource] = useState(searchParams.get('source') || 'All sources');
   const [country, setCountry] = useState(searchParams.get('country') || 'All countries');
   const [sector, setSector] = useState(searchParams.get('sector') || 'All sectors');
-  const [sortBy, setSortBy] = useState('closes');
+  const [sortBy, setSortBy] = useState('published'); // default to latest uploaded first
   const [page, setPage] = useState(1);
 
-  // Sync URL → params (so footer links like ?source=Government work).
   useEffect(() => {
     const p = new URLSearchParams();
     if (q) p.set('q', q);
@@ -66,7 +65,7 @@ export default function Listings() {
   if (q) activeChips.push(['q', `"${q}"`, () => setQ('')]);
 
   return (
-    <main>
+    <main className="tf-page-anim">
       <div className="tf-container">
         {usingSample && (
           <div
@@ -79,19 +78,14 @@ export default function Listings() {
               color: 'var(--muted)'
             }}
           >
-            Demo mode — showing sample tenders. Connect Supabase to see live data.
+            Demo mode. Showing sample tenders. Connect Supabase to see live data.
           </div>
         )}
         <div className="tf-listings-intro">
           <div>
             <div className="tf-eyebrow tf-eyebrow-rule">Browse</div>
             <h1 className="tf-section-title" style={{ fontSize: 44, marginTop: 12 }}>All live tenders</h1>
-            <p className="tf-section-sub">Filter by source, country, sector — or search by issuer or keyword.</p>
-          </div>
-          <div className="tf-segmented" role="tablist" aria-label="Layout density">
-            <button className={density === 'cards' ? 'is-active' : ''} onClick={() => setDensity('cards')}>Cards</button>
-            <button className={density === 'rows' ? 'is-active' : ''} onClick={() => setDensity('rows')}>Rows</button>
-            <button className={density === 'table' ? 'is-active' : ''} onClick={() => setDensity('table')}>Table</button>
+            <p className="tf-section-sub">Filter by source, country, sector, or search by issuer or keyword.</p>
           </div>
         </div>
 
@@ -121,8 +115,8 @@ export default function Listings() {
           <div className="tf-field tf-field-sm">
             <label>Sort by</label>
             <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
-              <option value="closes">Closing soonest</option>
               <option value="published">Newly published</option>
+              <option value="closes">Closing soonest</option>
               <option value="value">Highest value</option>
             </select>
           </div>
@@ -179,15 +173,17 @@ export default function Listings() {
             <div className="tf-eyebrow">No matches</div>
             <p style={{ marginTop: 12, color: 'var(--muted)' }}>Try clearing some filters or broadening your search.</p>
           </div>
-        ) : density === 'table' ? (
-          <TenderTable tenders={pageItems} />
-        ) : density === 'rows' ? (
-          <div>{pageItems.map(t => <TenderRow key={t.id} tender={t} />)}</div>
         ) : (
-          <div className="tf-cards-grid">{pageItems.map(t => <TenderCard key={t.id} tender={t} />)}</div>
+          <div className="tf-cards-grid">
+            {pageItems.map((t, i) => (
+              <FadeIn key={t.id} delay={i * 40}>
+                <TenderCard tender={t} />
+              </FadeIn>
+            ))}
+          </div>
         )}
 
-        {filtered.length > 0 && (
+        {filtered.length > PAGE_SIZE && (
           <div className="tf-pagination">
             <span style={{ color: 'var(--muted)', fontSize: 13 }}>
               Page {page} of {totalPages}

@@ -2,8 +2,8 @@ import { useNavigate } from 'react-router-dom';
 
 const STEPS = [
   { n: '01', h: 'We collect', b: 'Every business day, our team gathers tender notices from ministries, parastatals, corporate procurement portals, and SME networks across 14 African countries.' },
-  { n: '02', h: 'We extract', b: 'Each document is parsed for the fields that matter — issuer, source type, sector, deadline, value, location, reference number, and submission method.' },
-  { n: '03', h: 'We classify', b: 'Tenders are tagged Government, Private, or SME so you can filter to exactly the kind of opportunities you can win.' },
+  { n: '02', h: 'We extract', b: 'Each document is parsed for the fields that matter.issuer, source type, sector, deadline, value, location, reference number, and submission method.' },
+  { n: '03', h: 'We classify', b: 'Tenders are tagged Government, NGO, or SME so you can filter to exactly the kind of opportunities you can win.' },
   { n: '04', h: 'You browse', b: 'One feed. Search, filter, save to watchlist, download the original documents, and never miss a closing date.' }
 ];
 

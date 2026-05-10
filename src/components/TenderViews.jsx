@@ -1,9 +1,20 @@
 import { Link } from 'react-router-dom';
 import Badge from './Badge.jsx';
-import { daysUntil, fmtDate, fmtValue } from '../lib/format.js';
+import { Stars } from './StarRating.jsx';
+import { daysUntil, fmtDate } from '../lib/format.js';
+
+function formatBidSecurity(t) {
+  // Either an explicit string ("USD 50,000", "Not Required") or fall back to
+  // showing the estimated value if no bid security is set.
+  if (t.bid_security && t.bid_security.trim()) return t.bid_security;
+  if (t.bidSecurity && t.bidSecurity.trim()) return t.bidSecurity;
+  return 'Not Required';
+}
 
 export function TenderCard({ tender }) {
   const days = daysUntil(tender.closes);
+  const bs = formatBidSecurity(tender);
+  const noneNeeded = /not\s*required|none|n\/?a/i.test(bs);
   return (
     <Link to={`/tenders/${tender.id}`} style={{ textDecoration: 'none' }}>
       <article className="tf-card">
@@ -21,8 +32,10 @@ export function TenderCard({ tender }) {
         <div className="tf-card-foot">
           <div className="tf-card-foot-l">
             <span>
-              <div className="tf-card-foot-label">Value</div>
-              <div className="tf-card-foot-val">{fmtValue(tender.value, tender.currency)}</div>
+              <div className="tf-card-foot-label">Bid security</div>
+              <div className={'tf-card-foot-val' + (noneNeeded ? ' bid-security-none' : '')}>
+                {bs}
+              </div>
             </span>
           </div>
           <span>
@@ -32,6 +45,11 @@ export function TenderCard({ tender }) {
             </div>
           </span>
         </div>
+        {(tender.issuer_rating != null || tender.issuerRating != null) && (
+          <div className="tf-card-rating">
+            <Stars value={tender.issuer_rating ?? tender.issuerRating} />
+          </div>
+        )}
       </article>
     </Link>
   );
@@ -39,6 +57,7 @@ export function TenderCard({ tender }) {
 
 export function TenderRow({ tender }) {
   const days = daysUntil(tender.closes);
+  const bs = formatBidSecurity(tender);
   return (
     <Link to={`/tenders/${tender.id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
       <div className="tf-row">
@@ -48,8 +67,8 @@ export function TenderRow({ tender }) {
           <div className="tf-row-issuer">{tender.issuer} · {tender.country} · {tender.sector}</div>
         </div>
         <div className="tf-row-cell">
-          <div className="tf-row-cell-label">Value</div>
-          <strong>{fmtValue(tender.value, tender.currency)}</strong>
+          <div className="tf-row-cell-label">Bid security</div>
+          <strong>{bs}</strong>
         </div>
         <div className="tf-row-cell">
           <div className="tf-row-cell-label">Closes</div>
@@ -74,7 +93,7 @@ export function TenderTable({ tenders }) {
           <th>Title / Issuer</th>
           <th>Sector</th>
           <th>Country</th>
-          <th className="tf-table-num">Value</th>
+          <th>Bid security</th>
           <th>Closes</th>
           <th className="tf-table-num">Days left</th>
         </tr>
@@ -93,7 +112,7 @@ export function TenderTable({ tenders }) {
               </td>
               <td>{t.sector}</td>
               <td>{t.country}</td>
-              <td className="tf-table-num">{fmtValue(t.value, t.currency)}</td>
+              <td>{formatBidSecurity(t)}</td>
               <td>{fmtDate(t.closes)}</td>
               <td
                 className="tf-table-num"

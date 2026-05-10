@@ -34,7 +34,7 @@ export const COUNTRIES = [
   'Botswana'
 ];
 
-export const SOURCES = ['Government', 'Private', 'SME'];
+export const SOURCES = ['Government', 'NGO', 'SME'];
 
 export const CURRENCIES = ['USD', 'EUR', 'KES', 'NGN', 'ZAR', 'GHS', 'RWF', 'UGX', 'TZS'];
 

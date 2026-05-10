@@ -1,0 +1,468 @@
+/* ─────────────────────────────────────────────────────────────
+   v2.css — additions and overrides for the v2 feature set.
+   Imported AFTER styles.css so its rules win on equal specificity.
+   ───────────────────────────────────────────────────────────── */
+
+/* ── Sticky header ─────────────────────────────────────────────── */
+.tf-header-sticky {
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  background: rgba(229, 233, 217, 0.92);
+  backdrop-filter: saturate(140%) blur(10px);
+  -webkit-backdrop-filter: saturate(140%) blur(10px);
+  transition: box-shadow 220ms ease, padding 220ms ease,
+              background 220ms ease, border-color 220ms ease;
+  border-bottom: 1px solid transparent;
+}
+.tf-header-sticky.is-scrolled {
+  background: rgba(245, 246, 235, 0.95);
+  box-shadow: 0 2px 0 rgba(20, 30, 40, 0.04), 0 12px 30px -18px rgba(20, 30, 40, 0.18);
+  border-bottom-color: rgba(20, 30, 40, 0.06);
+}
+.tf-header-sticky .tf-header-row {
+  height: 76px;
+  transition: height 220ms ease;
+}
+.tf-header-sticky.is-scrolled .tf-header-row {
+  height: 64px;
+}
+
+/* ── Bigger logo ───────────────────────────────────────────────── */
+.tf-logo-text {
+  font-size: 30px;
+  letter-spacing: -0.015em;
+}
+.tf-header-sticky.is-scrolled .tf-logo-text {
+  font-size: 26px;
+  transition: font-size 220ms ease;
+}
+.tf-logo-mark {
+  height: 28px;
+}
+.tf-logo-mark span { width: 5px; }
+.tf-logo-mark span:nth-child(1) { height: 12px; }
+.tf-logo-mark span:nth-child(2) { height: 20px; }
+.tf-logo-mark span:nth-child(3) { height: 28px; }
+
+@media (max-width: 720px) {
+  .tf-logo-text { font-size: 24px; }
+  .tf-logo-mark { height: 22px; }
+}
+
+/* Footer logo stays smaller */
+.tf-footer .tf-logo-text { font-size: 22px; }
+
+/* ── Button polish: lift on hover ──────────────────────────────── */
+.tf-cta, .tf-cta-ghost {
+  transition: background 180ms ease, color 180ms ease,
+              border-color 180ms ease, transform 160ms ease,
+              box-shadow 220ms ease;
+  will-change: transform;
+}
+.tf-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 24px -12px rgba(20, 30, 40, 0.35);
+}
+.tf-cta-ghost:hover { transform: translateY(-1px); }
+.tf-cta:active, .tf-cta-ghost:active {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+/* ── Card lift on hover ────────────────────────────────────────── */
+.tf-card {
+  transition: transform 220ms cubic-bezier(.2,.8,.2,1),
+              box-shadow 260ms ease,
+              border-color 220ms ease;
+  will-change: transform;
+}
+.tf-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px -24px rgba(20, 30, 40, 0.28),
+              0 4px 10px -4px rgba(20, 30, 40, 0.10);
+  border-color: rgba(20, 30, 40, 0.10);
+}
+
+.tf-row {
+  transition: background 200ms ease, transform 180ms ease;
+}
+.tf-row:hover {
+  background: rgba(255, 255, 255, 0.7);
+  transform: translateX(2px);
+}
+
+/* ── Fade-up entrance ─────────────────────────────────────────── */
+.tf-fade-up {
+  opacity: 0;
+  transform: translateY(14px);
+  transition: opacity 600ms cubic-bezier(.2,.8,.2,1),
+              transform 600ms cubic-bezier(.2,.8,.2,1);
+}
+.tf-fade-up.is-shown {
+  opacity: 1;
+  transform: translateY(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .tf-fade-up { opacity: 1; transform: none; transition: none; }
+  .tf-cta, .tf-cta-ghost, .tf-card, .tf-row { transition: none; }
+}
+
+/* ── Star rating ──────────────────────────────────────────────── */
+.tf-stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0;
+}
+.tf-stars-icons {
+  display: inline-flex;
+  gap: 1px;
+  margin-right: 6px;
+}
+.tf-stars-icons svg {
+  width: 14px;
+  height: 14px;
+  display: block;
+}
+.tf-stars-icons .filled { fill: #d8a73b; }
+.tf-stars-icons .empty { fill: rgba(20, 30, 40, 0.15); }
+
+.tf-stars-large .tf-stars-icons svg { width: 22px; height: 22px; }
+.tf-stars-large { font-size: 14px; color: var(--ink); }
+
+.tf-stars-input {
+  display: inline-flex;
+  gap: 4px;
+}
+.tf-stars-input button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  line-height: 0;
+}
+.tf-stars-input svg {
+  width: 26px;
+  height: 26px;
+  fill: rgba(20, 30, 40, 0.18);
+  transition: fill 120ms ease, transform 120ms ease;
+}
+.tf-stars-input button:hover svg { transform: scale(1.08); }
+.tf-stars-input button.is-on svg { fill: #d8a73b; }
+
+/* ── Tender card additions: bid security + stars ──────────────── */
+.tf-card-foot-val.bid-security-none {
+  color: var(--muted);
+  font-style: italic;
+  font-weight: 500;
+}
+.tf-card-rating {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed rgba(20, 30, 40, 0.08);
+}
+
+/* ── Issuer logo backdrop on detail page ──────────────────────── */
+.tf-detail-logo-backdrop {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background-position: center 28%;
+  background-repeat: no-repeat;
+  background-size: contain;
+  opacity: 0.06;
+  filter: grayscale(0.4);
+  z-index: 0;
+}
+.tf-detail-head { position: relative; }
+.tf-detail-head > .tf-container { position: relative; z-index: 1; }
+
+/* ── Consultant cards ─────────────────────────────────────────── */
+.tf-consultant-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+}
+.tf-consultant-card {
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  padding: 22px;
+  text-decoration: none;
+  color: inherit;
+  transition: transform 220ms cubic-bezier(.2,.8,.2,1),
+              box-shadow 260ms ease,
+              border-color 220ms ease;
+}
+.tf-consultant-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 20px 40px -24px rgba(20, 30, 40, 0.28);
+  border-color: rgba(20, 30, 40, 0.10);
+}
+.tf-consultant-photo {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--cream);
+  border: 1px solid var(--rule);
+  background-size: cover;
+  background-position: center;
+  margin-bottom: 14px;
+  flex-shrink: 0;
+}
+.tf-consultant-photo.empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--navy);
+}
+.tf-consultant-name {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--navy);
+  margin: 0 0 4px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.tf-consultant-spec {
+  font-size: 12px;
+  color: var(--muted);
+  margin-bottom: 12px;
+}
+.tf-consultant-bio {
+  font-size: 14px;
+  color: var(--ink);
+  line-height: 1.55;
+  margin: 8px 0 14px;
+  flex: 1;
+}
+.tf-consultant-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tf-consultant-tag {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+  padding: 4px 8px;
+  border: 1px solid var(--rule);
+  background: var(--cream);
+}
+
+/* ── Hire-consultant CTA on tender detail ─────────────────────── */
+.tf-hire-card {
+  margin-top: 16px;
+  padding: 18px 20px;
+  background: var(--navy);
+  color: var(--paper);
+}
+.tf-hire-card h4 {
+  font-family: var(--serif);
+  font-size: 19px;
+  font-weight: 500;
+  margin: 0 0 6px;
+  color: var(--paper);
+}
+.tf-hire-card p {
+  font-size: 13px;
+  color: rgba(245, 246, 235, 0.78);
+  margin: 0 0 14px;
+  line-height: 1.5;
+}
+.tf-hire-card .tf-cta {
+  background: var(--gold);
+  color: var(--navy);
+  width: 100%;
+  border-color: var(--gold);
+}
+.tf-hire-card .tf-cta:hover {
+  background: var(--gold-soft);
+  border-color: var(--gold-soft);
+}
+
+/* ── User dashboard cards ─────────────────────────────────────── */
+.tf-dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+  margin-top: 24px;
+}
+.tf-dash-stat {
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  padding: 22px;
+}
+.tf-dash-stat-num {
+  font-family: var(--serif);
+  font-size: 44px;
+  color: var(--navy);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1;
+}
+.tf-dash-stat-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  margin-top: 10px;
+}
+
+/* ── Checklist on tender detail ───────────────────────────────── */
+.tf-checklist {
+  margin-top: 20px;
+  padding: 22px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+}
+.tf-checklist h3 {
+  font-family: var(--serif);
+  font-size: 22px;
+  color: var(--navy);
+  margin: 0 0 14px;
+  font-weight: 500;
+}
+.tf-checklist ul { list-style: none; padding: 0; margin: 0; }
+.tf-checklist li {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  align-items: start;
+  font-size: 14px;
+  line-height: 1.55;
+}
+.tf-checklist li:last-child { border-bottom: 0; }
+.tf-checklist .tf-check-box {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--rule);
+  background: var(--paper);
+  margin-top: 2px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background 120ms ease, border-color 120ms ease;
+}
+.tf-checklist .tf-check-box.is-on {
+  background: var(--navy);
+  border-color: var(--navy);
+}
+.tf-checklist .tf-check-box.is-on::before {
+  content: '';
+  width: 10px; height: 10px;
+  background: var(--paper);
+  clip-path: polygon(0 50%, 40% 100%, 100% 0, 80% 0, 40% 70%, 15% 35%);
+}
+.tf-checklist-actions {
+  display: flex; gap: 10px; margin-top: 18px;
+  border-top: 1px solid var(--rule-soft);
+  padding-top: 16px;
+}
+.tf-checklist-locked {
+  text-align: center;
+  padding: 32px 20px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.tf-checklist-locked .tf-cta {
+  margin-top: 14px;
+}
+
+/* ── Compact admin form upgrades ──────────────────────────────── */
+.tf-photo-uploader {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.tf-photo-uploader-preview {
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  background: var(--cream);
+  border: 1px solid var(--rule);
+  background-size: cover;
+  background-position: center;
+  flex-shrink: 0;
+}
+
+/* ── Auth split layout (sign-up + sign-in) ────────────────────── */
+.tf-auth-shell {
+  min-height: calc(100vh - 80px);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  background: var(--paper);
+}
+.tf-auth-shell .tf-auth-art {
+  background: var(--navy);
+  color: var(--paper);
+  padding: 64px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+.tf-auth-shell .tf-auth-art h2 {
+  font-family: var(--serif);
+  font-size: clamp(32px, 3.4vw, 44px);
+  color: var(--paper);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.18;
+  margin: 0;
+}
+.tf-auth-shell .tf-auth-art h2 em {
+  color: var(--gold-soft);
+  font-style: italic;
+  font-weight: 400;
+}
+.tf-auth-shell .tf-auth-art p {
+  color: rgba(245, 246, 235, 0.72);
+  font-size: 15px;
+  line-height: 1.6;
+  margin-top: 18px;
+  max-width: 38ch;
+}
+.tf-auth-shell .tf-auth-form {
+  padding: 64px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  max-width: 560px;
+}
+@media (max-width: 880px) {
+  .tf-auth-shell { grid-template-columns: 1fr; }
+  .tf-auth-shell .tf-auth-art { padding: 36px 24px; }
+  .tf-auth-shell .tf-auth-form { padding: 36px 24px; }
+}
+
+/* ── Page-level transition (re-mount on route change) ─────────── */
+.tf-page-anim {
+  animation: tf-page-in 360ms cubic-bezier(.2,.8,.2,1) both;
+}
+@keyframes tf-page-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .tf-page-anim { animation: none; }
+}
+
+/* ── Misc minor tightenings ───────────────────────────────────── */
+.tf-eyebrow-rule::before {
+  transition: width 240ms ease;
+}
