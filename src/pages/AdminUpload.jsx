@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import AdminBar from '../components/AdminBar.jsx';
-import { StarsInput } from '../components/StarRating.jsx';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient.js';
 import { SOURCES, CURRENCIES, SECTORS, COUNTRIES } from '../lib/constants.js';
 
@@ -465,17 +464,6 @@ export default function AdminUpload() {
                   onChange={e => set('closes_at', e.target.value)}
                   style={extractionMeta?.needsReview?.includes('closes_at') ? { borderColor: 'var(--gold)' } : undefined}
                 />
-              </div>
-            </div>
-
-            <div className="tf-form-row full">
-              <div className="tf-form-field">
-                <label>Issuer rating</label>
-                <StarsInput value={form.issuer_rating} onChange={v => set('issuer_rating', v)} />
-                <p style={{ fontSize: 11, color: 'var(--muted)', margin: '6px 0 0' }}>
-                  Optional. Reflects how easy this organisation is to work with based on
-                  past dealings.
-                </p>
               </div>
             </div>
 

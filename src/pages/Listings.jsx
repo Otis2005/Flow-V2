@@ -174,12 +174,19 @@ export default function Listings() {
             <p style={{ marginTop: 12, color: 'var(--muted)' }}>Try clearing some filters or broadening your search.</p>
           </div>
         ) : (
-          <div className="tf-cards-grid">
-            {pageItems.map((t, i) => (
-              <FadeIn key={t.id} delay={i * 40}>
-                <TenderCard tender={t} />
-              </FadeIn>
-            ))}
+          <div className="tf-cards-grid" key={`page-${page}-${sortBy}`}>
+            {pageItems.map((t, i) => {
+              // Stagger across rows of 3, so each row glides in together
+              // rather than as a single straight cascade. Looks livelier.
+              const row = Math.floor(i / 3);
+              const col = i % 3;
+              const delay = row * 120 + col * 60;
+              return (
+                <FadeIn key={t.id} delay={delay}>
+                  <TenderCard tender={t} />
+                </FadeIn>
+              );
+            })}
           </div>
         )}
 

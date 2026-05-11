@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Badge from '../components/Badge.jsx';
 import FadeIn from '../components/FadeIn.jsx';
-import { Stars } from '../components/StarRating.jsx';
 import { TenderCard } from '../components/TenderViews.jsx';
 import { useTender, useTenders } from '../lib/useTenders.js';
 import { daysUntil, fmtDate, fmtValue } from '../lib/format.js';
@@ -127,11 +126,6 @@ export default function TenderDetail() {
             <Badge source={tender.source} />
             <span style={{ fontSize: 12, color: 'var(--muted)', fontFamily: 'var(--mono)' }}>Ref: {tender.refNo}</span>
             <span style={{ fontSize: 12, color: 'var(--muted)' }}>· Published {fmtDate(tender.published)}</span>
-            {tender.issuer_rating && (
-              <span style={{ marginLeft: 'auto' }}>
-                <Stars value={tender.issuer_rating} size="lg" />
-              </span>
-            )}
           </div>
           <h1 className="tf-detail-title">{tender.title}</h1>
           <div className="tf-detail-issuer">

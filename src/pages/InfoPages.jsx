@@ -306,26 +306,107 @@ export function Press() {
   );
 }
 
+function Section({ title, children }) {
+  return (
+    <section style={{ marginTop: 28 }}>
+      <h3 style={{ fontFamily: 'var(--serif)', fontSize: 22, color: 'var(--navy)', fontWeight: 500, margin: '0 0 10px' }}>{title}</h3>
+      <div style={{ fontSize: 15, color: 'var(--ink)', lineHeight: 1.65 }}>{children}</div>
+    </section>
+  );
+}
+
 export function Privacy() {
   return (
-    <PageShell eyebrow="Privacy" title="Privacy policy" intro="Last updated: April 2026.">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 18, lineHeight: 1.65, color: 'var(--ink)' }}>
-        <p>We collect only the information needed to run TenderFlow: your email if you subscribe to a digest, and basic usage analytics that help us improve the product. We do not sell or share your email.</p>
-        <p>You can unsubscribe at any time. To delete your data, email <a href="mailto:privacy@tenderflow.africa" style={{ color: 'var(--navy)' }}>privacy@tenderflow.africa</a>.</p>
-        <p>For full details on how Supabase (our database provider) handles data, see <a href="https://supabase.com/privacy" target="_blank" rel="noopener" style={{ color: 'var(--navy)' }}>supabase.com/privacy</a>.</p>
-      </div>
+    <PageShell eyebrow="Privacy" title="Privacy policy" intro="Last updated: May 2026. We take the trust of bidders, buyers, and consultants seriously. Here is exactly what we collect, why, and the controls you have.">
+      <Section title="Who we are">
+        <p>TenderFlow is operated by Kennedy Nange and partners ("TenderFlow", "we"). The service is the website at flow-v2-livid.vercel.app and any custom domain we publish on. Contact: <a href="mailto:privacy@tenderflow.africa" style={{ color: 'var(--navy)' }}>privacy@tenderflow.africa</a>.</p>
+      </Section>
+
+      <Section title="What we collect">
+        <ul style={{ paddingLeft: 20, margin: 0 }}>
+          <li><strong>Account data:</strong> your email, name, and a hashed password (Supabase Auth handles password hashing; we never see your password in plain text).</li>
+          <li><strong>Consultant data:</strong> if you register as a consultant, additionally your phone number, biography, sectors and countries of expertise, profile photo, and CV.</li>
+          <li><strong>Activity data:</strong> tenders you save to your watchlist, hire requests you submit, and checklist progress on your device.</li>
+          <li><strong>Diagnostic data:</strong> standard server logs (IP, user agent, timestamp) for security and abuse prevention. Retained 30 days.</li>
+        </ul>
+      </Section>
+
+      <Section title="What we do not collect">
+        <ul style={{ paddingLeft: 20, margin: 0 }}>
+          <li>We do not use third-party advertising trackers or pixels.</li>
+          <li>We do not use cross-site analytics that share your behaviour with marketers.</li>
+          <li>We do not sell your data. Ever. To anyone.</li>
+        </ul>
+      </Section>
+
+      <Section title="Why we use it">
+        <p>To deliver the service: authenticate you, show you tenders that match your interests, deliver the digest you opt into, match you with consultants when you hire one, and keep the platform secure. We process data on the legal basis of the contract you enter into with us by creating an account.</p>
+      </Section>
+
+      <Section title="Where it lives">
+        <p>Your data is stored in Supabase (PostgreSQL) hosted in the EU region, and on Vercel's edge network for static assets. PDFs you upload, profile photos, and CVs live in Supabase Storage with row-level security policies that prevent other users from accessing your private files.</p>
+        <p>When you upload a tender document, the file is sent to Anthropic (Claude) for one-time field extraction. Anthropic does not retain or train on data sent through the API, per their <a href="https://www.anthropic.com/legal/privacy" target="_blank" rel="noopener" style={{ color: 'var(--navy)' }}>privacy commitments</a>. The original document is then stored only in our Supabase Storage bucket.</p>
+      </Section>
+
+      <Section title="Who can see what">
+        <p>Public tenders are visible to everyone. Your watchlist, hire requests, and consultant draft profile are visible only to you and TenderFlow admins. Approved consultant profiles (name, bio, photo, sectors, ratings) are visible publicly so bidders can find you. Your email and phone are NEVER shown publicly even when your consultant profile is approved, only revealed to bidders who explicitly hire you.</p>
+      </Section>
+
+      <Section title="Your rights">
+        <ul style={{ paddingLeft: 20, margin: 0 }}>
+          <li><strong>Access:</strong> download a copy of everything we hold on you. Email us.</li>
+          <li><strong>Correction:</strong> edit your profile and consultant details any time from your dashboard.</li>
+          <li><strong>Deletion:</strong> close your account and we erase your data within 30 days, except where we have a legal obligation to retain certain records (e.g. tax records on completed paid engagements).</li>
+          <li><strong>Portability:</strong> your data is exportable as JSON on request.</li>
+          <li><strong>Objection:</strong> opt out of the digest at any time. Marketing communications are opt-in by default.</li>
+        </ul>
+        <p style={{ marginTop: 10 }}>Send any request to <a href="mailto:privacy@tenderflow.africa" style={{ color: 'var(--navy)' }}>privacy@tenderflow.africa</a>. We respond within 5 working days.</p>
+      </Section>
+
+      <Section title="Cookies and storage">
+        <p>We use one first-party cookie set by Supabase Auth to keep you signed in. Tender checklist progress is stored in your browser's localStorage. We do not use third-party tracking cookies.</p>
+      </Section>
+
+      <Section title="Children">
+        <p>TenderFlow is not directed at children under 16 and we do not knowingly collect data from them.</p>
+      </Section>
+
+      <Section title="Changes to this policy">
+        <p>If we materially change this policy, we will notify registered users by email at least 14 days before the change takes effect. The "Last updated" date at the top reflects the most recent revision.</p>
+      </Section>
     </PageShell>
   );
 }
 
 export function Terms() {
   return (
-    <PageShell eyebrow="Terms" title="Terms of service" intro="Last updated: April 2026.">
-      <div style={{ display: 'flex', flexDirection: 'column', gap: 18, lineHeight: 1.65, color: 'var(--ink)' }}>
-        <p>TenderFlow aggregates publicly available tender notices and provides them in a searchable feed. We do our best to verify accuracy, but you should always confirm details with the official issuing authority before acting.</p>
-        <p>You may use TenderFlow free of charge for personal or commercial bidding research. You may not scrape, resell, or republish our data without permission.</p>
-        <p>We provide the service "as is" and are not liable for missed deadlines or commercial decisions made based on information from the platform.</p>
-      </div>
+    <PageShell eyebrow="Terms" title="Terms of service" intro="Last updated: May 2026. These terms govern your use of TenderFlow. Plain English, no surprises.">
+      <Section title="The service">
+        <p>TenderFlow aggregates publicly available tender notices, applies AI extraction to surface the fields that matter (issuer, value, deadlines, requirements), and lets bidders save them, generate checklists, and hire consultants. We do our best to verify accuracy, but you should always confirm details with the official issuing authority before acting.</p>
+      </Section>
+      <Section title="Your account">
+        <p>You are responsible for keeping your password safe and for activity that happens under your account. Tell us immediately if you suspect unauthorised access. You may not create accounts for someone else or impersonate any person or organisation.</p>
+      </Section>
+      <Section title="Acceptable use">
+        <ul style={{ paddingLeft: 20, margin: 0 }}>
+          <li>Free for personal or commercial bidding research.</li>
+          <li>Do not scrape, redistribute, or republish our data without written permission.</li>
+          <li>Do not use the platform to harass other users, post misleading information, or upload material you do not have the right to share.</li>
+          <li>Consultants must represent their experience accurately. We may remove profiles that misrepresent.</li>
+        </ul>
+      </Section>
+      <Section title="Consultants and hiring">
+        <p>When a bidder hires a consultant through TenderFlow, the contract is between the bidder and the consultant. TenderFlow facilitates the introduction but is not a party to the engagement. Fees, deliverables, and dispute resolution are between the two parties. We may charge a platform fee on completed engagements; that fee will always be disclosed before you proceed.</p>
+      </Section>
+      <Section title="Liability">
+        <p>We provide the service "as is". We are not liable for missed deadlines, lost bids, or commercial decisions made based on information from the platform. We do not guarantee that the AI-extracted fields are perfectly accurate; you must verify against the original tender document.</p>
+      </Section>
+      <Section title="Termination">
+        <p>You may close your account at any time. We may suspend or close accounts that violate these terms, with notice where possible.</p>
+      </Section>
+      <Section title="Governing law">
+        <p>These terms are governed by the laws of Kenya. Disputes will be handled in the courts of Nairobi.</p>
+      </Section>
     </PageShell>
   );
 }

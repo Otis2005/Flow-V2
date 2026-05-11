@@ -18,6 +18,7 @@ export default function ConsultantSignup() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [existing, setExisting] = useState(null);
+  const [accepted, setAccepted] = useState(false);
 
   // Account fields
   const [authName, setAuthName] = useState('');
@@ -128,8 +129,10 @@ export default function ConsultantSignup() {
 
   async function handleSubmit() {
     if (!user) { setError('You must be signed in.'); return; }
+    if (!accepted) { setError('Please accept the Privacy policy and Terms of service to submit.'); return; }
     setSubmitting(true);
     setError(null);
+    const nowIso = new Date().toISOString();
     const payload = {
       user_id: user.id,
       name: name.trim(),
@@ -142,7 +145,9 @@ export default function ConsultantSignup() {
       cv_path: cvPath || null,
       photo_url: photoUrl || null,
       photo_path: photoPath || null,
-      status: 'pending'
+      status: 'pending',
+      privacy_accepted_at: nowIso,
+      terms_accepted_at: nowIso
     };
     let res;
     if (existing) {
@@ -456,13 +461,28 @@ export default function ConsultantSignup() {
               </div>
               {bio && <p style={{ marginTop: 14, fontSize: 14, lineHeight: 1.55 }}>{bio}</p>}
             </div>
+            <label className="tf-ob-checkbox" style={{ marginTop: 22 }}>
+              <input
+                type="checkbox"
+                checked={accepted}
+                onChange={e => setAccepted(e.target.checked)}
+              />
+              <span style={{ fontSize: 13 }}>
+                I have read and accept the{' '}
+                <Link to="/privacy" target="_blank" style={{ color: 'var(--navy)', borderBottom: '1px solid var(--gold)' }}>Privacy policy</Link>{' '}
+                and{' '}
+                <Link to="/terms" target="_blank" style={{ color: 'var(--navy)', borderBottom: '1px solid var(--gold)' }}>Terms of service</Link>.
+                I confirm that the information and documents I am submitting are
+                accurate and that I have the right to share them.
+              </span>
+            </label>
             <div style={{ display: 'flex', gap: 10, marginTop: 28, flexWrap: 'wrap' }}>
               <button className="tf-cta-ghost" onClick={() => setStep(3)}>← Back</button>
               <span style={{ flex: 1 }} />
               <button
                 className="tf-cta"
                 onClick={handleSubmit}
-                disabled={submitting}
+                disabled={submitting || !accepted}
               >
                 {submitting ? 'Submitting…' : (existing ? 'Resubmit for review' : 'Submit for review')}
               </button>

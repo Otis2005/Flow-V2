@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/AuthProvider.jsx';
-import { isSupabaseConfigured } from '../lib/supabaseClient.js';
+import { isSupabaseConfigured, supabase } from '../lib/supabaseClient.js';
 
 export default function SignUp() {
   const { signUpWithPassword, user } = useAuth();
@@ -11,6 +11,7 @@ export default function SignUp() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [accepted, setAccepted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   const [createdSession, setCreatedSession] = useState(false);
@@ -27,12 +28,34 @@ export default function SignUp() {
       setSubmitting(false);
       return;
     }
-    const { error, data } = await signUpWithPassword(email, password, name);
-    setSubmitting(false);
-    if (error) {
-      setError(error.message);
+    if (!accepted) {
+      setError('Please accept the Privacy policy and Terms of service to continue.');
+      setSubmitting(false);
       return;
     }
+    const { error, data } = await signUpWithPassword(email, password, name);
+    if (error) {
+      setError(error.message);
+      setSubmitting(false);
+      return;
+    }
+    // Stamp consent on the user_profiles row. Best-effort: failures here
+    // do not block sign-up (profile row is auto-created by a Postgres
+    // trigger; a row may not exist for half a second).
+    try {
+      if (data?.user?.id && supabase) {
+        await supabase
+          .from('user_profiles')
+          .upsert({
+            id: data.user.id,
+            privacy_accepted_at: new Date().toISOString(),
+            terms_accepted_at: new Date().toISOString()
+          }, { onConflict: 'id' });
+      }
+    } catch (e) {
+      console.warn('[signup] could not stamp consent', e);
+    }
+    setSubmitting(false);
     // Supabase returns either an active session (if confirm-email is off)
     // or no session (if confirm-email is on).
     if (data?.session) {
@@ -131,18 +154,28 @@ export default function SignUp() {
                   minLength={8}
                 />
               </label>
+              <label className="tf-ob-checkbox" style={{ marginTop: 4 }}>
+                <input
+                  type="checkbox"
+                  checked={accepted}
+                  onChange={e => setAccepted(e.target.checked)}
+                />
+                <span style={{ fontSize: 13 }}>
+                  I have read and accept the{' '}
+                  <Link to="/privacy" target="_blank" style={{ color: 'var(--navy)', borderBottom: '1px solid var(--gold)' }}>Privacy policy</Link>{' '}
+                  and{' '}
+                  <Link to="/terms" target="_blank" style={{ color: 'var(--navy)', borderBottom: '1px solid var(--gold)' }}>Terms of service</Link>.
+                </span>
+              </label>
               {error && <p style={{ color: 'var(--danger)', fontSize: 13 }}>{error}</p>}
               <button
                 className="tf-cta"
                 type="submit"
-                disabled={submitting || !email || !password || !name || !isSupabaseConfigured}
+                disabled={submitting || !email || !password || !name || !accepted || !isSupabaseConfigured}
                 style={{ alignSelf: 'flex-start' }}
               >
                 {submitting ? 'Creating account…' : 'Create account'}
               </button>
-              <p style={{ fontSize: 11, color: 'var(--muted)', marginTop: 4 }}>
-                By signing up you agree to our <Link to="/terms" style={{ color: 'var(--ink)' }}>Terms</Link> and <Link to="/privacy" style={{ color: 'var(--ink)' }}>Privacy policy</Link>.
-              </p>
             </form>
           )}
         </div>

@@ -1,11 +1,8 @@
 import { Link } from 'react-router-dom';
 import Badge from './Badge.jsx';
-import { Stars } from './StarRating.jsx';
 import { daysUntil, fmtDate } from '../lib/format.js';
 
 function formatBidSecurity(t) {
-  // Either an explicit string ("USD 50,000", "Not Required") or fall back to
-  // showing the estimated value if no bid security is set.
   if (t.bid_security && t.bid_security.trim()) return t.bid_security;
   if (t.bidSecurity && t.bidSecurity.trim()) return t.bidSecurity;
   return 'Not Required';
@@ -15,18 +12,12 @@ export function TenderCard({ tender }) {
   const days = daysUntil(tender.closes);
   const bs = formatBidSecurity(tender);
   const noneNeeded = /not\s*required|none|n\/?a/i.test(bs);
-  const rating = tender.issuer_rating ?? tender.issuerRating;
   return (
     <Link to={`/tenders/${tender.id}`} style={{ textDecoration: 'none' }}>
       <article className="tf-card">
         <div className="tf-card-meta-top">
           <div className="tf-card-issuer">
-            <div className="tf-card-issuer-row">
-              <span className="tf-card-issuer-name">{tender.issuer}</span>
-              {rating != null && rating > 0 && (
-                <Stars value={rating} size="md" />
-              )}
-            </div>
+            <div className="tf-card-issuer-name">{tender.issuer}</div>
             <div style={{ fontSize: 11, opacity: 0.7, marginTop: 2 }}>
               {tender.country} · {tender.sector}
             </div>

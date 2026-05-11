@@ -1,6 +1,7 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Badge from '../components/Badge.jsx';
 import FadeIn from '../components/FadeIn.jsx';
+import HeroBackdrop from '../components/HeroBackdrop.jsx';
 import { TenderCard } from '../components/TenderViews.jsx';
 import { useTenders } from '../lib/useTenders.js';
 import { useAuth } from '../lib/AuthProvider.jsx';
@@ -23,6 +24,7 @@ export default function Home() {
   return (
     <main className="tf-page-anim">
       <section className="tf-hero">
+        <HeroBackdrop />
         <div className="tf-container">
           <div className="tf-hero-text">
             <div>
@@ -71,110 +73,58 @@ export default function Home() {
         </div>
       </section>
 
-      <section
-        style={{
-          background: 'var(--paper)',
-          borderTop: '1px solid var(--rule)',
-          borderBottom: '1px solid var(--rule)',
-          padding: '56px 0'
-        }}
-      >
+      {/* Three sources — compact band, single inline row */}
+      <section className="tf-band tf-band-compact">
         <div className="tf-container">
-          <FadeIn>
-            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'end', marginBottom: 32, flexWrap: 'wrap', gap: 16 }}>
-              <div>
-                <div className="tf-eyebrow tf-eyebrow-rule">What makes us different</div>
-                <h2 className="tf-section-title" style={{ marginTop: 12 }}>Three sources. One disciplined feed.</h2>
-              </div>
-              <p style={{ color: 'var(--muted)', maxWidth: '44ch', fontSize: 14, margin: 0 }}>
-                Most listing services cover one slice. TenderFlow brings together public
-                procurement, NGO sourcing, and SME opportunities side by side.
-              </p>
+          <FadeIn className="tf-band-head">
+            <div>
+              <div className="tf-eyebrow tf-eyebrow-rule">Three sources, one feed</div>
+              <h2 className="tf-section-title tf-section-title-sm">
+                What makes us different
+              </h2>
             </div>
+            <p className="tf-band-blurb">
+              Most listing services cover one slice. TenderFlow brings public procurement,
+              NGO sourcing, and SME opportunities side by side.
+            </p>
           </FadeIn>
-          <div
-            style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-              borderTop: '1px solid var(--rule)'
-            }}
-          >
+          <div className="tf-source-cols">
             {[
-              { src: 'Government', count: sourceCounts.Government || 0, blurb: 'Ministries, parastatals, county and local government tenders across multiple African countries.' },
-              { src: 'NGO', count: sourceCounts.NGO || 0, blurb: 'Procurement from non-governmental organisations, donor-funded projects, foundations, and large institutional buyers.' },
-              { src: 'SME', count: sourceCounts.SME || 0, blurb: 'SME-friendly tenders with smaller lots, accessible terms, and sub-contracting opportunities.' }
+              { src: 'Government', count: sourceCounts.Government || 0, blurb: 'Ministries, parastatals, county and local government tenders.' },
+              { src: 'NGO',        count: sourceCounts.NGO || 0,        blurb: 'NGOs, donor-funded projects, foundations, and institutional buyers.' },
+              { src: 'SME',        count: sourceCounts.SME || 0,        blurb: 'SME-friendly tenders: smaller lots, accessible terms, sub-contracting.' }
             ].map((s, i, arr) => (
               <FadeIn
                 key={s.src}
-                delay={i * 100}
-                style={{ padding: '32px 28px', borderRight: i < arr.length - 1 ? '1px solid var(--rule)' : '0' }}
+                delay={i * 90}
+                className="tf-source-col"
+                style={{ borderRight: i < arr.length - 1 ? '1px solid var(--rule)' : '0' }}
               >
                 <Badge source={s.src} />
-                <div
-                  style={{
-                    fontFamily: 'var(--serif)',
-                    fontSize: 44,
-                    color: 'var(--navy)',
-                    fontWeight: 500,
-                    marginTop: 16,
-                    letterSpacing: '-0.015em'
-                  }}
-                >
-                  {s.count}
-                </div>
-                <div
-                  style={{
-                    fontSize: 11,
-                    textTransform: 'uppercase',
-                    letterSpacing: '0.1em',
-                    color: 'var(--muted)'
-                  }}
-                >
-                  Live · Updated daily
-                </div>
-                <p style={{ marginTop: 18, fontSize: 14, color: 'var(--ink)', lineHeight: 1.55 }}>{s.blurb}</p>
+                <div className="tf-source-count">{s.count}</div>
+                <div className="tf-source-meta">Live · Updated daily</div>
+                <p className="tf-source-blurb">{s.blurb}</p>
               </FadeIn>
             ))}
           </div>
         </div>
       </section>
 
-      <section style={{ padding: '64px 0 24px' }}>
+      {/* Latest tenders — tighter top/bottom padding */}
+      <section className="tf-band tf-band-light">
         <div className="tf-container">
-          <FadeIn>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'end',
-                marginBottom: 28,
-                flexWrap: 'wrap',
-                gap: 12
-              }}
-            >
-              <div>
-                <div className="tf-eyebrow tf-eyebrow-rule">Fresh this week</div>
-                <h2 className="tf-section-title" style={{ marginTop: 12 }}>Latest tenders</h2>
-                <p className="tf-section-sub">Indexed in the last 7 days from official portals, gazette notices and verified buyers.</p>
-              </div>
-              <Link
-                to="/tenders"
-                style={{
-                  color: 'var(--navy)',
-                  fontWeight: 600,
-                  fontSize: 13,
-                  borderBottom: '1px solid var(--gold)',
-                  paddingBottom: 2,
-                  textDecoration: 'none'
-                }}
-              >
-                View all {tenders.length} tenders →
-              </Link>
+          <FadeIn className="tf-band-head">
+            <div>
+              <div className="tf-eyebrow tf-eyebrow-rule">Fresh this week</div>
+              <h2 className="tf-section-title tf-section-title-sm">Latest tenders</h2>
             </div>
+            <Link to="/tenders" className="tf-band-link">
+              View all {tenders.length} tenders →
+            </Link>
           </FadeIn>
           <div className="tf-cards-grid">
             {featured.map((t, i) => (
-              <FadeIn key={t.id} delay={i * 60}>
+              <FadeIn key={t.id} delay={i * 70}>
                 <TenderCard tender={t} />
               </FadeIn>
             ))}
@@ -182,71 +132,39 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Consultant onboarding banner */}
-      <section style={{ padding: '64px 0', background: 'var(--paper)', borderTop: '1px solid var(--rule)', borderBottom: '1px solid var(--rule)' }}>
+      {/* Consultant banner — compact two-column */}
+      <section className="tf-band tf-band-navy">
         <div className="tf-container">
-          <FadeIn>
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
-                gap: 32,
-                alignItems: 'center'
-              }}
-            >
-              <div>
-                <div className="tf-eyebrow tf-eyebrow-rule">For tender consultants</div>
-                <h2 className="tf-section-title" style={{ marginTop: 12 }}>
-                  Are you a tender consultant?
-                </h2>
-                <p className="tf-section-sub" style={{ maxWidth: '52ch' }}>
-                  Bidders win when they have someone in their corner. List your services on
-                  TenderFlow and get matched with companies who want their bids done right.
-                  Free to register.
-                </p>
-                <div style={{ display: 'flex', gap: 12, marginTop: 22, flexWrap: 'wrap' }}>
-                  <button className="tf-cta" onClick={() => navigate('/consultant-signup')}>
-                    Register as a consultant
-                  </button>
-                  <button className="tf-cta-ghost" onClick={() => navigate('/consultants')}>
-                    Browse consultants
-                  </button>
-                </div>
+          <FadeIn className="tf-cta-band">
+            <div>
+              <div className="tf-eyebrow tf-eyebrow-rule" style={{ color: 'rgba(245,246,235,0.6)' }}>
+                For consultants
               </div>
-              <div style={{ textAlign: 'right' }}>
-                <div
-                  style={{
-                    fontFamily: 'var(--serif)',
-                    fontSize: 'clamp(56px, 6vw, 88px)',
-                    color: 'var(--navy)',
-                    lineHeight: 1.05,
-                    fontWeight: 500,
-                    letterSpacing: '-0.02em'
-                  }}
-                >
-                  Get hired<br /><em style={{ color: 'var(--gold)' }}>by serious bidders.</em>
-                </div>
-              </div>
+              <h2 className="tf-cta-band-title">
+                Get hired by serious bidders.
+              </h2>
+              <p className="tf-cta-band-sub">
+                List your tender consultancy on TenderFlow. Free to register, free to be discovered.
+              </p>
+            </div>
+            <div className="tf-cta-band-actions">
+              <button className="tf-cta tf-cta-on-navy" onClick={() => navigate('/consultant-signup')}>
+                Register as consultant
+              </button>
+              <button className="tf-cta-ghost tf-cta-ghost-on-navy" onClick={() => navigate('/consultants')}>
+                Browse consultants
+              </button>
             </div>
           </FadeIn>
         </div>
       </section>
 
-      <section style={{ padding: '72px 0', background: 'var(--cream)' }}>
-        <div className="tf-container" style={{ maxWidth: 880, textAlign: 'center', margin: '0 auto' }}>
+      {/* Mission quote — kept but tightened */}
+      <section className="tf-band tf-band-mission">
+        <div className="tf-container">
           <FadeIn>
             <div className="tf-eyebrow" style={{ display: 'inline-block' }}>The mission</div>
-            <p
-              style={{
-                fontFamily: 'var(--serif)',
-                fontSize: 'clamp(28px, 3.4vw, 42px)',
-                color: 'var(--navy)',
-                lineHeight: 1.25,
-                fontWeight: 400,
-                margin: '20px 0 0',
-                letterSpacing: '-0.01em'
-              }}
-            >
+            <p className="tf-mission-line">
               Africa's procurement market is large, fragmented, and almost entirely
               invisible to the people who could win the work.{' '}
               <em style={{ color: 'var(--gold)' }}>We're fixing that.</em>
