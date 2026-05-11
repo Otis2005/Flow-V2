@@ -8,18 +8,22 @@ import { useEffect, useRef, useState } from 'react';
 // palette after the theme overlay is applied.
 //
 //   1. African business meeting at a modern table (default)
-//      https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e
+//      photo-1573497019940-1c28c88b4f3e
 //   2. Construction / infrastructure site
-//      https://images.unsplash.com/photo-1541888946425-d81bb19240f5
+//      photo-1541888946425-d81bb19240f5
 //   3. Architectural blueprints close-up
-//      https://images.unsplash.com/photo-1503387762-592deb58ef4e
+//      photo-1503387762-592deb58ef4e
 //   4. Nairobi / Lagos cityscape feel
-//      https://images.unsplash.com/photo-1582719471384-894fbb16e074
+//      photo-1582719471384-894fbb16e074
 //
-// To swap, change HERO_IMAGE below.
+// To swap, change HERO_IMAGE below AND the preload <link> in index.html
+// so the new image is fetched as early as possible.
+//
+// URL params: w=1600 q=80 keeps it sharp at typical viewport widths while
+// cutting the file from ~1MB to ~600KB.
 
 const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=2000&q=85&auto=format&fit=crop';
+  'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=1600&q=80&auto=format&fit=crop';
 
 export default function HeroBackdrop({ src = HERO_IMAGE }) {
   const ref = useRef(null);
