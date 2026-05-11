@@ -2,7 +2,6 @@ import { useEffect, useState, useRef } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import Logo from './Logo.jsx';
 import RightPanel from './RightPanel.jsx';
-import { useAuth } from '../lib/AuthProvider.jsx';
 
 // Public navigation. Admin link is intentionally NOT here, admins reach
 // /admin via the right panel or by typing the URL.
@@ -26,7 +25,6 @@ export default function Header({ logoVariant = 'bars' }) {
   const [panelOpen, setPanelOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { user } = useAuth();
   const rafRef = useRef(null);
   const scrolledRef = useRef(false); // mirrors `scrolled` for use inside rAF without re-binding
 
@@ -77,11 +75,6 @@ export default function Header({ logoVariant = 'bars' }) {
             ))}
           </nav>
           <div className="tf-header-cta">
-            {!user && (
-              <button className="tf-cta tf-hide-sm" onClick={() => navigate('/sign-up')}>
-                Sign up
-              </button>
-            )}
             <button
               type="button"
               className={'tf-burger tf-burger-fixed' + (panelOpen ? ' is-open' : '')}

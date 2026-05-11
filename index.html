@@ -7,22 +7,18 @@
     <title>TenderFlow. Pan-African tenders, consolidated.</title>
 
     <!--
-      Preconnect to Unsplash so the TLS handshake is done by the time we
-      need the hero image. Speeds up first paint.
-    -->
-    <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
-
-    <!--
-      Preload the hero image. The browser starts fetching it immediately
-      from the HTML parser, in parallel with the JS bundle, so it's ready
-      by the time React renders <HeroBackdrop />.
-      Keep this URL in sync with HERO_IMAGE in src/components/HeroBackdrop.jsx.
+      Preload the hero image from Supabase Storage. Same CDN as the rest
+      of the site (no extra cross-origin handshake) and ~70% smaller than
+      the original Unsplash JPEG because it is pre-compressed WebP.
+      The browser fetches this in parallel with the JS bundle the moment
+      it parses the HTML, so the hero is ready when React mounts.
+      KEEP THIS URL in sync with HERO_IMAGE in src/components/HeroBackdrop.jsx.
     -->
     <link
       rel="preload"
       as="image"
       fetchpriority="high"
-      href="https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=1600&q=80&auto=format&fit=crop"
+      href="https://rtessqlvvsjecogctwok.supabase.co/storage/v1/object/public/tender-pdfs/hero/construction.webp"
     />
 
     <!-- Trimmed fonts: only the three families actually used (Spectral / Public Sans / JetBrains Mono). -->

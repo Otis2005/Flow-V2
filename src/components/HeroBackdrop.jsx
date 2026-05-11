@@ -1,29 +1,37 @@
 import { useEffect, useRef, useState } from 'react';
 
-// Hero image options. The active value is the one used; the others sit as
-// commented constants in case Kennedy wants to swap.
+// Hero image options. All self-hosted on Supabase Storage as compressed
+// WebP files so they load from the same CDN as the rest of the site.
+// No more Unsplash dependency or cross-origin latency.
 //
-// All four are free-to-use Unsplash photos. Picked to (a) feel related to
-// procurement / tender work and (b) blend with the navy + cream + gold
-// palette after the theme overlay is applied.
+// Sizes (after WebP compression at q=60, w=1200):
+//   construction  279 KB  (default. Direct tie to procurement work.)
+//   city          203 KB  (fastest cold-cache. African cityscape.)
+//   blueprints     60 KB  (tiniest. Architectural plans close-up.)
+//   meeting       331 KB  (Business meeting, original choice.)
 //
-//   1. African business meeting at a modern table (default)
-//      photo-1573497019940-1c28c88b4f3e
-//   2. Construction / infrastructure site
-//      photo-1541888946425-d81bb19240f5
-//   3. Architectural blueprints close-up
-//      photo-1503387762-592deb58ef4e
-//   4. Nairobi / Lagos cityscape feel
-//      photo-1582719471384-894fbb16e074
+// To swap:
+//   1. Change HERO_VARIANT below to one of the keys.
+//   2. Update the matching <link rel="preload"> URL in index.html.
 //
-// To swap, change HERO_IMAGE below AND the preload <link> in index.html
-// so the new image is fetched as early as possible.
-//
-// URL params: w=1600 q=80 keeps it sharp at typical viewport widths while
-// cutting the file from ~1MB to ~600KB.
+// To add a new image:
+//   1. Upload a WebP to tender-pdfs/hero/<name>.webp in Supabase Storage
+//      (bucket is public, single round-trip from any browser).
+//   2. Add an entry to HERO_IMAGES below.
+//   3. Set HERO_VARIANT to its key, update index.html preload.
 
-const HERO_IMAGE =
-  'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=1600&q=80&auto=format&fit=crop';
+const SUPABASE_PUBLIC =
+  'https://rtessqlvvsjecogctwok.supabase.co/storage/v1/object/public/tender-pdfs/hero';
+
+const HERO_IMAGES = {
+  construction: `${SUPABASE_PUBLIC}/construction.webp`,
+  city:         `${SUPABASE_PUBLIC}/city.webp`,
+  blueprints:   `${SUPABASE_PUBLIC}/blueprints.webp`,
+  meeting:      `${SUPABASE_PUBLIC}/meeting.webp`
+};
+
+const HERO_VARIANT = 'construction';
+const HERO_IMAGE = HERO_IMAGES[HERO_VARIANT];
 
 export default function HeroBackdrop({ src = HERO_IMAGE }) {
   const ref = useRef(null);
@@ -47,13 +55,10 @@ export default function HeroBackdrop({ src = HERO_IMAGE }) {
     };
   }, []);
 
-  // Parallax: the backdrop translates downward at 0.35x of scroll, so it
-  // appears to scroll slower than the content above it. Capped so it does
-  // not drift forever and waste GPU work below the fold.
+  // Parallax + fade as described in v2.css. We translate down at 0.35x
+  // scroll, capped at 320px so we don't waste GPU below the fold, and
+  // fade opacity from 0.95 -> 0.15 over the first 600px.
   const parallaxY = Math.min(scrollY * 0.35, 320);
-
-  // Cross-fade: hero image fades from 0.95 to 0.15 as you scroll the first
-  // 500px. We never hit zero so the colour stays warm under the fold.
   const opacity = Math.max(0.15, 0.95 - scrollY / 600);
 
   return (
