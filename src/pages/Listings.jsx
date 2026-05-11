@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import FadeIn from '../components/FadeIn.jsx';
+import PageHero from '../components/PageHero.jsx';
 import { TenderCard } from '../components/TenderViews.jsx';
 import { useTenders } from '../lib/useTenders.js';
 
@@ -66,11 +67,24 @@ export default function Listings() {
 
   return (
     <main className="tf-page-anim">
-      <div className="tf-container">
+      <PageHero
+        eyebrow="Browse"
+        title={<>All live tenders. <em>One feed.</em></>}
+        subtitle="Filter by source, country, sector, or search by issuer or keyword. Updated daily."
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 6, color: 'rgba(245,246,235,0.7)', fontSize: 13, textAlign: 'right' }}>
+          <span style={{ fontFamily: 'var(--serif)', fontSize: 36, color: 'var(--gold-soft)', lineHeight: 1, fontWeight: 500 }}>
+            {tenders.length}
+          </span>
+          <span style={{ textTransform: 'uppercase', letterSpacing: '0.1em', fontSize: 10.5 }}>Live tenders</span>
+        </div>
+      </PageHero>
+
+      <div className="tf-container" style={{ paddingTop: 24 }}>
         {usingSample && (
           <div
             style={{
-              margin: '16px 0 0',
+              margin: '0 0 16px',
               padding: '10px 14px',
               background: 'var(--paper)',
               border: '1px dashed var(--rule)',
@@ -81,13 +95,6 @@ export default function Listings() {
             Demo mode. Showing sample tenders. Connect Supabase to see live data.
           </div>
         )}
-        <div className="tf-listings-intro">
-          <div>
-            <div className="tf-eyebrow tf-eyebrow-rule">Browse</div>
-            <h1 className="tf-section-title" style={{ fontSize: 44, marginTop: 12 }}>All live tenders</h1>
-            <p className="tf-section-sub">Filter by source, country, sector, or search by issuer or keyword.</p>
-          </div>
-        </div>
 
         <div className="tf-filters">
           <div className="tf-field tf-search">

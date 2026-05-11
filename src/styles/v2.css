@@ -3,73 +3,83 @@
    Imported AFTER styles.css so its rules win on equal specificity.
    ───────────────────────────────────────────────────────────── */
 
-/* ── Sticky header ─────────────────────────────────────────────────
-   We only animate background, border, and shadow on scroll. The earlier
-   build also animated height + logo font-size, which caused layout
-   reflow on every scroll tick and made the header visibly shake. With
-   layout-affecting transitions removed and an rAF-throttled scroll
-   handler (in Header.jsx) the header is rock-solid. */
+/* ── Sticky header (navy theme) ─────────────────────────────────
+   Header sits on the same deep navy as the section bands. Only
+   background, border, and shadow transition on scroll. Layout is
+   pinned so the header never shakes. */
 .tf-header-sticky {
   position: sticky;
   top: 0;
   z-index: 200;
-  background: rgba(229, 233, 217, 0.96);
-  backdrop-filter: saturate(140%) blur(10px);
-  -webkit-backdrop-filter: saturate(140%) blur(10px);
-  transition: background-color 220ms ease,
-              box-shadow 220ms ease,
-              border-bottom-color 220ms ease;
-  border-bottom: 1px solid transparent;
+  background: var(--navy);
+  color: var(--paper);
+  transition: box-shadow 220ms ease, border-bottom-color 220ms ease;
+  border-bottom: 1px solid rgba(245, 246, 235, 0.06);
   contain: layout;
-  will-change: background-color, box-shadow;
+  will-change: box-shadow;
 }
 .tf-header-sticky.is-scrolled {
-  background: rgba(245, 246, 235, 0.96);
-  box-shadow: 0 2px 0 rgba(20, 30, 40, 0.04),
-              0 12px 30px -18px rgba(20, 30, 40, 0.18);
-  border-bottom-color: rgba(20, 30, 40, 0.06);
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.18),
+              0 12px 30px -18px rgba(0, 0, 0, 0.30);
+  border-bottom-color: rgba(245, 246, 235, 0.10);
 }
 .tf-header-sticky .tf-header-row {
   height: 72px;
-  /* No height transition — keep layout stable to prevent shake. */
 }
 
-/* ── Bigger logo (single size across scroll states) ───────────── */
-.tf-logo-text {
+/* Logo on the navy header: light text, gold-soft italic, and the
+   third (longest) bar switched from navy to paper so it stays visible. */
+.tf-header-sticky .tf-logo-text {
   font-size: 28px;
   letter-spacing: -0.015em;
+  color: var(--paper);
 }
-.tf-logo-mark {
-  height: 26px;
+.tf-header-sticky .tf-logo-text em { color: var(--gold-soft); }
+.tf-header-sticky .tf-logo-mark { height: 26px; }
+.tf-header-sticky .tf-logo-mark span { width: 5px; }
+.tf-header-sticky .tf-logo-mark span:nth-child(1) { height: 11px; background: var(--amber); }
+.tf-header-sticky .tf-logo-mark span:nth-child(2) { height: 18px; background: var(--teal); }
+.tf-header-sticky .tf-logo-mark span:nth-child(3) { height: 26px; background: var(--paper); }
+
+/* Nav links on the dark header */
+.tf-header-sticky .tf-nav a {
+  color: rgba(245, 246, 235, 0.72);
+  transition: color 160ms ease;
 }
-.tf-logo-mark span { width: 5px; }
-.tf-logo-mark span:nth-child(1) { height: 11px; }
-.tf-logo-mark span:nth-child(2) { height: 18px; }
-.tf-logo-mark span:nth-child(3) { height: 26px; }
+.tf-header-sticky .tf-nav a:hover { color: var(--paper); }
+.tf-header-sticky .tf-nav a.is-active { color: var(--gold-soft); }
 
 @media (max-width: 720px) {
-  .tf-logo-text { font-size: 22px; }
-  .tf-logo-mark { height: 20px; }
+  .tf-header-sticky .tf-logo-text { font-size: 22px; }
+  .tf-header-sticky .tf-logo-mark { height: 20px; }
   .tf-header-sticky .tf-header-row { height: 64px; }
 }
 
 /* Footer logo stays smaller */
 .tf-footer .tf-logo-text { font-size: 20px; }
 
-/* ── Hamburger (always visible) ─────────────────────────────
-   Clean: no border, three bold solid lines, centred properly.
-   Lines have explicit width and are stacked via flex with a fixed gap.
-   Using transform-origin: center on each line keeps the X animation
-   symmetrical when toggled open. */
-.tf-burger-fixed {
+/* ── Section-level overrides: when below the navy header, certain
+   downstream sections should also start with the right base styling.
+   No-op for cream/paper sections; only matters when we want a navy band
+   to butt directly against the header without a visible seam. */
+
+/* ── Hamburger (logo-mirroring) ─────────────────────────────
+   Three bars that echo the TenderFlow logo mark:
+     top    = amber (short)
+     middle = teal  (medium)
+     bottom = paper (full width)
+   On a navy header these all stay visible. The bars are aligned to
+   the LEFT inside the button so the staggered widths read as
+   "short, longer, longest" the way the logo bars do. */
+.tf-burger-logo {
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   gap: 5px;
   width: 44px;
   height: 44px;
-  padding: 0;
+  padding: 0 10px;
   background: transparent;
   border: 0;
   cursor: pointer;
@@ -77,25 +87,35 @@
   transition: background 160ms ease;
   flex-shrink: 0;
 }
-.tf-burger-fixed:hover { background: rgba(20, 30, 40, 0.07); }
-.tf-burger-fixed:active { background: rgba(20, 30, 40, 0.12); }
-.tf-burger-fixed:focus-visible {
+.tf-burger-logo:hover { background: rgba(245, 246, 235, 0.08); }
+.tf-burger-logo:active { background: rgba(245, 246, 235, 0.14); }
+.tf-burger-logo:focus-visible {
   outline: 2px solid var(--gold);
   outline-offset: 2px;
 }
-.tf-burger-fixed span {
+.tf-burger-bar {
   display: block;
-  width: 22px;
-  height: 2.5px;
-  background: var(--navy);
+  height: 2px;            /* leaner */
+  background: var(--paper);
   border-radius: 2px;
-  transform-origin: center;
+  transform-origin: left center;
   transition: transform 220ms cubic-bezier(.2,.8,.2,1),
-              opacity 160ms ease;
+              opacity 160ms ease,
+              width 220ms ease,
+              background 160ms ease;
 }
-.tf-burger-fixed.is-open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
-.tf-burger-fixed.is-open span:nth-child(2) { opacity: 0; transform: scaleX(0.2); }
-.tf-burger-fixed.is-open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
+/* Stagger widths to match the logo bar proportions */
+.tf-burger-bar-1 { width: 12px; background: var(--amber); }
+.tf-burger-bar-2 { width: 18px; background: var(--teal); }
+.tf-burger-bar-3 { width: 24px; background: var(--paper); }
+
+/* X state. We rotate around left-center to keep the lines anchored,
+   and equalise widths so the X is symmetrical even though the closed
+   state has staggered widths. */
+.tf-burger-logo.is-open .tf-burger-bar { width: 22px; background: var(--paper); }
+.tf-burger-logo.is-open .tf-burger-bar-1 { transform: translate(2px, 6px) rotate(45deg); }
+.tf-burger-logo.is-open .tf-burger-bar-2 { opacity: 0; transform: scaleX(0.2); }
+.tf-burger-logo.is-open .tf-burger-bar-3 { transform: translate(2px, -6px) rotate(-45deg); }
 
 /* ── Right-side slide-in panel ─────────────────────────────── */
 .tf-rpanel-scrim {
@@ -548,6 +568,53 @@
 /* Text colour utilities when sitting on the navy band */
 .tf-on-navy { color: var(--paper) !important; }
 .tf-on-navy-muted { color: rgba(245, 246, 235, 0.65) !important; }
+
+/* ── Page hero band (navy) ─────────────────────────────────────
+   Used at the top of secondary pages: Listings, How it works, About,
+   info pages. Sits directly under the navy header for a clean dark
+   block, then content below resumes on cream/paper. */
+.tf-page-hero {
+  background: var(--navy);
+  color: var(--paper);
+  padding: 56px 0 48px;
+  border-bottom: 1px solid rgba(245, 246, 235, 0.06);
+}
+.tf-page-hero-compact { padding: 36px 0 28px; }
+@media (max-width: 720px) {
+  .tf-page-hero { padding: 36px 0 28px; }
+  .tf-page-hero-compact { padding: 24px 0 20px; }
+}
+.tf-page-hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 40px;
+  align-items: end;
+}
+@media (max-width: 720px) {
+  .tf-page-hero-grid { grid-template-columns: 1fr; gap: 20px; align-items: stretch; }
+}
+.tf-page-hero-title {
+  font-family: var(--serif);
+  font-size: clamp(36px, 4vw, 56px);
+  color: var(--paper);
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  line-height: 1.1;
+  margin: 12px 0 0;
+}
+.tf-page-hero-title em {
+  color: var(--gold-soft);
+  font-style: italic;
+  font-weight: 400;
+}
+.tf-page-hero-sub {
+  color: rgba(245, 246, 235, 0.7);
+  font-size: 15px;
+  line-height: 1.6;
+  max-width: 60ch;
+  margin: 16px 0 0;
+}
+.tf-page-hero-aside { display: flex; align-items: end; gap: 12px; }
 
 .tf-band-head {
   display: flex;

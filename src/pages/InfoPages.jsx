@@ -1,27 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient.js';
+import PageHero from '../components/PageHero.jsx';
 
 function PageShell({ eyebrow, title, intro, children }) {
   return (
-    <main>
-      <section style={{ padding: '72px 0 32px' }}>
-        <div className="tf-container" style={{ maxWidth: 880 }}>
-          <div className="tf-eyebrow tf-eyebrow-rule">{eyebrow}</div>
-          <h1
-            className="tf-display"
-            style={{ fontSize: 'clamp(40px, 4.4vw, 60px)', marginTop: 16 }}
-          >
-            {title}
-          </h1>
-          {intro && (
-            <p style={{ fontSize: 17, color: 'var(--ink)', lineHeight: 1.65, marginTop: 24, maxWidth: '62ch' }}>
-              {intro}
-            </p>
-          )}
-        </div>
-      </section>
-      <section style={{ padding: '8px 0 80px' }}>
+    <main className="tf-page-anim">
+      <PageHero eyebrow={eyebrow} title={title} subtitle={intro} />
+      <section style={{ padding: '48px 0 72px', background: 'var(--paper)' }}>
         <div className="tf-container" style={{ maxWidth: 880 }}>
           {children}
         </div>

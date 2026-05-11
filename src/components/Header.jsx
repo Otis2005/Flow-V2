@@ -77,12 +77,21 @@ export default function Header({ logoVariant = 'bars' }) {
           <div className="tf-header-cta">
             <button
               type="button"
-              className={'tf-burger tf-burger-fixed' + (panelOpen ? ' is-open' : '')}
+              className={'tf-burger-logo' + (panelOpen ? ' is-open' : '')}
               onClick={() => setPanelOpen(true)}
               aria-label="Open menu"
               aria-expanded={panelOpen}
             >
-              <span></span><span></span><span></span>
+              {/*
+                Three bars echoing the TenderFlow logo mark:
+                top=amber, middle=teal, bottom=navy/paper. The lines
+                stagger in length (short, medium, long) the way the
+                logo bars do, just rotated 90 degrees so they read as
+                hamburger lines.
+              */}
+              <span className="tf-burger-bar tf-burger-bar-1"></span>
+              <span className="tf-burger-bar tf-burger-bar-2"></span>
+              <span className="tf-burger-bar tf-burger-bar-3"></span>
             </button>
           </div>
         </div>
