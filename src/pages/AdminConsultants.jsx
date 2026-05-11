@@ -73,8 +73,8 @@ export default function AdminConsultants() {
                   </div>
                   {c.bio && <p style={{ fontSize: 14, marginTop: 10, lineHeight: 1.55 }}>{c.bio}</p>}
                   <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', marginTop: 10, fontSize: 12, color: 'var(--muted)' }}>
-                    <span><strong>Sectors:</strong> {(c.specialties || []).join(', ') || '—'}</span>
-                    <span><strong>Countries:</strong> {(c.countries || []).join(', ') || '—'}</span>
+                    <span><strong>Sectors:</strong> {(c.specialties || []).join(', ') || 'None'}</span>
+                    <span><strong>Countries:</strong> {(c.countries || []).join(', ') || 'None'}</span>
                   </div>
                   <div style={{ display: 'flex', gap: 10, marginTop: 10 }}>
                     {c.cv_url && <a href={c.cv_url} target="_blank" rel="noopener" style={{ fontSize: 12, color: 'var(--navy)', borderBottom: '1px solid var(--gold)' }}>View CV</a>}

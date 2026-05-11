@@ -118,7 +118,7 @@ export default function Consultants() {
                     </div>
                     <h3 className="tf-consultant-name">{c.name}</h3>
                     <div className="tf-consultant-spec">
-                      {(c.specialties || []).slice(0, 3).join(' · ') || '—'}
+                      {(c.specialties || []).slice(0, 3).join(' · ') || 'All sectors'}
                     </div>
                     {c.bio && <p className="tf-consultant-bio">{c.bio.slice(0, 140)}{c.bio.length > 140 ? '…' : ''}</p>}
                     <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginTop: 12, flexWrap: 'wrap' }}>
