@@ -56,36 +56,46 @@
 /* Footer logo stays smaller */
 .tf-footer .tf-logo-text { font-size: 20px; }
 
-/* ── Hamburger (always visible now) ─────────────────────────── */
+/* ── Hamburger (always visible) ─────────────────────────────
+   Clean: no border, three bold solid lines, centred properly.
+   Lines have explicit width and are stacked via flex with a fixed gap.
+   Using transform-origin: center on each line keeps the X animation
+   symmetrical when toggled open. */
 .tf-burger-fixed {
   display: inline-flex;
   flex-direction: column;
   justify-content: center;
+  align-items: center;
   gap: 5px;
-  width: 40px;
-  height: 40px;
-  padding: 10px;
+  width: 44px;
+  height: 44px;
+  padding: 0;
   background: transparent;
-  border: 1px solid var(--rule);
+  border: 0;
   cursor: pointer;
-  transition: background 160ms ease, border-color 160ms ease;
-  border-radius: 4px;
+  border-radius: 6px;
+  transition: background 160ms ease;
+  flex-shrink: 0;
 }
-.tf-burger-fixed:hover {
-  background: rgba(20, 30, 40, 0.04);
-  border-color: rgba(20, 30, 40, 0.18);
+.tf-burger-fixed:hover { background: rgba(20, 30, 40, 0.07); }
+.tf-burger-fixed:active { background: rgba(20, 30, 40, 0.12); }
+.tf-burger-fixed:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
 }
 .tf-burger-fixed span {
   display: block;
-  width: 18px;
-  height: 1.5px;
+  width: 22px;
+  height: 2.5px;
   background: var(--navy);
-  margin: 0 auto;
-  transition: transform 200ms ease, opacity 160ms ease;
+  border-radius: 2px;
+  transform-origin: center;
+  transition: transform 220ms cubic-bezier(.2,.8,.2,1),
+              opacity 160ms ease;
 }
-.tf-burger-fixed.is-open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
-.tf-burger-fixed.is-open span:nth-child(2) { opacity: 0; }
-.tf-burger-fixed.is-open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+.tf-burger-fixed.is-open span:nth-child(1) { transform: translateY(7.5px) rotate(45deg); }
+.tf-burger-fixed.is-open span:nth-child(2) { opacity: 0; transform: scaleX(0.2); }
+.tf-burger-fixed.is-open span:nth-child(3) { transform: translateY(-7.5px) rotate(-45deg); }
 
 /* ── Right-side slide-in panel ─────────────────────────────── */
 .tf-rpanel-scrim {
@@ -265,12 +275,53 @@
   box-shadow: none;
 }
 
-/* ── Card lift on hover ────────────────────────────────────────── */
+/* ── Card lift on hover + optional issuer-logo backdrop ──────────
+   When a tender has an issuer_logo_url, .tf-card-logo paints the logo
+   pinned to the right edge and a mask fades it out to the left so it
+   never competes with the headline text. The fade goes from 0 alpha
+   on the left side of the card to ~22% on the right edge — visible
+   enough to recognise the brand, soft enough not to compete. */
 .tf-card {
+  position: relative;
+  overflow: hidden;
   transition: transform 220ms cubic-bezier(.2,.8,.2,1),
               box-shadow 260ms ease,
               border-color 220ms ease;
   will-change: transform;
+}
+.tf-card-inner {
+  position: relative;
+  z-index: 1;
+}
+.tf-card-logo {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 60%;
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: contain;
+  opacity: 0.22;
+  filter: grayscale(0.35);
+  pointer-events: none;
+  z-index: 0;
+  /* Right edge solid, left side fully transparent. Black-to-transparent
+     gradient defines visibility because of the mask-image. */
+  -webkit-mask-image: linear-gradient(to right,
+    transparent 0%,
+    transparent 25%,
+    rgba(0,0,0,0.4) 60%,
+    rgba(0,0,0,1) 100%);
+          mask-image: linear-gradient(to right,
+    transparent 0%,
+    transparent 25%,
+    rgba(0,0,0,0.4) 60%,
+    rgba(0,0,0,1) 100%);
+  transition: opacity 260ms ease;
+}
+.tf-card:hover .tf-card-logo {
+  opacity: 0.32;
 }
 .tf-card:hover {
   transform: translateY(-3px);
@@ -483,14 +534,20 @@
 }
 .tf-band-compact { padding: 44px 0; }
 .tf-band-light   { padding: 48px 0; border-top: 0; background: var(--cream); }
-.tf-band-navy    { padding: 44px 0; background: var(--navy); color: var(--paper); }
+.tf-band-navy    { padding: 44px 0; background: var(--navy); color: var(--paper); border-top: 0; }
 .tf-band-mission { padding: 52px 0; background: var(--paper); border-top: 0; }
+.tf-band-sources { padding: 40px 0 36px; }
 @media (max-width: 720px) {
   .tf-band { padding: 36px 0; }
   .tf-band-compact { padding: 32px 0; }
   .tf-band-light { padding: 32px 0; }
   .tf-band-navy { padding: 32px 0; }
+  .tf-band-sources { padding: 28px 0; }
 }
+
+/* Text colour utilities when sitting on the navy band */
+.tf-on-navy { color: var(--paper) !important; }
+.tf-on-navy-muted { color: rgba(245, 246, 235, 0.65) !important; }
 
 .tf-band-head {
   display: flex;
@@ -525,7 +582,7 @@
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
   border-top: 1px solid var(--rule);
 }
-.tf-source-col { padding: 22px 22px 18px; }
+.tf-source-col { padding: 20px 22px 16px; }
 .tf-source-count {
   font-family: var(--serif);
   font-size: 36px;
@@ -543,11 +600,29 @@
   margin-top: 6px;
 }
 .tf-source-blurb {
-  margin: 12px 0 0;
-  font-size: 13.5px;
+  margin: 10px 0 0;
+  font-size: 13px;
   color: var(--ink);
   line-height: 1.5;
 }
+
+/* Navy variant: invert text colours for legibility on dark background */
+.tf-source-cols-navy {
+  border-top: 1px solid rgba(245, 246, 235, 0.12);
+  margin-top: 16px;
+}
+.tf-source-cols-navy .tf-source-count { color: var(--gold-soft); }
+.tf-source-cols-navy .tf-source-meta { color: rgba(245, 246, 235, 0.55); }
+.tf-source-cols-navy .tf-source-blurb { color: rgba(245, 246, 235, 0.78); }
+/* Badge restyle on navy so it doesn't disappear */
+.tf-source-cols-navy .tf-badge {
+  background: rgba(245, 246, 235, 0.10);
+  color: var(--paper);
+  border: 1px solid rgba(245, 246, 235, 0.18);
+}
+.tf-source-cols-navy .tf-badge[data-source="Government"] { background: rgba(216, 167, 59, 0.18); color: var(--gold-soft); border-color: rgba(216, 167, 59, 0.35); }
+.tf-source-cols-navy .tf-badge[data-source="NGO"]        { background: rgba(120, 200, 220, 0.15); color: #b9e3ec; border-color: rgba(120, 200, 220, 0.30); }
+.tf-source-cols-navy .tf-badge[data-source="SME"]        { background: rgba(216, 167, 59, 0.12); color: #f0c875; border-color: rgba(216, 167, 59, 0.28); }
 
 /* Consultant CTA band on navy background */
 .tf-cta-band {

@@ -12,35 +12,45 @@ export function TenderCard({ tender }) {
   const days = daysUntil(tender.closes);
   const bs = formatBidSecurity(tender);
   const noneNeeded = /not\s*required|none|n\/?a/i.test(bs);
+  const logoUrl = tender.issuer_logo_url || tender.issuerLogoUrl;
   return (
     <Link to={`/tenders/${tender.id}`} style={{ textDecoration: 'none' }}>
-      <article className="tf-card">
-        <div className="tf-card-meta-top">
-          <div className="tf-card-issuer">
-            <div className="tf-card-issuer-name">{tender.issuer}</div>
-            <div style={{ fontSize: 11, opacity: 0.7, marginTop: 2 }}>
-              {tender.country} · {tender.sector}
+      <article className={'tf-card' + (logoUrl ? ' has-logo' : '')}>
+        {logoUrl && (
+          <div
+            className="tf-card-logo"
+            style={{ backgroundImage: `url(${logoUrl})` }}
+            aria-hidden="true"
+          />
+        )}
+        <div className="tf-card-inner">
+          <div className="tf-card-meta-top">
+            <div className="tf-card-issuer">
+              <div className="tf-card-issuer-name">{tender.issuer}</div>
+              <div style={{ fontSize: 11, opacity: 0.7, marginTop: 2 }}>
+                {tender.country} · {tender.sector}
+              </div>
             </div>
+            <Badge source={tender.source} />
           </div>
-          <Badge source={tender.source} />
-        </div>
-        <h3 className="tf-card-title">{tender.title}</h3>
-        <p className="tf-card-summary">{tender.summary}</p>
-        <div className="tf-card-foot">
-          <div className="tf-card-foot-l">
+          <h3 className="tf-card-title">{tender.title}</h3>
+          <p className="tf-card-summary">{tender.summary}</p>
+          <div className="tf-card-foot">
+            <div className="tf-card-foot-l">
+              <span>
+                <div className="tf-card-foot-label">Bid security</div>
+                <div className={'tf-card-foot-val' + (noneNeeded ? ' bid-security-none' : '')}>
+                  {bs}
+                </div>
+              </span>
+            </div>
             <span>
-              <div className="tf-card-foot-label">Bid security</div>
-              <div className={'tf-card-foot-val' + (noneNeeded ? ' bid-security-none' : '')}>
-                {bs}
+              <div className="tf-card-foot-label" style={{ textAlign: 'right' }}>Closes in</div>
+              <div className={'tf-card-deadline' + (days <= 14 ? ' is-urgent' : '')}>
+                {days} days · {fmtDate(tender.closes)}
               </div>
             </span>
           </div>
-          <span>
-            <div className="tf-card-foot-label" style={{ textAlign: 'right' }}>Closes in</div>
-            <div className={'tf-card-deadline' + (days <= 14 ? ' is-urgent' : '')}>
-              {days} days · {fmtDate(tender.closes)}
-            </div>
-          </span>
         </div>
       </article>
     </Link>

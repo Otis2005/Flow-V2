@@ -73,32 +73,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Three sources — compact band, single inline row */}
-      <section className="tf-band tf-band-compact">
+      {/* Three sources, compact navy band */}
+      <section className="tf-band tf-band-navy tf-band-sources">
         <div className="tf-container">
           <FadeIn className="tf-band-head">
             <div>
-              <div className="tf-eyebrow tf-eyebrow-rule">Three sources, one feed</div>
-              <h2 className="tf-section-title tf-section-title-sm">
+              <div className="tf-eyebrow tf-eyebrow-rule" style={{ color: 'rgba(245,246,235,0.6)' }}>
+                Three sources, one feed
+              </div>
+              <h2 className="tf-section-title tf-section-title-sm tf-on-navy">
                 What makes us different
               </h2>
             </div>
-            <p className="tf-band-blurb">
-              Most listing services cover one slice. TenderFlow brings public procurement,
-              NGO sourcing, and SME opportunities side by side.
+            <p className="tf-band-blurb tf-on-navy-muted">
+              Public procurement, NGO sourcing, and SME opportunities. Side by side.
             </p>
           </FadeIn>
-          <div className="tf-source-cols">
+          <div className="tf-source-cols tf-source-cols-navy">
             {[
               { src: 'Government', count: sourceCounts.Government || 0, blurb: 'Ministries, parastatals, county and local government tenders.' },
               { src: 'NGO',        count: sourceCounts.NGO || 0,        blurb: 'NGOs, donor-funded projects, foundations, and institutional buyers.' },
-              { src: 'SME',        count: sourceCounts.SME || 0,        blurb: 'SME-friendly tenders: smaller lots, accessible terms, sub-contracting.' }
+              { src: 'SME',        count: sourceCounts.SME || 0,        blurb: 'Smaller lots, accessible terms, sub-contracting opportunities.' }
             ].map((s, i, arr) => (
               <FadeIn
                 key={s.src}
                 delay={i * 90}
                 className="tf-source-col"
-                style={{ borderRight: i < arr.length - 1 ? '1px solid var(--rule)' : '0' }}
+                style={{ borderRight: i < arr.length - 1 ? '1px solid rgba(245,246,235,0.12)' : '0' }}
               >
                 <Badge source={s.src} />
                 <div className="tf-source-count">{s.count}</div>
