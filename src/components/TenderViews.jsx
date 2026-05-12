@@ -32,7 +32,12 @@ export function TenderCard({ tender }) {
                 {tender.country} · {tender.sector}
               </div>
             </div>
-            <Badge source={tender.source} />
+            <div className="tf-card-badges">
+              <Badge source={tender.source} />
+              {(tender.agpo_category || tender.agpoCategory) && (
+                <AgpoBadge category={tender.agpo_category || tender.agpoCategory} />
+              )}
+            </div>
           </div>
           <h3 className="tf-card-title">{tender.title}</h3>
           <p className="tf-card-summary">{tender.summary}</p>
