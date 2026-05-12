@@ -7,18 +7,33 @@
     <title>TenderFlow. Pan-African tenders, consolidated.</title>
 
     <!--
-      Preload the hero image from Supabase Storage. Same CDN as the rest
-      of the site (no extra cross-origin handshake) and ~70% smaller than
-      the original Unsplash JPEG because it is pre-compressed WebP.
-      The browser fetches this in parallel with the JS bundle the moment
-      it parses the HTML, so the hero is ready when React mounts.
-      KEEP THIS URL in sync with HERO_IMAGE in src/components/HeroBackdrop.jsx.
+      Hero carousel image preload + prefetches.
+      The first slide is preloaded with fetchpriority=high so it paints
+      ASAP alongside the JS bundle. The other three slides are prefetched
+      at low priority (browser fetches when idle), so by the time the
+      carousel rotates to them they're already cached.
+      KEEP THESE URLS in sync with SLIDES in src/components/HeroCarousel.jsx.
     -->
     <link
       rel="preload"
       as="image"
       fetchpriority="high"
       href="https://rtessqlvvsjecogctwok.supabase.co/storage/v1/object/public/tender-pdfs/hero/construction.webp"
+    />
+    <link
+      rel="prefetch"
+      as="image"
+      href="https://rtessqlvvsjecogctwok.supabase.co/storage/v1/object/public/tender-pdfs/hero/meeting.webp"
+    />
+    <link
+      rel="prefetch"
+      as="image"
+      href="https://rtessqlvvsjecogctwok.supabase.co/storage/v1/object/public/tender-pdfs/hero/blueprints.webp"
+    />
+    <link
+      rel="prefetch"
+      as="image"
+      href="https://rtessqlvvsjecogctwok.supabase.co/storage/v1/object/public/tender-pdfs/hero/city.webp"
     />
 
     <!-- Trimmed fonts: only the three families actually used (Spectral / Public Sans / JetBrains Mono). -->

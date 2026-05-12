@@ -747,7 +747,7 @@
 /* ── Hero parallax backdrop ───────────────────────────────────
    A photo behind the hero text with a cream gradient overlay so it
    blends with the site theme. Parallax + fade are driven by JS in
-   HeroBackdrop.jsx; CSS just sizes and styles the layers. */
+   HeroCarousel.jsx; CSS just sizes and styles the layers. */
 .tf-hero { position: relative; overflow: hidden; }
 .tf-hero > .tf-container { position: relative; z-index: 2; }
 
@@ -781,6 +781,69 @@
 }
 @media (prefers-reduced-motion: reduce) {
   .tf-hero-backdrop-img { transform: none !important; }
+}
+
+/* ── Hero carousel (rotating slides) ─────────────────────────────
+   Each .tf-hero-backdrop-slide is a layered image. Only the active
+   one is opacity:1; the rest are opacity:0 and transition smoothly
+   between states. */
+.tf-hero-backdrop-slide {
+  opacity: 0;
+  transition: opacity 900ms ease-in-out;
+}
+.tf-hero-backdrop-slide.is-active { opacity: 1; }
+
+/* Text slide-up keyframe. The key={...} prop on each text element
+   re-mounts it on slide change, retriggering this animation. */
+@keyframes tf-hero-slide-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+.tf-hero-slide-in {
+  animation: tf-hero-slide-up 560ms cubic-bezier(.2,.8,.2,1) both;
+}
+.tf-hero-slide-in-delay-1 { animation-delay: 80ms; }
+.tf-hero-slide-in-delay-2 { animation-delay: 160ms; }
+.tf-hero-slide-in-delay-3 { animation-delay: 240ms; }
+@media (prefers-reduced-motion: reduce) {
+  .tf-hero-slide-in,
+  .tf-hero-slide-in-delay-1,
+  .tf-hero-slide-in-delay-2,
+  .tf-hero-slide-in-delay-3 { animation: none; }
+}
+
+.tf-hero-eyebrow-slot { min-height: 36px; }
+
+/* Indicator dots, bottom-left under the CTA buttons */
+.tf-hero-dots {
+  display: flex;
+  gap: 8px;
+  margin: 36px 0 0;
+  align-items: center;
+}
+.tf-hero-dot {
+  background: rgba(27, 44, 69, 0.18);
+  border: 0;
+  width: 18px;
+  height: 3px;
+  border-radius: 2px;
+  padding: 0;
+  cursor: pointer;
+  transition: width 280ms ease, background 280ms ease;
+}
+.tf-hero-dot:hover { background: rgba(27, 44, 69, 0.42); }
+.tf-hero-dot.is-active {
+  width: 36px;
+  background: var(--gold);
+}
+
+/* Stats band below the carousel: cream surface, top + bottom rules so
+   it reads as its own little section. */
+.tf-hero-stats-band {
+  background: var(--cream);
+  padding: 32px 0;
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
 }
 
 /* ── Tender detail aside: stop the keyfacts card from sticking.

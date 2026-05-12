@@ -1,15 +1,13 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Badge from '../components/Badge.jsx';
 import FadeIn from '../components/FadeIn.jsx';
-import HeroBackdrop from '../components/HeroBackdrop.jsx';
+import HeroCarousel from '../components/HeroCarousel.jsx';
 import { TenderCard } from '../components/TenderViews.jsx';
 import { useTenders } from '../lib/useTenders.js';
-import { useAuth } from '../lib/AuthProvider.jsx';
 
 export default function Home() {
   const navigate = useNavigate();
   const { tenders } = useTenders();
-  const { user } = useAuth();
   const featured = tenders.slice(0, 6);
 
   const sourceCounts = tenders.reduce(
@@ -23,32 +21,13 @@ export default function Home() {
 
   return (
     <main className="tf-page-anim">
-      <section className="tf-hero">
-        <HeroBackdrop />
+      <HeroCarousel />
+
+      {/* Stats live as their own static band below the rotating hero so
+          they don't disappear with each slide change. */}
+      <section className="tf-hero-stats-band">
         <div className="tf-container">
-          <div className="tf-hero-text">
-            <div>
-              <FadeIn as="h1" className="tf-display">
-                Government, NGO and SME tenders, <em>all in one place.</em>
-              </FadeIn>
-            </div>
-            <div className="tf-hero-text-side">
-              <FadeIn as="p" delay={120}>
-                Stop refreshing twenty portals. We consolidate live opportunities from
-                ministries, parastatals, NGOs and SMEs across the continent, so bidders
-                stop hunting across twenty websites.
-              </FadeIn>
-              <FadeIn className="tf-hero-text-actions" delay={240}>
-                <button className="tf-cta" onClick={() => navigate(user ? '/dashboard' : '/sign-up')}>
-                  {user ? 'Open dashboard' : 'Sign up'}
-                </button>
-                <button className="tf-cta-ghost" onClick={() => navigate('/tenders')}>
-                  Browse all tenders
-                </button>
-              </FadeIn>
-            </div>
-          </div>
-          <FadeIn className="tf-hero-stats" delay={360}>
+          <FadeIn className="tf-hero-stats">
             <div className="tf-hero-stat">
               <div className="tf-hero-stat-num">{liveToday}</div>
               <div className="tf-hero-stat-label">Live tenders today</div>
