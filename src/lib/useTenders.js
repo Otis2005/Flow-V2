@@ -27,7 +27,8 @@ function rowToTender(r) {
     issuer_rating: r.issuer_rating,
     issuer_logo_url: r.issuer_logo_url,
     issuer_logo_path: r.issuer_logo_path,
-    checklist: r.checklist ?? []
+    checklist: r.checklist ?? [],
+    agpo_category: r.agpo_category
   };
 }
 

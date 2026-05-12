@@ -119,7 +119,8 @@ export const SAMPLE_TENDERS = [
     summary:
       'Production and distribution of school uniforms to 312 public primary schools across all 16 regions. Local manufacturers preferred.',
     documents: [{ name: 'Tender Document.pdf', size: '980 KB' }],
-    submission: 'Sealed,Ministry HQ, Accra'
+    submission: 'Sealed, Ministry HQ, Accra',
+    agpo_category: 'women'
   },
   {
     id: 'TF-2026-0407',
@@ -155,7 +156,8 @@ export const SAMPLE_TENDERS = [
     summary:
       'Drilling, casing, and solar pump installation for 12 boreholes in Karamoja sub-region. Hand-pump back-up required.',
     documents: [{ name: 'ToR.pdf', size: '380 KB' }],
-    submission: 'Email + sealed copy'
+    submission: 'Email + sealed copy',
+    agpo_category: 'youth'
   },
   {
     id: 'TF-2026-0405',

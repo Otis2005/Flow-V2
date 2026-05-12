@@ -24,7 +24,8 @@ const EMPTY = {
   issuer_rating: 0,
   issuer_logo_url: '',
   issuer_logo_path: '',
-  checklist: []
+  checklist: [],
+  agpo_category: ''
 };
 
 export default function AdminUpload() {
@@ -69,7 +70,8 @@ export default function AdminUpload() {
           issuer_rating: data.issuer_rating ?? 0,
           issuer_logo_url: data.issuer_logo_url || '',
           issuer_logo_path: data.issuer_logo_path || '',
-          checklist: data.checklist || []
+          checklist: data.checklist || [],
+          agpo_category: data.agpo_category || ''
         });
         setFiles((data.documents || []).map(d => ({ ...d, status: 'done' })));
       }
@@ -152,6 +154,7 @@ export default function AdminUpload() {
             eligibility: prev.eligibility || json.eligibility || '',
             submission: prev.submission || json.submission || '',
             bid_security: prev.bid_security || json.bid_security || '',
+            agpo_category: prev.agpo_category || json.agpo_category || '',
             checklist: (Array.isArray(json.checklist) && json.checklist.length) ? json.checklist : prev.checklist
           }));
           setExtractionMeta({
@@ -223,6 +226,7 @@ export default function AdminUpload() {
       issuer_logo_url: form.issuer_logo_url || null,
       issuer_logo_path: form.issuer_logo_path || null,
       checklist: form.checklist || [],
+      agpo_category: form.agpo_category || null,
       documents,
       status
     };
@@ -430,12 +434,12 @@ export default function AdminUpload() {
               </div>
             </div>
 
-            <div className="tf-form-row full">
+            <div className="tf-form-row">
               <div className="tf-form-field">
                 <label>
                   Bid security
                   <span style={{ fontSize: 11, color: 'var(--muted)', fontWeight: 400, marginLeft: 6 }}>
-                    (e.g. "USD 50,000", "2% of bid", or leave blank if not required)
+                    (e.g. "USD 50,000", or blank for "Not Required")
                   </span>
                 </label>
                 <input
@@ -443,6 +447,24 @@ export default function AdminUpload() {
                   onChange={e => set('bid_security', e.target.value)}
                   placeholder='Leave blank for "Not Required"'
                 />
+              </div>
+              <div className="tf-form-field">
+                <label>
+                  AGPO reservation
+                  <span style={{ fontSize: 11, color: 'var(--muted)', fontWeight: 400, marginLeft: 6 }}>
+                    (Kenya 30% reservation)
+                  </span>
+                </label>
+                <select
+                  value={form.agpo_category || ''}
+                  onChange={e => set('agpo_category', e.target.value)}
+                >
+                  <option value="">Not AGPO-reserved</option>
+                  <option value="youth">Youth</option>
+                  <option value="women">Women</option>
+                  <option value="pwd">Persons with Disabilities</option>
+                  <option value="general">Open AGPO (any category)</option>
+                </select>
               </div>
             </div>
 

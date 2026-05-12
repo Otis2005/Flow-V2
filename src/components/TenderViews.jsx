@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import Badge from './Badge.jsx';
+import AgpoBadge from './AgpoBadge.jsx';
 import { daysUntil, fmtDate } from '../lib/format.js';
 
 function formatBidSecurity(t) {

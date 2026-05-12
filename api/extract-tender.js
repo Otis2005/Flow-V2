@@ -50,6 +50,7 @@ Output a single JSON object with EXACTLY these fields. Use null when a field is 
   "eligibility": string  paragraph describing bidder eligibility (or null),
   "submission": string  how/where to submit (e.g. "eGP portal", "Sealed bids, HQ Nairobi"),
   "bid_security": string  the bid security or bid bond amount as stated, e.g. "USD 50,000" or "2% of bid sum". Return null if no bid security is required.,
+  "agpo_category": one of "youth", "women", "pwd", "general", or null  set this only if the document explicitly mentions AGPO (Access to Government Procurement Opportunities, Kenya's 30% reservation programme) or an equivalent reservation for youth-owned, women-owned, or disability-owned businesses. Use "general" if reserved for any AGPO category, "youth" / "women" / "pwd" if a specific group. Null if no reservation is mentioned.,
   "checklist": array of objects [{"text": string}]  a comprehensive checklist of mandatory documents and requirements a bidder must submit. Pull from sections titled "Mandatory Requirements", "Eligibility", "Documents Required", "Submission Requirements", and similar. Each item should be one concrete, actionable requirement (e.g. "Valid Tax Compliance Certificate", "Audited financial statements for the last 2 years", "Bid security of USD 50,000"). Aim for 8-20 items. Return [] if you cannot find any.,
   "fields_detected": number  how many of the above fields you populated with non-null values,
   "needs_review": string[]  names of fields where confidence is low (e.g. ["closes_at", "value"]),

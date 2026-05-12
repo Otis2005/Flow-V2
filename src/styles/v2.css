@@ -451,6 +451,59 @@
   border-radius: 999px;
 }
 
+/* Stack source badge + AGPO badge in the card top-right. */
+.tf-card-badges {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+/* ── AGPO badge ─────────────────────────────────────────────────
+   Small gold pill with a star glyph. Indicates the tender is reserved
+   for AGPO-registered businesses (youth / women / PWD). The gradient
+   + inset highlight + 1px outer shadow give it a 'stamp of approval'
+   feel without being loud. */
+.tf-agpo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  background: linear-gradient(135deg, #f0c875 0%, var(--gold) 50%, #b8902b 100%);
+  color: var(--navy);
+  font-family: var(--sans);
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  border-radius: 3px;
+  border: 1px solid rgba(20, 30, 40, 0.10);
+  box-shadow:
+    0 1px 2px rgba(20, 30, 40, 0.10),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
+  white-space: nowrap;
+}
+.tf-agpo-badge svg {
+  width: 11px;
+  height: 11px;
+  display: block;
+  fill: var(--navy);
+}
+.tf-agpo-badge-label { letter-spacing: 0.10em; }
+.tf-agpo-badge-cat {
+  font-weight: 600;
+  opacity: 0.78;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  font-size: 10px;
+}
+
+.tf-agpo-lg {
+  padding: 6px 14px;
+  font-size: 13px;
+}
+.tf-agpo-lg svg { width: 14px; height: 14px; }
+
 /* ── Issuer logo backdrop on detail page ──────────────────────── */
 .tf-detail-logo-backdrop {
   position: absolute;
