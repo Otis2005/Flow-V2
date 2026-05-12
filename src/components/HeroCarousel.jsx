@@ -17,7 +17,7 @@ const SUPABASE_PUBLIC =
 const SLIDES = [
   {
     key: 'main',
-    eyebrow: 'Pan-African tender intelligence',
+    eyebrow: 'One Marketplace',
     title: <>Government, NGO and SME tenders, <em>all in one place.</em></>,
     subtitle:
       'Stop refreshing twenty portals. We consolidate live opportunities from ministries, parastatals, NGOs and SMEs across the continent.',
@@ -27,7 +27,7 @@ const SLIDES = [
   },
   {
     key: 'bidder',
-    eyebrow: 'For active bidders',
+    eyebrow: 'Suppliers',
     title: <>Win more tenders. <em>Spend less time hunting them down.</em></>,
     subtitle:
       'A free account saves tenders to your watchlist, generates a requirements checklist for each one, and never lets you miss a closing date.',
@@ -37,7 +37,7 @@ const SLIDES = [
   },
   {
     key: 'consultants',
-    eyebrow: 'Tender consultants, listed',
+    eyebrow: 'Tender Consultants',
     title: <>Hire vetted consultants. <em>Or get hired by serious bidders.</em></>,
     subtitle:
       'Tender writers, evaluators, and bid managers across Africa. Free to register, free to discover, free to enquire.',
@@ -46,11 +46,11 @@ const SLIDES = [
     image: 'blueprints.webp'
   },
   {
-    key: 'ai',
-    eyebrow: 'AI-powered extraction',
-    title: <>Title, deadlines, requirements. <em>Auto-extracted in seconds.</em></>,
+    key: 'speed',
+    eyebrow: 'Built for Speed',
+    title: <>We read the PDFs. <em>You write the bids.</em></>,
     subtitle:
-      'Upload any tender PDF. Claude reads it, surfaces the fields that matter, and generates a checklist of everything bidders need to submit.',
+      'Upload any tender PDF. Every requirement, every deadline, every submission detail laid out clearly so you can focus on winning the bid.',
     ctaLabel: 'See how it works',
     ctaPath: '/how-it-works',
     image: 'city.webp'
