@@ -48,7 +48,7 @@ const SLIDES = [
   {
     key: 'speed',
     eyebrow: 'Built for Speed',
-    title: <>We read the PDFs. <em>You write the bids.</em></>,
+    title: <>We get you the Tenders. <em>You write the bids.</em></>,
     subtitle:
       'Upload any tender PDF. Every requirement, every deadline, every submission detail laid out clearly so you can focus on winning the bid.',
     ctaLabel: 'See how it works',
