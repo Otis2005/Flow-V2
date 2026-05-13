@@ -851,41 +851,22 @@
   position: absolute;
   inset: -10% -2% -10% -2%;
   background-size: cover;
-  /* Anchor the focal point to the right side so the subject is visible
-     past the headline text on the left. */
-  background-position: 78% center;
-  /* Lighter filter so the photo reads more clearly. */
-  filter: saturate(0.80) contrast(1.0);
-  transform-origin: right center;
+  background-position: center 35%;
+  filter: saturate(0.65) sepia(0.18) contrast(0.95);
+  transform-origin: center;
   will-change: transform, opacity;
 }
 .tf-hero-backdrop-overlay {
   position: absolute;
   inset: 0;
-  /* Horizontal gradient: cream on the LEFT to keep the headline + buttons
-     legible, transparent on the RIGHT so the photo shows through clearly.
-     Vertical gradient at the bottom for a smooth blend into the section
-     below. */
   background:
     linear-gradient(180deg,
-      rgba(229, 233, 217, 0.00) 0%,
-      rgba(229, 233, 217, 0.35) 70%,
-      rgba(229, 233, 217, 0.90) 100%),
-    linear-gradient(90deg,
-      rgba(229, 233, 217, 0.95) 0%,
-      rgba(229, 233, 217, 0.85) 30%,
-      rgba(229, 233, 217, 0.30) 55%,
-      rgba(229, 233, 217, 0.00) 100%);
-}
-@media (max-width: 720px) {
-  /* On small screens the text wraps under the image; soften the
-     horizontal gradient so the photo is gently overlaid for readability. */
-  .tf-hero-backdrop-overlay {
-    background:
-      linear-gradient(180deg,
-        rgba(229, 233, 217, 0.65) 0%,
-        rgba(229, 233, 217, 0.85) 100%);
-  }
+      rgba(229, 233, 217, 0.35) 0%,
+      rgba(229, 233, 217, 0.78) 60%,
+      rgba(229, 233, 217, 0.96) 100%),
+    linear-gradient(115deg,
+      rgba(27, 44, 69, 0.10) 0%,
+      transparent 60%);
 }
 @media (prefers-reduced-motion: reduce) {
   .tf-hero-backdrop-img { transform: none !important; }
