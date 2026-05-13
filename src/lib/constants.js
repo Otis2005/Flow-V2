@@ -17,21 +17,13 @@ export const SECTORS = [
   'Supplies'
 ];
 
+// We focus on East Africa to start: Kenya, Uganda, Tanzania.
+// As the platform scales we'll re-add neighbours (Rwanda, Burundi, etc.)
+// and eventually West and Southern Africa.
 export const COUNTRIES = [
   'Kenya',
-  'Nigeria',
-  'Rwanda',
-  'Ghana',
-  'South Africa',
   'Uganda',
-  'Mali',
-  'Senegal',
-  'Tanzania',
-  'Ethiopia',
-  'Egypt',
-  "Côte d'Ivoire",
-  'Zambia',
-  'Botswana'
+  'Tanzania'
 ];
 
 export const SOURCES = ['Government', 'NGO', 'SME'];

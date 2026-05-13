@@ -1,13 +1,15 @@
 import { Link, useNavigate } from 'react-router-dom';
 import Badge from '../components/Badge.jsx';
 import FadeIn from '../components/FadeIn.jsx';
-import HeroCarousel from '../components/HeroCarousel.jsx';
+import HeroBackdrop from '../components/HeroBackdrop.jsx';
 import { TenderCard } from '../components/TenderViews.jsx';
 import { useTenders } from '../lib/useTenders.js';
+import { useAuth } from '../lib/AuthProvider.jsx';
 
 export default function Home() {
   const navigate = useNavigate();
   const { tenders } = useTenders();
+  const { user } = useAuth();
   const featured = tenders.slice(0, 6);
 
   const sourceCounts = tenders.reduce(
@@ -21,20 +23,41 @@ export default function Home() {
 
   return (
     <main className="tf-page-anim">
-      <HeroCarousel />
-
-      {/* Stats live as their own static band below the rotating hero so
-          they don't disappear with each slide change. */}
-      <section className="tf-hero-stats-band">
+      <section className="tf-hero">
+        <HeroBackdrop />
         <div className="tf-container">
-          <FadeIn className="tf-hero-stats">
+          <div className="tf-hero-text">
+            <div>
+              <FadeIn as="h1" className="tf-display">
+                Government, NGO and SME tenders, <em>all in one place.</em>
+              </FadeIn>
+            </div>
+            <div className="tf-hero-text-side">
+              <FadeIn as="p" delay={120}>
+                We consolidate live opportunities from ministries, parastatals,
+                NGOs and SMEs across East Africa.
+              </FadeIn>
+              <FadeIn className="tf-hero-text-actions" delay={240}>
+                <button
+                  className="tf-cta"
+                  onClick={() => navigate(user ? '/dashboard' : '/sign-up')}
+                >
+                  {user ? 'Open dashboard' : 'Sign up'}
+                </button>
+                <button className="tf-cta-ghost" onClick={() => navigate('/tenders')}>
+                  Browse all tenders
+                </button>
+              </FadeIn>
+            </div>
+          </div>
+          <FadeIn className="tf-hero-stats" delay={360}>
             <div className="tf-hero-stat">
               <div className="tf-hero-stat-num">{liveToday}</div>
               <div className="tf-hero-stat-label">Live tenders today</div>
             </div>
             <div className="tf-hero-stat">
-              <div className="tf-hero-stat-num">{countriesCount || 14}</div>
-              <div className="tf-hero-stat-label">African countries</div>
+              <div className="tf-hero-stat-num">{countriesCount || 3}</div>
+              <div className="tf-hero-stat-label">East African countries</div>
             </div>
             <div className="tf-hero-stat">
               <div className="tf-hero-stat-num">
@@ -65,14 +88,14 @@ export default function Home() {
               </h2>
             </div>
             <p className="tf-band-blurb tf-on-navy-muted">
-              Public procurement, NGO sourcing, and SME opportunities. Side by side.
+              Public procurement, NGO sourcing, and SME opportunities, side by side.
             </p>
           </FadeIn>
           <div className="tf-source-cols tf-source-cols-navy">
             {[
-              { src: 'Government', count: sourceCounts.Government || 0, blurb: 'Ministries, parastatals, county and local government tenders.' },
-              { src: 'NGO',        count: sourceCounts.NGO || 0,        blurb: 'NGOs, donor-funded projects, foundations, and institutional buyers.' },
-              { src: 'SME',        count: sourceCounts.SME || 0,        blurb: 'Smaller lots, accessible terms, sub-contracting opportunities.' }
+              { src: 'Government', count: sourceCounts.Government || 0, blurb: 'Ministries, parastatals, county and local government tenders from Kenya, Uganda, and Tanzania.' },
+              { src: 'NGO',        count: sourceCounts.NGO || 0,        blurb: 'NGOs, donor-funded projects, foundations, and institutional buyers across the region.' },
+              { src: 'SME',        count: sourceCounts.SME || 0,        blurb: 'Smaller lots, accessible terms, sub-contracting opportunities for growing businesses.' }
             ].map((s, i, arr) => (
               <FadeIn
                 key={s.src}
@@ -90,7 +113,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Latest tenders — tighter top/bottom padding */}
+      {/* Latest tenders */}
       <section className="tf-band tf-band-light">
         <div className="tf-container">
           <FadeIn className="tf-band-head">
@@ -112,7 +135,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Consultant banner — compact two-column */}
+      {/* Consultant banner, compact two-column */}
       <section className="tf-band tf-band-navy">
         <div className="tf-container">
           <FadeIn className="tf-cta-band">
@@ -139,13 +162,12 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Mission quote — kept but tightened */}
       <section className="tf-band tf-band-mission">
         <div className="tf-container">
           <FadeIn>
             <div className="tf-eyebrow" style={{ display: 'inline-block' }}>The mission</div>
             <p className="tf-mission-line">
-              Africa's procurement market is large, fragmented, and almost entirely
+              East Africa's procurement market is large, fragmented, and almost entirely
               invisible to the people who could win the work.{' '}
               <em style={{ color: 'var(--gold)' }}>We're fixing that.</em>
             </p>

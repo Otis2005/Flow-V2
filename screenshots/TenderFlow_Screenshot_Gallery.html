@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TenderFlow — Screenshot Gallery</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: Arial, sans-serif; background: #F5F3ED; color: #2B2B1E; }
+
+    header {
+      background: #0D1B3E;
+      color: #fff;
+      padding: 28px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    header h1 { font-size: 22px; font-weight: 700; }
+    header .sub { color: #C9A84C; font-size: 13px; margin-top: 4px; }
+    header .url { font-size: 12px; color: rgba(255,255,255,0.6); }
+
+    .instructions {
+      background: #FBF3DC;
+      border-left: 4px solid #C9A84C;
+      padding: 16px 40px;
+      font-size: 13px;
+      color: #555;
+    }
+    .instructions strong { color: #0D1B3E; }
+
+    .gallery { padding: 32px 40px; max-width: 1400px; margin: 0 auto; }
+
+    .section-title {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #C9A84C;
+      margin: 32px 0 16px;
+      padding-bottom: 8px;
+      border-bottom: 1px solid #DDDDCC;
+    }
+
+    .frames-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(640px, 1fr));
+      gap: 24px;
+    }
+
+    .frame-card {
+      background: #fff;
+      border: 1px solid #DDDDCC;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+    }
+    .frame-card .label {
+      background: #0D1B3E;
+      color: #fff;
+      padding: 10px 16px;
+      font-size: 12px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .frame-card .label .badge {
+      background: #C9A84C;
+      color: #0D1B3E;
+      font-size: 10px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 20px;
+    }
+    .frame-card iframe {
+      width: 100%;
+      height: 500px;
+      border: none;
+      display: block;
+    }
+    .frame-card .note {
+      padding: 10px 16px;
+      font-size: 11px;
+      color: #888;
+      background: #F5F3ED;
+      border-top: 1px solid #DDDDCC;
+    }
+
+    .tip-box {
+      background: #E8EBF4;
+      border-radius: 10px;
+      padding: 20px 28px;
+      margin: 32px 0 0;
+      font-size: 13px;
+      color: #0D1B3E;
+    }
+    .tip-box strong { display: block; margin-bottom: 8px; font-size: 14px; }
+    .tip-box ol { padding-left: 20px; }
+    .tip-box ol li { margin: 6px 0; }
+  </style>
+</head>
+<body>
+
+<header>
+  <div>
+    <h1>TenderFlow — Screenshot Gallery</h1>
+    <div class="sub">Social Media Campaign Assets</div>
+  </div>
+  <div class="url">flow-v2-livid.vercel.app</div>
+</header>
+
+<div class="instructions">
+  <strong>How to use this file:</strong> Open it in Chrome. Each section shows a live embed of the TenderFlow pages.
+  To capture a screenshot: <strong>right-click any frame → "Take screenshot"</strong> or press <strong>Ctrl+Shift+S</strong> on the frame area.
+  For best results, use Chrome's built-in full-page screenshot: open DevTools (F12) → Ctrl+Shift+P → "Capture full size screenshot".
+</div>
+
+<div class="gallery">
+
+  <div class="section-title">Home Page — Hero &amp; Sections</div>
+  <div class="frames-grid">
+
+    <div class="frame-card">
+      <div class="label">
+        Hero — Carousel Slide 1
+        <span class="badge">HOME</span>
+      </div>
+      <iframe src="https://flow-v2-livid.vercel.app/" title="TenderFlow Home Hero"></iframe>
+      <div class="note">Use for: LinkedIn banner, Twitter/X header, Facebook cover, Instagram Reel thumbnail</div>
+    </div>
+
+    <div class="frame-card">
+      <div class="label">
+        Stats Band + Tender Cards
+        <span class="badge">HOME</span>
+      </div>
+      <iframe src="https://flow-v2-livid.vercel.app/#stats" title="TenderFlow Stats"></iframe>
+      <div class="note">Use for: "Live tenders today" stat posts, launch announcement graphics</div>
+    </div>
+
+  </div>
+
+  <div class="section-title">Browse Tenders — Listings &amp; Filters</div>
+  <div class="frames-grid">
+
+    <div class="frame-card">
+      <div class="label">
+        Browse Tenders — Full Listings View
+        <span class="badge">TENDERS</span>
+      </div>
+      <iframe src="https://flow-v2-livid.vercel.app/tenders" title="TenderFlow Browse Tenders"></iframe>
+      <div class="note">Use for: "Browse tenders" CTA posts, platform walkthrough reels, LinkedIn carousel</div>
+    </div>
+
+  </div>
+
+  <div class="section-title">Tender Detail Page</div>
+  <div class="frames-grid">
+
+    <div class="frame-card">
+      <div class="label">
+        Tender Detail — REREC Solar Pumping System
+        <span class="badge">DETAIL</span>
+      </div>
+      <iframe src="https://flow-v2-livid.vercel.app/tenders/d590d33a-10f1-42e5-a550-38c26c8098fe" title="Tender Detail"></iframe>
+      <div class="note">Use for: "Tender spotlight" posts showing depth of information extracted</div>
+    </div>
+
+  </div>
+
+  <div class="section-title">Consultants Marketplace</div>
+  <div class="frames-grid">
+
+    <div class="frame-card">
+      <div class="label">
+        Consultants — Find a Consultant Page
+        <span class="badge">CONSULTANTS</span>
+      </div>
+      <iframe src="https://flow-v2-livid.vercel.app/consultants" title="TenderFlow Consultants"></iframe>
+      <div class="note">Use for: Consultant feature posts, "Register as consultant" CTA content</div>
+    </div>
+
+  </div>
+
+  <div class="section-title">How It Works</div>
+  <div class="frames-grid">
+
+    <div class="frame-card">
+      <div class="label">
+        How It Works — Four Steps
+        <span class="badge">EXPLAINER</span>
+      </div>
+      <iframe src="https://flow-v2-livid.vercel.app/how-it-works" title="How TenderFlow Works"></iframe>
+      <div class="note">Use for: Educational posts, "We collect → We extract → We classify → You browse" infographic</div>
+    </div>
+
+  </div>
+
+  <div class="tip-box">
+    <strong>📸 Quick Screenshot Workflow for Social Media</strong>
+    <ol>
+      <li>Open this file in Chrome and wait for each frame to load fully</li>
+      <li>Click inside the frame you want to capture</li>
+      <li>Press <strong>F12</strong> to open DevTools</li>
+      <li>Press <strong>Ctrl+Shift+P</strong> and type <strong>"Capture full size screenshot"</strong></li>
+      <li>Chrome saves a PNG automatically to your Downloads folder</li>
+      <li>Rename and use for social posts — recommended sizes: 1200×630px (LinkedIn/FB), 1080×1080px (Instagram), 1500×500px (Twitter header)</li>
+    </ol>
+  </div>
+
+</div>
+
+</body>
+</html>

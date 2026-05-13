@@ -5,11 +5,8 @@ import { useTenders } from '../lib/useTenders.js';
 import { supabase, isSupabaseConfigured } from '../lib/supabaseClient.js';
 import { SECTOR_OPTIONS } from '../lib/constants.js';
 
-const COUNTRIES = [
-  'Kenya', 'Nigeria', 'South Africa', 'Ghana', 'Rwanda',
-  'Uganda', 'Tanzania', 'Senegal', "Côte d'Ivoire", 'Ethiopia',
-  'Mali', 'Egypt', 'Zambia', 'Botswana'
-];
+// East Africa focus for now.
+const COUNTRIES = ['Kenya', 'Uganda', 'Tanzania'];
 
 function StepDots({ step, total }) {
   return (

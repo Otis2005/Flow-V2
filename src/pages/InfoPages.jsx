@@ -166,10 +166,21 @@ export function Contact() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24 }}>
         <div>
           <h3 style={{ fontFamily: 'var(--serif)', fontSize: 22, color: 'var(--navy)', fontWeight: 500 }}>Direct</h3>
-          <ul style={{ listStyle: 'none', padding: 0, fontSize: 14, lineHeight: 2 }}>
-            <li>Email: <a href="mailto:hello@tenderflow.africa" style={{ color: 'var(--navy)' }}>hello@tenderflow.africa</a></li>
-            <li>WhatsApp: <a href="https://wa.me/254704463612" target="_blank" rel="noopener" style={{ color: 'var(--navy)' }}>+254 704 463 612</a></li>
-            <li>Office: Westlands, Nairobi · Lekki, Lagos</li>
+          <ul style={{ listStyle: 'none', padding: 0, fontSize: 14, lineHeight: 1.9 }}>
+            <li>Email: <a href="mailto:help@tenderflow.co.ke" style={{ color: 'var(--navy)' }}>help@tenderflow.co.ke</a></li>
+            <li>
+              Alternative:{' '}
+              <a href="mailto:kennedy.nange@tenderflow.co.ke" style={{ color: 'var(--navy)' }}>
+                kennedy.nange@tenderflow.co.ke
+              </a>
+            </li>
+            <li>Phone: <a href="tel:+254724131492" style={{ color: 'var(--navy)' }}>0724 131 492</a></li>
+            <li style={{ marginTop: 8, lineHeight: 1.55 }}>
+              <strong>Office:</strong><br />
+              Eden Square Complex, Chiromo Road,<br />
+              Westlands, Block 1, 7th Floor,<br />
+              Nairobi, Kenya
+            </li>
           </ul>
         </div>
         <div>
@@ -196,10 +207,10 @@ export function Contact() {
 // ─── FAQ ───────────────────────────────────────────────────────
 const FAQS = [
   ['Is it really free?', 'Yes. Browsing tenders and the weekly digest are free for bidders, forever. We make money from suppliers paying for premium analytics and from featured-listing fees on the buyer side.'],
-  ['Where do tenders come from?', 'Government portals, parastatal procurement boards, corporate vendor portals, gazette notices, and SME networks. We add new sources weekly. Submit a tender we should cover via the Submit page.'],
+  ['Where do tenders come from?', 'Government portals, parastatal procurement boards, county procurement notices, NGO bulletins, donor-funded project announcements, and SME networks. We add new sources weekly. Submit a tender we should cover via the Submit page.'],
   ['How fast are tenders indexed?', 'Most appear within 24 hours of publication. Closing-soon tenders are reviewed twice daily.'],
-  ['Can I submit a tender myself?', 'Yes,anyone can suggest a tender via the Submit a tender page. Our team verifies before publishing.'],
-  ['What countries do you cover?', 'Currently 14 countries across East, West and Southern Africa, with more being added based on demand.']
+  ['Can I submit a tender myself?', 'Yes, anyone can suggest a tender via the Submit a tender page. Our team verifies before publishing.'],
+  ['What countries do you cover?', 'Kenya, Uganda and Tanzania. We started with East Africa because the three economies share procurement rules, time zones, and bidder networks. The rest of the continent follows as we gain traction.']
 ];
 export function FAQ() {
   return (
@@ -284,7 +295,7 @@ export function Guide() {
 
 export function Press() {
   return (
-    <PageShell eyebrow="Press" title="Press & media" intro="For interviews, brand assets or partnership inquiries, email press@tenderflow.africa.">
+    <PageShell eyebrow="Press" title="Press & media" intro="For interviews, brand assets or partnership inquiries, email press@tenderflow.co.ke.">
       <p style={{ color: 'var(--muted)' }}>
         Brand assets and a one-pager are available on request. We respond within one working day.
       </p>
@@ -305,7 +316,23 @@ export function Privacy() {
   return (
     <PageShell eyebrow="Privacy" title="Privacy policy" intro="Last updated: May 2026. We take the trust of bidders, buyers, and consultants seriously. Here is exactly what we collect, why, and the controls you have.">
       <Section title="Who we are">
-        <p>TenderFlow is operated by Kennedy Nange and partners ("TenderFlow", "we"). The service is the website at flow-v2-livid.vercel.app and any custom domain we publish on. Contact: <a href="mailto:privacy@tenderflow.africa" style={{ color: 'var(--navy)' }}>privacy@tenderflow.africa</a>.</p>
+        <p>
+          TenderFlow is an independent tender-intelligence service based in
+          Nairobi, Kenya. We consolidate live procurement opportunities from
+          across East Africa into one searchable feed: every government, NGO,
+          and SME tender, structured, indexed, and easy to act on. Where most
+          listing services cover a single ministry or a single country, we
+          bring the region together so bidders find the work that fits them
+          without hunting across twenty portals.
+        </p>
+        <p style={{ marginTop: 12 }}>
+          In this policy, "TenderFlow", "we", "us" and "our" mean the
+          TenderFlow team operating tenderflow.co.ke (and any custom domain
+          we publish on). Contact:{' '}
+          <a href="mailto:help@tenderflow.co.ke" style={{ color: 'var(--navy)' }}>
+            help@tenderflow.co.ke
+          </a>.
+        </p>
       </Section>
 
       <Section title="What we collect">
@@ -346,7 +373,7 @@ export function Privacy() {
           <li><strong>Portability:</strong> your data is exportable as JSON on request.</li>
           <li><strong>Objection:</strong> opt out of the digest at any time. Marketing communications are opt-in by default.</li>
         </ul>
-        <p style={{ marginTop: 10 }}>Send any request to <a href="mailto:privacy@tenderflow.africa" style={{ color: 'var(--navy)' }}>privacy@tenderflow.africa</a>. We respond within 5 working days.</p>
+        <p style={{ marginTop: 10 }}>Send any request to <a href="mailto:privacy@tenderflow.co.ke" style={{ color: 'var(--navy)' }}>privacy@tenderflow.co.ke</a>. We respond within 5 working days.</p>
       </Section>
 
       <Section title="Cookies and storage">

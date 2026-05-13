@@ -30,7 +30,11 @@ const HERO_IMAGES = {
   meeting:      `${SUPABASE_PUBLIC}/meeting.webp`
 };
 
-const HERO_VARIANT = 'construction';
+// Static hero: Kennedy picked the meeting photo (woman + man at a desk,
+// faces toward the camera) over the construction/blueprint/city options.
+// To swap: change the variant key and update the matching preload <link>
+// in index.html.
+const HERO_VARIANT = 'meeting';
 const HERO_IMAGE = HERO_IMAGES[HERO_VARIANT];
 
 export default function HeroBackdrop({ src = HERO_IMAGE }) {
