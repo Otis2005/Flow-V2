@@ -141,7 +141,7 @@ export default function RightPanel({ open, onClose }) {
         <div className="tf-rpanel-foot">
           <span className="tf-logo-text" style={{ fontSize: 18 }}>Tender<em>Flow</em></span>
           <span style={{ fontSize: 11, color: 'var(--muted)', display: 'block', marginTop: 4 }}>
-            Pan-African opportunity intelligence
+            East African tender intelligence
           </span>
         </div>
       </aside>

@@ -51,7 +51,7 @@ export default function SignIn() {
             </p>
           </div>
           <div style={{ fontSize: 12, color: 'rgba(245,246,235,0.5)', marginTop: 24 }}>
-            Pan-African opportunity intelligence.
+            East African tender intelligence.
           </div>
         </div>
         <div className="tf-auth-form">
