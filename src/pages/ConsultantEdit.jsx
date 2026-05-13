@@ -73,6 +73,14 @@ export default function ConsultantEdit() {
 
   async function onPhoto(file) {
     if (!file) return;
+    if (!file.type.startsWith('image/')) {
+      setError('Profile photo must be an image (JPG, PNG, or WebP).');
+      return;
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError('Profile photo must be under 5 MB.');
+      return;
+    }
     setPhotoUploading(true); setError(null);
     try {
       const r = await uploadAsset(file, 'photos');
@@ -82,6 +90,19 @@ export default function ConsultantEdit() {
   }
   async function onCv(file) {
     if (!file) return;
+    const okType =
+      file.type === 'application/pdf' ||
+      file.type === 'application/msword' ||
+      file.type === 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' ||
+      /\.(pdf|doc|docx)$/i.test(file.name);
+    if (!okType) {
+      setError('CV must be a PDF or Word document.');
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      setError('CV must be under 10 MB.');
+      return;
+    }
     setCvUploading(true); setError(null);
     try {
       const r = await uploadAsset(file, 'cvs');

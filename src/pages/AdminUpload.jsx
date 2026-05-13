@@ -178,6 +178,14 @@ export default function AdminUpload() {
   async function handleLogoUpload(file) {
     if (!file) return;
     if (!isSupabaseConfigured) { alert('Supabase not configured'); return; }
+    if (!file.type.startsWith('image/')) {
+      alert('Issuer logo must be an image file (PNG, JPG, SVG, or WebP).');
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      alert('Issuer logo must be under 2 MB.');
+      return;
+    }
     setLogoUploading(true);
     const path = `logos/${Date.now()}-${slug(file.name)}`;
     const { error } = await supabase.storage
