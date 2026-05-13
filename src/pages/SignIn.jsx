@@ -51,7 +51,7 @@ export default function SignIn() {
             </p>
           </div>
           <div style={{ fontSize: 12, color: 'rgba(245,246,235,0.5)', marginTop: 24 }}>
-            East African tender intelligence.
+            Regional Tender Intelligence. At your Fingertips.
           </div>
         </div>
         <div className="tf-auth-form">

@@ -59,11 +59,13 @@ export default function HeroBackdrop({ src = HERO_IMAGE }) {
     };
   }, []);
 
-  // Parallax + fade as described in v2.css. We translate down at 0.35x
-  // scroll, capped at 320px so we don't waste GPU below the fold, and
-  // fade opacity from 0.95 -> 0.15 over the first 600px.
+  // Parallax + fade. Translate downward at 0.35x scroll (capped at 320px
+  // so we stop wasting GPU below the fold). Opacity goes from 1.0 to
+  // 0.25 across the first 600px of scroll. Image starts fully visible
+  // because the new horizontal overlay gradient does the masking on
+  // the left side rather than fading the whole image.
   const parallaxY = Math.min(scrollY * 0.35, 320);
-  const opacity = Math.max(0.15, 0.95 - scrollY / 600);
+  const opacity = Math.max(0.25, 1.0 - scrollY / 600);
 
   return (
     <div className="tf-hero-backdrop" aria-hidden="true">

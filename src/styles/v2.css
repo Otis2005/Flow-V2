@@ -597,6 +597,42 @@
   background: var(--cream);
 }
 
+/* ── Filter selects: predictable, clean ──────────────────────
+   Native <select> styling varies wildly by browser/OS and some
+   versions (Chromium on Windows in particular) get the open/closed
+   visual state out of sync. Stripping native appearance and providing
+   our own chevron + focus state gives a single consistent UI. */
+.tf-field select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image:
+    linear-gradient(45deg, transparent 50%, var(--navy) 50%),
+    linear-gradient(135deg, var(--navy) 50%, transparent 50%);
+  background-position:
+    calc(100% - 14px) 50%,
+    calc(100% - 9px) 50%;
+  background-size:
+    5px 5px,
+    5px 5px;
+  background-repeat: no-repeat;
+  padding-right: 28px !important;
+  cursor: pointer;
+  transition: border-color 140ms ease, background-color 140ms ease;
+}
+.tf-field select:hover {
+  border-color: rgba(20, 30, 40, 0.35);
+}
+.tf-field select:focus {
+  border-color: var(--navy);
+  outline: 2px solid rgba(216, 167, 59, 0.35);
+  outline-offset: 1px;
+}
+/* Hide the default arrow in IE/Edge legacy mode (defensive). */
+.tf-field select::-ms-expand {
+  display: none;
+}
+
 /* ── Compact bands (homepage and elsewhere) ───────────────────
    Tighter vertical padding and section headings, plus a single shared
    header layout so each section reads as a unit instead of a wall of
@@ -815,22 +851,41 @@
   position: absolute;
   inset: -10% -2% -10% -2%;
   background-size: cover;
-  background-position: center 35%;
-  filter: saturate(0.65) sepia(0.18) contrast(0.95);
-  transform-origin: center;
+  /* Anchor the focal point to the right side so the subject is visible
+     past the headline text on the left. */
+  background-position: 78% center;
+  /* Lighter filter so the photo reads more clearly. */
+  filter: saturate(0.80) contrast(1.0);
+  transform-origin: right center;
   will-change: transform, opacity;
 }
 .tf-hero-backdrop-overlay {
   position: absolute;
   inset: 0;
+  /* Horizontal gradient: cream on the LEFT to keep the headline + buttons
+     legible, transparent on the RIGHT so the photo shows through clearly.
+     Vertical gradient at the bottom for a smooth blend into the section
+     below. */
   background:
     linear-gradient(180deg,
-      rgba(229, 233, 217, 0.35) 0%,
-      rgba(229, 233, 217, 0.78) 60%,
-      rgba(229, 233, 217, 0.96) 100%),
-    linear-gradient(115deg,
-      rgba(27, 44, 69, 0.10) 0%,
-      transparent 60%);
+      rgba(229, 233, 217, 0.00) 0%,
+      rgba(229, 233, 217, 0.35) 70%,
+      rgba(229, 233, 217, 0.90) 100%),
+    linear-gradient(90deg,
+      rgba(229, 233, 217, 0.95) 0%,
+      rgba(229, 233, 217, 0.85) 30%,
+      rgba(229, 233, 217, 0.30) 55%,
+      rgba(229, 233, 217, 0.00) 100%);
+}
+@media (max-width: 720px) {
+  /* On small screens the text wraps under the image; soften the
+     horizontal gradient so the photo is gently overlaid for readability. */
+  .tf-hero-backdrop-overlay {
+    background:
+      linear-gradient(180deg,
+        rgba(229, 233, 217, 0.65) 0%,
+        rgba(229, 233, 217, 0.85) 100%);
+  }
 }
 @media (prefers-reduced-motion: reduce) {
   .tf-hero-backdrop-img { transform: none !important; }

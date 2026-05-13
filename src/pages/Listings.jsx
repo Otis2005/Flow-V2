@@ -103,25 +103,37 @@ export default function Listings() {
           </div>
           <div className="tf-field tf-field-sm">
             <label>Source</label>
-            <select value={source} onChange={e => setSource(e.target.value)}>
+            <select
+              value={source}
+              onChange={e => { setSource(e.target.value); e.target.blur(); }}
+            >
               {sourceOptions.map(s => <option key={s}>{s}</option>)}
             </select>
           </div>
           <div className="tf-field tf-field-sm">
             <label>Country</label>
-            <select value={country} onChange={e => setCountry(e.target.value)}>
+            <select
+              value={country}
+              onChange={e => { setCountry(e.target.value); e.target.blur(); }}
+            >
               {countryOptions.map(c => <option key={c}>{c}</option>)}
             </select>
           </div>
           <div className="tf-field tf-field-sm">
             <label>Sector</label>
-            <select value={sector} onChange={e => setSector(e.target.value)}>
+            <select
+              value={sector}
+              onChange={e => { setSector(e.target.value); e.target.blur(); }}
+            >
               {sectorOptions.map(s => <option key={s}>{s}</option>)}
             </select>
           </div>
           <div className="tf-field tf-field-sm">
             <label>Sort by</label>
-            <select value={sortBy} onChange={e => setSortBy(e.target.value)}>
+            <select
+              value={sortBy}
+              onChange={e => { setSortBy(e.target.value); e.target.blur(); }}
+            >
               <option value="published">Newly published</option>
               <option value="closes">Closing soonest</option>
               <option value="value">Highest value</option>
