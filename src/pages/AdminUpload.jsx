@@ -186,8 +186,12 @@ export default function AdminUpload() {
             ref_no: prev.ref_no || json.ref_no || '',
             value: prev.value || json.value || '',
             currency: json.currency || prev.currency,
-            published_at: prev.published_at || json.published_at || '',
-            closes_at: prev.closes_at || json.closes_at || '',
+            // Defensive: only accept YYYY-MM-DD from the extractor. The
+            // server normalizes too, but if a partial date slips through
+            // we leave the input empty rather than poison form state with
+            // "2026-05" which Postgres rejects on save.
+            published_at: prev.published_at || (isValidDate(json.published_at) ? json.published_at : ''),
+            closes_at: prev.closes_at || (isValidDate(json.closes_at) ? json.closes_at : ''),
             summary: prev.summary || json.summary || '',
             scope: prev.scope || json.scope || '',
             eligibility: prev.eligibility || json.eligibility || '',
@@ -244,6 +248,17 @@ export default function AdminUpload() {
     if (!isSupabaseConfigured) { alert('Supabase not configured.'); return; }
     if (!form.title || !form.issuer || !form.closes_at) {
       alert('Title, issuer, and closing date are required.');
+      return;
+    }
+    // Belt-and-braces date validation. Postgres' date type rejects partial
+    // values like "2026-05", so we catch it here with a clear message
+    // pointing at the wrong field instead of letting the raw error bubble.
+    if (!isValidDate(form.closes_at)) {
+      setSaveStatus({ ok: false, msg: 'Closing date is not a complete date. Use the calendar picker to set day, month, and year.' });
+      return;
+    }
+    if (form.published_at && !isValidDate(form.published_at)) {
+      setSaveStatus({ ok: false, msg: 'Published date is not a complete date. Clear the field or set a full date.' });
       return;
     }
     setSaving(true);
@@ -734,6 +749,19 @@ function prettyBytes(n) {
 
 function slug(s) {
   return s.toLowerCase().replace(/[^a-z0-9.]/g, '-').replace(/-+/g, '-');
+}
+
+// Returns true if v is a real YYYY-MM-DD calendar date. Used to defend
+// against the extractor occasionally emitting partial strings like
+// "2026-05" or prose like "May 2026" that Postgres' date type rejects.
+function isValidDate(v) {
+  if (!v || typeof v !== 'string') return false;
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(v)) return false;
+  const [y, m, d] = v.split('-').map(Number);
+  if (m < 1 || m > 12 || d < 1 || d > 31) return false;
+  // Roundtrip through Date to catch impossible dates like 2026-02-30
+  const dt = new Date(v + 'T00:00:00Z');
+  return !isNaN(dt.getTime()) && dt.toISOString().startsWith(v);
 }
 
 // SHA-256 of a File / Blob, returned as lowercase hex.

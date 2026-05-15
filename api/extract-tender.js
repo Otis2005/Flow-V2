@@ -265,6 +265,20 @@ export default async function handler(req, res) {
       });
     }
 
+    // Normalize dates: Claude occasionally returns partial values like
+    // "2026-05" or prose like "May 2026" when the PDF doesn't state an
+    // exact day. Anything that doesn't match YYYY-MM-DD becomes null so
+    // the client can render the date input as empty and the admin sees
+    // a clear "needs review" flag instead of a Postgres save error.
+    extracted.published_at = normalizeDate(extracted.published_at);
+    extracted.closes_at = normalizeDate(extracted.closes_at);
+
+    // If we nulled a date, flag it for the admin's attention.
+    const reviewNotes = new Set(Array.isArray(extracted.needs_review) ? extracted.needs_review : []);
+    if (extracted.published_at === null) reviewNotes.add('published_at');
+    if (extracted.closes_at === null) reviewNotes.add('closes_at');
+    extracted.needs_review = Array.from(reviewNotes);
+
     // Surface extraction metadata so the admin UI can show the user
     // which path ran and what model was used.
     return res.status(200).json({ ...extracted, _meta: meta });
@@ -278,4 +292,28 @@ export default async function handler(req, res) {
 
 function safeJsonParse(s) {
   try { return JSON.parse(s); } catch { return null; }
+}
+
+// Coerce a model-returned date to YYYY-MM-DD, or null if we can't.
+// Postgres' date type rejects anything that isn't a complete calendar date,
+// so we'd rather null a partial like "2026-05" than let it cause a save
+// error downstream. We also strip full ISO timestamps to just the date part.
+function normalizeDate(v) {
+  if (v === null || v === undefined) return null;
+  if (typeof v !== 'string') return null;
+  const trimmed = v.trim();
+  if (!trimmed) return null;
+  // Already YYYY-MM-DD
+  if (/^\d{4}-\d{2}-\d{2}$/.test(trimmed)) {
+    // Sanity check: month 1-12, day 1-31. Postgres will reject 2026-13-40
+    // with the same error class, so catch it here too.
+    const [y, m, d] = trimmed.split('-').map(Number);
+    if (m < 1 || m > 12 || d < 1 || d > 31) return null;
+    return trimmed;
+  }
+  // Full ISO timestamp like "2026-05-15T00:00:00Z"
+  const isoMatch = trimmed.match(/^(\d{4}-\d{2}-\d{2})T/);
+  if (isoMatch) return isoMatch[1];
+  // Anything else (partial, prose, malformed) -> null
+  return null;
 }
