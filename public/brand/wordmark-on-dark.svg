@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Wordmark only, dark-background variant. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" role="img" aria-label="TenderFlow">
+  <title>TenderFlow</title>
+  <text x="10" y="46" font-family="Spectral, Georgia, 'Times New Roman', serif"
+        font-size="44" font-weight="500" fill="#FFFDF7"
+        letter-spacing="-0.5">Tender<tspan font-style="italic" fill="#E7D49E">Flow</tspan></text>
+</svg>

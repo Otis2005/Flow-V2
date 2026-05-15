@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Mark only, dark-background variant. Tall bar becomes paper. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="TenderFlow mark">
+  <title>TenderFlow mark</title>
+  <rect x="8"  y="34" width="10" height="22" fill="#C7841A" />
+  <rect x="22" y="22" width="10" height="34" fill="#00A98F" />
+  <rect x="36" y="8"  width="10" height="48" fill="#FFFDF7" />
+</svg>

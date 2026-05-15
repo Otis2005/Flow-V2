@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Favicon — TenderFlow mark on a navy rounded square.
+  Designed to read at 16x16 even with the navy frame so the bars
+  remain distinguishable.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <rect width="64" height="64" rx="12" fill="#0A2240" />
+  <rect x="12" y="36" width="9" height="20" fill="#C7841A" />
+  <rect x="25" y="26" width="9" height="30" fill="#00A98F" />
+  <rect x="38" y="14" width="9" height="42" fill="#FFFDF7" />
+</svg>

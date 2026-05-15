@@ -3,7 +3,16 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#1B2C45" />
+    <meta name="theme-color" content="#0A2240" />
+
+    <!-- ── Favicons + PWA manifest ────────────────────────────────
+         SVG favicon for modern browsers (every browser since 2021).
+         Older browsers fall back to the bundled .ico if/when added.
+         apple-touch-icon for iOS home screen, manifest for Android PWA. -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+    <link rel="manifest" href="/site.webmanifest" />
 
     <!-- ── Primary SEO ───────────────────────────────────────────── -->
     <title>TenderFlow. East African tender intelligence.</title>
@@ -25,7 +34,7 @@
     />
     <meta property="og:url" content="https://tenderflow.co.ke/" />
     <meta property="og:locale" content="en_KE" />
-    <meta property="og:image" content="https://rtessqlvvsjecogctwok.supabase.co/storage/v1/object/public/tender-pdfs/hero/meeting.webp" />
+    <meta property="og:image" content="https://tenderflow.co.ke/og-cover.svg" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="TenderFlow. Pan-East African tender intelligence." />
@@ -37,7 +46,7 @@
       name="twitter:description"
       content="One feed for Government, NGO and SME tenders across Kenya, Uganda and Tanzania."
     />
-    <meta name="twitter:image" content="https://rtessqlvvsjecogctwok.supabase.co/storage/v1/object/public/tender-pdfs/hero/meeting.webp" />
+    <meta name="twitter:image" content="https://tenderflow.co.ke/og-cover.svg" />
 
     <!-- ── Robots ──────────────────────────────────────────────────
          Allow indexing of public pages. Per-route robots tags can be
@@ -55,7 +64,7 @@
       "@type": "Organization",
       "name": "TenderFlow",
       "url": "https://tenderflow.co.ke",
-      "logo": "https://rtessqlvvsjecogctwok.supabase.co/storage/v1/object/public/tender-pdfs/hero/meeting.webp",
+      "logo": "https://tenderflow.co.ke/brand/mark.svg",
       "description": "East African tender intelligence. Government, NGO and SME tender opportunities across Kenya, Uganda and Tanzania, consolidated in one searchable feed.",
       "areaServed": [
         { "@type": "Country", "name": "Kenya" },
@@ -109,7 +118,7 @@
       rel="preload"
       as="image"
       fetchpriority="high"
-      href="https://rtessqlvvsjecogctwok.supabase.co/storage/v1/object/public/tender-pdfs/hero/meeting.webp"
+      href="https://tenderflow.co.ke/og-cover.svg"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

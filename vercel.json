@@ -5,7 +5,7 @@
   "framework": "vite",
   "rewrites": [
     { "source": "/sitemap.xml", "destination": "/api/sitemap" },
-    { "source": "/((?!api/|sitemap\\.xml|robots\\.txt|favicon|assets/).*)", "destination": "/index.html" }
+    { "source": "/((?!api/|sitemap\\.xml|robots\\.txt|favicon|apple-touch-icon|site\\.webmanifest|og-cover|brand/|assets/).*)", "destination": "/index.html" }
   ],
   "functions": {
     "api/*.js": {

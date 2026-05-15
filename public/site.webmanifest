@@ -1,0 +1,24 @@
+{
+  "name": "TenderFlow",
+  "short_name": "TenderFlow",
+  "description": "East African tender intelligence. Government, NGO and SME tenders across Kenya, Uganda and Tanzania.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F1E5",
+  "theme_color": "#0A2240",
+  "lang": "en",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/apple-touch-icon.svg",
+      "sizes": "180x180",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

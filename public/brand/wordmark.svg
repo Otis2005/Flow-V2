@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  TenderFlow wordmark only (no bars).
+  Use in inline contexts where the bars would feel decorative:
+  single-line headers, signatures, footnotes.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 60" role="img" aria-label="TenderFlow">
+  <title>TenderFlow</title>
+  <text x="10" y="46" font-family="Spectral, Georgia, 'Times New Roman', serif"
+        font-size="44" font-weight="500" fill="#0A2240"
+        letter-spacing="-0.5">Tender<tspan font-style="italic">Flow</tspan></text>
+</svg>

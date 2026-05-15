@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  TenderFlow Open Graph / social media cover image.
+  Dimensions: 1200 x 630 (Facebook/LinkedIn/Twitter/WhatsApp standard).
+  Composition: navy field, large italic-emphasised wordmark left,
+  tagline below, three-bar mark accent right.
+
+  Crawlers like Facebook prefer PNG/JPG over SVG. This SVG ships as
+  a placeholder and works on most modern crawlers. For widest support
+  convert to PNG via cloudconvert.com/svg-to-png at 1200x630 and save
+  as public/og-cover.png; then update the og:image and twitter:image
+  links in index.html to point at the .png file.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-label="TenderFlow social cover">
+  <title>TenderFlow. East African tender intelligence.</title>
+  <desc>Branded social cover image for TenderFlow.</desc>
+
+  <!-- Navy field with subtle vertical gradient for depth -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0"  stop-color="#0E2A50" />
+      <stop offset="1"  stop-color="#0A2240" />
+    </linearGradient>
+    <linearGradient id="goldRule" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"   stop-color="#B98A3B" stop-opacity="0" />
+      <stop offset="0.5" stop-color="#B98A3B" stop-opacity="1" />
+      <stop offset="1"   stop-color="#B98A3B" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)" />
+
+  <!-- Three-bar mark, scaled-up, sitting to the left of the headline -->
+  <g transform="translate(96 248)">
+    <rect x="0"  y="56" width="20" height="66"  fill="#C7841A" />
+    <rect x="30" y="34" width="20" height="88"  fill="#00A98F" />
+    <rect x="60" y="0"  width="20" height="122" fill="#FFFDF7" />
+  </g>
+
+  <!-- Eyebrow rule + label -->
+  <g transform="translate(212 188)">
+    <line x1="0" y1="14" x2="44" y2="14" stroke="#E7D49E" stroke-width="2" />
+    <text x="58" y="18" font-family="'Public Sans', 'Helvetica Neue', Arial, sans-serif"
+          font-size="14" font-weight="600" letter-spacing="2.6" fill="#E7D49E">
+      EAST AFRICAN TENDER INTELLIGENCE
+    </text>
+  </g>
+
+  <!-- Headline wordmark -->
+  <text x="212" y="298" font-family="Spectral, Georgia, 'Times New Roman', serif"
+        font-size="108" font-weight="500" fill="#FFFDF7" letter-spacing="-1.4">
+    Tender<tspan font-style="italic" fill="#E7D49E">Flow</tspan>
+  </text>
+
+  <!-- Tagline -->
+  <text x="212" y="378" font-family="'Public Sans', 'Helvetica Neue', Arial, sans-serif"
+        font-size="30" font-weight="400" fill="rgba(245,246,235,0.85)">
+    Government, NGO and SME tenders, <tspan font-style="italic" font-family="Spectral, Georgia, serif" fill="#E7D49E">all in one place.</tspan>
+  </text>
+
+  <!-- Country chips -->
+  <g transform="translate(212 432)" font-family="'Public Sans', 'Helvetica Neue', Arial, sans-serif"
+     font-size="18" font-weight="500" fill="rgba(245,246,235,0.78)">
+    <g>
+      <rect x="0" y="0" width="120" height="38" rx="4" fill="rgba(245,246,235,0.06)" stroke="rgba(245,246,235,0.16)" />
+      <text x="60" y="25" text-anchor="middle">Kenya</text>
+    </g>
+    <g transform="translate(132 0)">
+      <rect x="0" y="0" width="120" height="38" rx="4" fill="rgba(245,246,235,0.06)" stroke="rgba(245,246,235,0.16)" />
+      <text x="60" y="25" text-anchor="middle">Uganda</text>
+    </g>
+    <g transform="translate(264 0)">
+      <rect x="0" y="0" width="120" height="38" rx="4" fill="rgba(245,246,235,0.06)" stroke="rgba(245,246,235,0.16)" />
+      <text x="60" y="25" text-anchor="middle">Tanzania</text>
+    </g>
+  </g>
+
+  <!-- Gold rule at the bottom -->
+  <line x1="0" y1="586" x2="1200" y2="586" stroke="url(#goldRule)" stroke-width="2" />
+
+  <!-- URL footer -->
+  <text x="212" y="572" font-family="'Public Sans', 'Helvetica Neue', Arial, sans-serif"
+        font-size="20" font-weight="500" fill="rgba(245,246,235,0.62)" letter-spacing="0.6">
+    tenderflow.co.ke
+  </text>
+</svg>

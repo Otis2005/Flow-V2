@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  TenderFlow primary logo lockup (dark background variant).
+  The tall navy bar becomes paper-cream so it stays legible.
+  The italic 'Flow' becomes gold-soft for the premium signal.
+  Wordmark text becomes paper-cream.
+  Use on navy surfaces, dark photo backgrounds, or anywhere the
+  light-variant wordmark would disappear.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 80" role="img" aria-label="TenderFlow logo">
+  <title>TenderFlow</title>
+  <desc>TenderFlow brand mark on dark background: amber and teal bars + paper-coloured tall bar, paper wordmark with gold italic 'Flow'.</desc>
+
+  <g>
+    <rect x="8"  y="40" width="8" height="24" fill="#C7841A" />
+    <rect x="22" y="28" width="8" height="36" fill="#00A98F" />
+    <rect x="36" y="14" width="8" height="50" fill="#FFFDF7" />
+  </g>
+
+  <text x="60" y="58" font-family="Spectral, Georgia, 'Times New Roman', serif"
+        font-size="44" font-weight="500" fill="#FFFDF7"
+        letter-spacing="-0.5">Tender<tspan font-style="italic" fill="#E7D49E">Flow</tspan></text>
+</svg>
