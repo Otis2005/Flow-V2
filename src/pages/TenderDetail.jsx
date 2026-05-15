@@ -240,7 +240,7 @@ export default function TenderDetail() {
           </FadeIn>
 
           {Array.isArray(tender.documents) && tender.documents.length > 0 && (
-            <FadeIn className="tf-detail-section">
+            <FadeIn className="tf-detail-section" id="tender-documents">
               <h3>Tender documents</h3>
               <ul className="tf-doc-list">
                 {tender.documents.map((d, i) => (
@@ -297,16 +297,71 @@ export default function TenderDetail() {
               <dd style={{ fontFamily: 'var(--mono)', fontSize: 13 }}>{tender.refNo}</dd>
             </dl>
             <div style={{ padding: '16px 22px 22px', borderTop: '1px solid var(--rule)' }}>
-              <button
-                className="tf-cta"
-                style={{ width: '100%' }}
-                onClick={() => {
-                  if (tender.documents?.[0]) handleDownload(tender.documents[0]);
-                  else setSavedToast('No documents attached yet.');
-                }}
-              >
-                Download tender pack
-              </button>
+              {/* Primary PDF download. Shows the actual filename + size
+                 + a PDF glyph so the action is unmistakable. If the
+                 tender has multiple documents we surface a small line
+                 below pointing at the full list further down the page. */}
+              {tender.documents?.[0] ? (
+                <>
+                  <button
+                    className="tf-cta tf-sidebar-pdf"
+                    onClick={() => handleDownload(tender.documents[0])}
+                  >
+                    <span className="tf-sidebar-pdf-icon" aria-hidden="true">
+                      <svg viewBox="0 0 24 24" width="20" height="20">
+                        <path
+                          d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Zm0 7V3.5L19.5 9H14Z"
+                          fill="currentColor"
+                        />
+                        <text
+                          x="12" y="17"
+                          textAnchor="middle"
+                          fontSize="6.5"
+                          fontWeight="700"
+                          fontFamily="Helvetica, Arial, sans-serif"
+                          fill="var(--navy)"
+                        >
+                          PDF
+                        </text>
+                      </svg>
+                    </span>
+                    <span className="tf-sidebar-pdf-text">
+                      <span className="tf-sidebar-pdf-label">Download PDF</span>
+                      <span className="tf-sidebar-pdf-meta">
+                        {tender.documents[0].size || ''}
+                        {tender.documents[0].size && tender.documents[0].name ? ' · ' : ''}
+                        {tender.documents[0].name && (
+                          tender.documents[0].name.length > 26
+                            ? tender.documents[0].name.slice(0, 24) + '…'
+                            : tender.documents[0].name
+                        )}
+                      </span>
+                    </span>
+                    <span className="tf-sidebar-pdf-arrow" aria-hidden="true">↓</span>
+                  </button>
+                  {tender.documents.length > 1 && (
+                    <a
+                      href="#tender-documents"
+                      className="tf-sidebar-pdf-more"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        const target = document.getElementById('tender-documents');
+                        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                      }}
+                    >
+                      + {tender.documents.length - 1} more document{tender.documents.length === 2 ? '' : 's'} below ↓
+                    </a>
+                  )}
+                </>
+              ) : (
+                <button
+                  className="tf-cta"
+                  style={{ width: '100%', opacity: 0.6, cursor: 'not-allowed' }}
+                  disabled
+                >
+                  No PDF attached yet
+                </button>
+              )}
               <button
                 className="tf-cta-ghost"
                 style={{ width: '100%', marginTop: 8 }}

@@ -1011,29 +1011,33 @@
 }
 
 /* ── Consultant CTA chip in the tender detail hero ────────────────
-   Discoverable affordance that sits inside the navy header band,
-   right below the issuer/country line. Gold border + soft translucent
-   fill so it reads as a "complimentary option" rather than a pushy
-   banner. The full hire card in the sidebar carries the longer pitch
-   for users who click into the offer. */
+   Inverted-pill treatment: cream fill + gold border + navy body text
+   pops off the navy hero band with full contrast. Earlier gold-on-
+   gold-tint version was too low-contrast to read. The hire card in
+   the sidebar still carries the longer pitch for the user who clicks
+   in. */
 .tf-consult-chip {
   display: inline-flex;
   align-items: center;
   gap: 10px;
   margin-top: 18px;
-  padding: 9px 16px 9px 14px;
-  background: rgba(185, 138, 59, 0.10);
-  border: 1px solid rgba(185, 138, 59, 0.55);
-  color: var(--gold-soft);
+  padding: 10px 16px 10px 14px;
+  background: var(--cream);
+  border: 1.5px solid var(--gold);
+  color: var(--navy);
   font-family: var(--sans);
-  font-size: 13px;
+  font-size: 13.5px;
+  font-weight: 500;
   cursor: pointer;
-  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  transition: background 180ms ease, border-color 180ms ease,
+              transform 180ms ease, box-shadow 200ms ease;
 }
 .tf-consult-chip:hover {
-  background: rgba(185, 138, 59, 0.20);
+  background: var(--paper);
   border-color: var(--gold);
   transform: translateY(-1px);
+  box-shadow: 0 6px 16px -4px rgba(0, 0, 0, 0.30);
 }
 .tf-consult-chip:focus-visible {
   outline: 2px solid var(--gold);
@@ -1044,16 +1048,87 @@
   flex-shrink: 0;
 }
 .tf-consult-chip strong {
-  color: var(--paper);
-  font-weight: 600;
+  color: var(--gold);
+  font-weight: 700;
+  letter-spacing: 0.005em;
 }
 .tf-consult-chip-arrow {
   margin-left: 2px;
   color: var(--gold);
+  font-weight: 700;
   transition: transform 180ms ease;
 }
 .tf-consult-chip:hover .tf-consult-chip-arrow {
   transform: translateX(3px);
+}
+
+/* ── Sidebar PDF download button ─────────────────────────────────
+   Replaces the old generic "Download tender pack" with a richer
+   button that shows filename + size + PDF glyph so the action is
+   unmistakable. Three-column flex: icon | text | arrow. */
+.tf-sidebar-pdf {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 40px 1fr 20px;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  text-align: left;
+}
+.tf-sidebar-pdf-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  background: rgba(245, 246, 235, 0.18);
+  color: var(--paper);
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.tf-sidebar-pdf-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.tf-sidebar-pdf-label {
+  font-weight: 600;
+  font-size: 14px;
+  line-height: 1.2;
+}
+.tf-sidebar-pdf-meta {
+  font-size: 11.5px;
+  opacity: 0.78;
+  font-family: var(--mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.tf-sidebar-pdf-arrow {
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  transition: transform 180ms ease;
+}
+.tf-sidebar-pdf:hover .tf-sidebar-pdf-arrow {
+  transform: translateY(2px);
+}
+.tf-sidebar-pdf-more {
+  display: block;
+  margin-top: 8px;
+  padding: 6px 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--gold);
+  text-decoration: none;
+  border: 1px dashed rgba(185, 138, 59, 0.4);
+  background: rgba(185, 138, 59, 0.04);
+  transition: background 160ms ease, border-color 160ms ease;
+}
+.tf-sidebar-pdf-more:hover {
+  background: rgba(185, 138, 59, 0.10);
+  border-color: var(--gold);
 }
 
 /* ── Hire-consultant CTA on tender detail ─────────────────────── */
