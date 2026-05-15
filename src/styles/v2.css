@@ -525,28 +525,6 @@
   gap: 6px;
 }
 
-/* ── Tame variable-length text on tender cards ───────────────────
-   Long titles and long issuer names were the main cause of row-to-row
-   height variation. Capping them with line-clamps reduces variance
-   without touching the grid layout or wrapper chain (an earlier
-   attempt to chain display:flex through wrappers blew out grid
-   track widths, see commit history). CSS Grid's default
-   align-items:stretch already keeps cards within a row equal height
-   once the title doesn't run 4 lines deep. */
-.tf-card-title {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  word-break: break-word;
-}
-.tf-card-issuer-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
 /* ── AGPO badge ─────────────────────────────────────────────────
    Small gold pill with a star glyph. Indicates the tender is reserved
    for AGPO-registered businesses (youth / women / PWD). The gradient
