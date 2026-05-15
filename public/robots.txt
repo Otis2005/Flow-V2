@@ -1,0 +1,24 @@
+# TenderFlow robots policy
+# https://tenderflow.co.ke
+
+User-agent: *
+Allow: /
+
+# Don't index admin pages, account pages, or one-off action routes.
+# These aren't useful in search and might leak draft content through cache.
+Disallow: /admin
+Disallow: /admin/
+Disallow: /dashboard
+Disallow: /consultant-dashboard
+Disallow: /consultant-edit
+Disallow: /hire
+Disallow: /sign-in
+Disallow: /sign-up
+Disallow: /login
+Disallow: /signup
+Disallow: /onboard
+Disallow: /digest
+Disallow: /api/
+
+# Sitemap, refreshed on every request from the published tenders table.
+Sitemap: https://tenderflow.co.ke/sitemap.xml

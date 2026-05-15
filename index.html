@@ -3,23 +3,114 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="East African tender intelligence. Government, NGO and SME opportunities across Kenya, Uganda and Tanzania, consolidated." />
-    <title>TenderFlow. East African tenders, consolidated.</title>
+    <meta name="theme-color" content="#1B2C45" />
+
+    <!-- ── Primary SEO ───────────────────────────────────────────── -->
+    <title>TenderFlow. East African tender intelligence.</title>
+    <meta
+      name="description"
+      content="One feed for live Government, NGO and SME tenders across Kenya, Uganda and Tanzania. Search, filter, save and download tender documents. Free for bidders."
+    />
+    <meta name="keywords" content="tenders Kenya, tenders Uganda, tenders Tanzania, government tenders east africa, NGO tenders, procurement opportunities, eGP Kenya, TANePS, tender intelligence" />
+    <meta name="author" content="TenderFlow" />
+    <link rel="canonical" href="https://tenderflow.co.ke/" />
+
+    <!-- ── Open Graph (Facebook, LinkedIn, WhatsApp link previews) ── -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="TenderFlow" />
+    <meta property="og:title" content="TenderFlow. East African tender intelligence." />
+    <meta
+      property="og:description"
+      content="One feed for live Government, NGO and SME tenders across Kenya, Uganda and Tanzania. Free for bidders."
+    />
+    <meta property="og:url" content="https://tenderflow.co.ke/" />
+    <meta property="og:locale" content="en_KE" />
+    <meta property="og:image" content="https://rtessqlvvsjecogctwok.supabase.co/storage/v1/object/public/tender-pdfs/hero/meeting.webp" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="TenderFlow. Pan-East African tender intelligence." />
+
+    <!-- ── Twitter Card ───────────────────────────────────────────── -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="TenderFlow. East African tender intelligence." />
+    <meta
+      name="twitter:description"
+      content="One feed for Government, NGO and SME tenders across Kenya, Uganda and Tanzania."
+    />
+    <meta name="twitter:image" content="https://rtessqlvvsjecogctwok.supabase.co/storage/v1/object/public/tender-pdfs/hero/meeting.webp" />
+
+    <!-- ── Robots ──────────────────────────────────────────────────
+         Allow indexing of public pages. Per-route robots tags can be
+         set later for /admin etc if Google still crawls them despite
+         the robots.txt block. -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1" />
+    <meta name="googlebot" content="index, follow" />
+
+    <!-- ── Structured data: Organization (JSON-LD) ─────────────────
+         Helps Google show a knowledge panel and surface contact info
+         in rich results. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      "name": "TenderFlow",
+      "url": "https://tenderflow.co.ke",
+      "logo": "https://rtessqlvvsjecogctwok.supabase.co/storage/v1/object/public/tender-pdfs/hero/meeting.webp",
+      "description": "East African tender intelligence. Government, NGO and SME tender opportunities across Kenya, Uganda and Tanzania, consolidated in one searchable feed.",
+      "areaServed": [
+        { "@type": "Country", "name": "Kenya" },
+        { "@type": "Country", "name": "Uganda" },
+        { "@type": "Country", "name": "Tanzania" }
+      ],
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Eden Square Complex, Chiromo Road, Westlands, Block 1, 7th Floor",
+        "addressLocality": "Nairobi",
+        "addressCountry": "KE"
+      },
+      "contactPoint": {
+        "@type": "ContactPoint",
+        "telephone": "+254-724-131-492",
+        "contactType": "customer support",
+        "email": "help@tenderflow.co.ke",
+        "areaServed": ["KE", "UG", "TZ"],
+        "availableLanguage": ["English"]
+      }
+    }
+    </script>
+
+    <!-- ── Structured data: WebSite with SearchAction ──────────────
+         Tells Google your site has search; sometimes earns a search
+         box right inside the search results. -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "TenderFlow",
+      "url": "https://tenderflow.co.ke",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "https://tenderflow.co.ke/tenders?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+    </script>
 
     <!--
-      Static hero image preload. Browser fetches the moment it parses
-      the HTML, in parallel with the JS bundle, so the hero paints
-      immediately when React mounts.
-      KEEP THIS URL in sync with HERO_VARIANT in src/components/HeroBackdrop.jsx.
+      Google Search Console verification.
+      To verify ownership without DNS, paste your verification meta tag
+      here. Format:
+        <meta name="google-site-verification" content="YOUR_TOKEN_HERE" />
+      DNS TXT verification is recommended instead; see docs/SETUP-SEO.md.
     -->
+
+    <!-- ── Preload + Fonts ───────────────────────────────────────── -->
     <link
       rel="preload"
       as="image"
       fetchpriority="high"
       href="https://rtessqlvvsjecogctwok.supabase.co/storage/v1/object/public/tender-pdfs/hero/meeting.webp"
     />
-
-    <!-- Trimmed fonts: only the three families actually used (Spectral / Public Sans / JetBrains Mono). -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
