@@ -90,9 +90,48 @@ export default function AdminUpload() {
     setExtractError(null);
 
     for (const file of arr) {
+      // ── Layer 1 dedupe: SHA-256 the bytes BEFORE uploading or extracting.
+      // A matching tender means we save a storage upload + an Anthropic API
+      // call. We skip dedupe entirely when there's no Web Crypto support
+      // (very old browsers) so the flow still works as a fallback.
+      let fileHash = null;
+      try {
+        fileHash = await sha256(file);
+      } catch {
+        fileHash = null;
+      }
+
+      if (fileHash) {
+        const { data: existing } = await supabase
+          .from('tenders')
+          .select('id, title, status, closes_at, created_at')
+          .eq('file_hash', fileHash)
+          .maybeSingle();
+
+        // Skip the match if we're already editing that same tender (re-uploading
+        // the same source PDF onto its own row is allowed).
+        if (existing && existing.id !== editId) {
+          const when = (existing.created_at || '').slice(0, 10);
+          const stateLabel = existing.status === 'published' ? 'published' : 'a draft';
+          const openExisting = confirm(
+            `This PDF was already uploaded on ${when} as ${stateLabel}:\n\n` +
+            `"${existing.title}"\n\n` +
+            `OK = open the existing tender to edit it.\n` +
+            `Cancel = stop. Use a different PDF, or rename intentions.`
+          );
+          if (openExisting) {
+            navigate(`/admin/upload?edit=${existing.id}`);
+            return;
+          }
+          // User picked Cancel: skip this file entirely and move to the next.
+          continue;
+        }
+      }
+
       const tempEntry = {
         name: file.name,
         size: prettyBytes(file.size),
+        file_hash: fileHash,
         status: 'uploading'
       };
       setFiles(prev => [...prev, tempEntry]);
@@ -211,7 +250,17 @@ export default function AdminUpload() {
     setSaveStatus(null);
     const documents = files
       .filter(f => f.status === 'done' && f.storage_path)
-      .map(f => ({ name: f.name, size: f.size, storage_path: f.storage_path, url: f.url }));
+      .map(f => ({
+        name: f.name,
+        size: f.size,
+        storage_path: f.storage_path,
+        url: f.url,
+        file_hash: f.file_hash || null
+      }));
+
+    // Primary file_hash for Layer 1 dedupe: first uploaded doc with a hash.
+    // Falls back to null if every doc was added by manual entry (no upload).
+    const primaryHash = documents.find(d => d.file_hash)?.file_hash || null;
 
     const payload = {
       title: form.title,
@@ -236,6 +285,7 @@ export default function AdminUpload() {
       checklist: form.checklist || [],
       agpo_category: form.agpo_category || null,
       documents,
+      file_hash: primaryHash,
       status
     };
 
@@ -247,7 +297,14 @@ export default function AdminUpload() {
     }
     setSaving(false);
     if (res.error) {
-      setSaveStatus({ ok: false, msg: res.error.message });
+      // Postgres 23505 = unique constraint violation. Layer 1's file_hash
+      // index is the only unique constraint that can fire here; surface a
+      // friendly message so the admin knows what to do instead of seeing
+      // the raw "duplicate key value violates unique constraint" string.
+      const msg = res.error.code === '23505' && /file_hash/i.test(res.error.message || '')
+        ? 'This PDF has already been uploaded as another tender. Open that tender from the dashboard, or upload a different file.'
+        : res.error.message;
+      setSaveStatus({ ok: false, msg });
     } else {
       setSaveStatus({ ok: true, msg: status === 'published' ? 'Published.' : 'Saved as draft.' });
       setTimeout(() => navigate('/admin'), 800);
@@ -677,4 +734,15 @@ function prettyBytes(n) {
 
 function slug(s) {
   return s.toLowerCase().replace(/[^a-z0-9.]/g, '-').replace(/-+/g, '-');
+}
+
+// SHA-256 of a File / Blob, returned as lowercase hex.
+// Web Crypto API works in all evergreen browsers; the caller wraps this in
+// a try/catch so an unsupported environment falls through to the legacy path.
+async function sha256(file) {
+  const buf = await file.arrayBuffer();
+  const digest = await crypto.subtle.digest('SHA-256', buf);
+  return Array.from(new Uint8Array(digest))
+    .map(b => b.toString(16).padStart(2, '0'))
+    .join('');
 }
