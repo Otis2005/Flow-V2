@@ -6,12 +6,16 @@
     <meta name="theme-color" content="#0A2240" />
 
     <!-- ── Favicons + PWA manifest ────────────────────────────────
-         SVG favicon for modern browsers (every browser since 2021).
-         Older browsers fall back to the bundled .ico if/when added.
-         apple-touch-icon for iOS home screen, manifest for Android PWA. -->
+         Google Search does NOT read SVG favicons in results listings.
+         Order matters: .ico first (legacy + Google fallback), then PNGs
+         at multiple sizes, then SVG as a modern progressive enhancement.
+         apple-touch-icon must be PNG (Apple ignores SVG). -->
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="icon" type="image/png" sizes="48x48" href="/favicon-48.png" />
+    <link rel="icon" type="image/png" sizes="192x192" href="/favicon-192.png" />
+    <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512.png" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/svg+xml" href="/favicon-light.svg" media="(prefers-color-scheme: light)" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.svg" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
 
     <!-- ── Primary SEO ───────────────────────────────────────────── -->
@@ -34,7 +38,8 @@
     />
     <meta property="og:url" content="https://tenderflow.co.ke/" />
     <meta property="og:locale" content="en_KE" />
-    <meta property="og:image" content="https://tenderflow.co.ke/og-cover.svg" />
+    <meta property="og:image" content="https://tenderflow.co.ke/og-cover.png" />
+    <meta property="og:image:type" content="image/png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:alt" content="TenderFlow. Pan-East African tender intelligence." />
@@ -46,7 +51,7 @@
       name="twitter:description"
       content="One feed for Government, NGO and SME tenders across Kenya, Uganda and Tanzania."
     />
-    <meta name="twitter:image" content="https://tenderflow.co.ke/og-cover.svg" />
+    <meta name="twitter:image" content="https://tenderflow.co.ke/og-cover.png" />
 
     <!-- ── Robots ──────────────────────────────────────────────────
          Allow indexing of public pages. Per-route robots tags can be
@@ -64,7 +69,7 @@
       "@type": "Organization",
       "name": "TenderFlow",
       "url": "https://tenderflow.co.ke",
-      "logo": "https://tenderflow.co.ke/brand/mark.svg",
+      "logo": "https://tenderflow.co.ke/brand/mark-512.png",
       "description": "East African tender intelligence. Government, NGO and SME tender opportunities across Kenya, Uganda and Tanzania, consolidated in one searchable feed.",
       "areaServed": [
         { "@type": "Country", "name": "Kenya" },
@@ -118,7 +123,7 @@
       rel="preload"
       as="image"
       fetchpriority="high"
-      href="https://tenderflow.co.ke/og-cover.svg"
+      href="https://tenderflow.co.ke/og-cover.png"
     />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

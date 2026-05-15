@@ -33,3 +33,6 @@ Thumbs.db
 _design_zip/
 _design_reference/
 uploads/
+
+# Generated brand PDFs (kept local; regenerate via scripts/generate-pdfs.py)
+docs/pdf/

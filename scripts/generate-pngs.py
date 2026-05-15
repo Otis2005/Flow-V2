@@ -1,0 +1,269 @@
+"""
+Generate PNG / ICO assets from the SVG brand sources.
+
+Google does NOT read SVG favicons in search results. It only accepts
+PNG, GIF, JPEG, or ICO. The Organization JSON-LD logo also needs to be
+raster for the knowledge panel to pick it up. This script renders the
+needed rasters at the sizes Google + Apple + Android actually request.
+
+Outputs (all under public/):
+  favicon-48.png       Google search-results favicon (must be PNG)
+  favicon-192.png      Android home screen icon (manifest)
+  favicon-512.png      Android splash, JSON-LD logo source
+  favicon.ico          Legacy IE / browser tab (16/32/48 multi-size)
+  apple-touch-icon.png Apple iOS home-screen icon (180x180)
+  brand/mark-512.png   Mark only on transparent bg (logo PNG)
+  og-cover.png         1200x630 social-share cover (Pillow render)
+
+All rasters use the canonical brand palette. The mark is pure rectangles
+so it renders pixel-perfect at any size.
+
+Run:  python scripts/generate-pngs.py
+"""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+from PIL import Image, ImageDraw, ImageFont
+
+REPO = Path(__file__).resolve().parents[1]
+PUB = REPO / "public"
+BRAND = PUB / "brand"
+
+# Brand palette
+NAVY = (10, 34, 64)        # #0A2240
+AMBER = (199, 132, 26)     # #C7841A
+TEAL = (0, 169, 143)       # #00A98F
+PAPER = (255, 253, 247)    # #FFFDF7
+GOLD = (185, 138, 59)      # #B98A3B
+GOLD_SOFT = (231, 212, 158) # #E7D49E
+CREAM_SOFT = (245, 246, 235) # for muted text
+
+
+# --------------------------------------------------------------------------- #
+# Favicons: mark on navy rounded square                                       #
+# --------------------------------------------------------------------------- #
+
+
+def draw_rounded_rect(draw: ImageDraw.ImageDraw, box, radius: int, fill) -> None:
+    """Pillow has rounded_rectangle; this is a wrapper for clarity."""
+    draw.rounded_rectangle(box, radius=radius, fill=fill)
+
+
+def render_favicon(size: int) -> Image.Image:
+    """Mark on navy rounded square, rendered for a given square size.
+
+    Geometry mirrors public/favicon.svg (64x64 viewBox), scaled.
+    """
+    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+
+    s = size / 64.0  # scale factor
+    # Navy rounded square background
+    draw_rounded_rect(d, (0, 0, size, size), radius=int(12 * s), fill=NAVY)
+
+    # Three bars: x, y, width, height (in 64-coord space) -> scaled
+    bars = [
+        (12, 36, 9, 20, AMBER),
+        (25, 26, 9, 30, TEAL),
+        (38, 14, 9, 42, PAPER),
+    ]
+    for bx, by, bw, bh, color in bars:
+        d.rectangle(
+            [int(bx * s), int(by * s), int((bx + bw) * s), int((by + bh) * s)],
+            fill=color,
+        )
+
+    return img
+
+
+def render_mark_transparent(size: int) -> Image.Image:
+    """Mark only, no background (for JSON-LD logo).
+
+    Geometry mirrors public/brand/mark.svg (64x64 viewBox).
+    """
+    img = Image.new("RGBA", (size, size), (0, 0, 0, 0))
+    d = ImageDraw.Draw(img)
+    s = size / 64.0
+    bars = [
+        (8, 34, 10, 22, AMBER),
+        (22, 22, 10, 34, TEAL),
+        (36, 8, 10, 48, NAVY),
+    ]
+    for bx, by, bw, bh, color in bars:
+        d.rectangle(
+            [int(bx * s), int(by * s), int((bx + bw) * s), int((by + bh) * s)],
+            fill=color,
+        )
+    return img
+
+
+# --------------------------------------------------------------------------- #
+# Fonts                                                                       #
+# --------------------------------------------------------------------------- #
+
+
+def load_font(family: str, size: int) -> ImageFont.FreeTypeFont:
+    """Load a system font with sensible Windows fallbacks.
+
+    family: one of "serif", "serif-italic", "sans", "sans-bold"
+    """
+    candidates = {
+        "serif":         ["georgia.ttf", "times.ttf", "Times New Roman.ttf"],
+        "serif-italic":  ["georgiai.ttf", "timesi.ttf"],
+        "sans":          ["segoeui.ttf", "arial.ttf"],
+        "sans-bold":     ["segoeuib.ttf", "arialbd.ttf"],
+    }[family]
+
+    for cand in candidates:
+        try:
+            return ImageFont.truetype(cand, size=size)
+        except OSError:
+            continue
+    # Last resort: Pillow's bundled bitmap (will look bad but won't crash)
+    return ImageFont.load_default()
+
+
+# --------------------------------------------------------------------------- #
+# OG cover: 1200 x 630 social share                                           #
+# --------------------------------------------------------------------------- #
+
+
+def render_og_cover() -> Image.Image:
+    """Pillow render of the social cover.
+
+    Layout mirrors public/og-cover.svg: navy field, mark bars on the left,
+    eyebrow rule + label, italic-em wordmark, tagline, country chips, gold
+    rule + URL footer. Fonts fall back to Georgia / Segoe UI on Windows.
+    """
+    W, H = 1200, 630
+    img = Image.new("RGB", (W, H), NAVY)
+    d = ImageDraw.Draw(img, "RGBA")
+
+    # Subtle top-to-bottom gradient by stacking translucent strips
+    top = (14, 42, 80)
+    bot = NAVY
+    steps = 60
+    for i in range(steps):
+        t = i / (steps - 1)
+        r = int(top[0] + (bot[0] - top[0]) * t)
+        g = int(top[1] + (bot[1] - top[1]) * t)
+        b = int(top[2] + (bot[2] - top[2]) * t)
+        y0 = int(H * i / steps)
+        y1 = int(H * (i + 1) / steps)
+        d.rectangle([0, y0, W, y1], fill=(r, g, b))
+
+    # Three-bar mark, left side, scaled-up
+    mark_x, mark_y = 96, 248
+    bars = [
+        (0, 56, 20, 66, AMBER),
+        (30, 34, 20, 88, TEAL),
+        (60, 0, 20, 122, PAPER),
+    ]
+    for bx, by, bw, bh, color in bars:
+        d.rectangle(
+            [mark_x + bx, mark_y + by, mark_x + bx + bw, mark_y + by + bh],
+            fill=color,
+        )
+
+    # Eyebrow rule + label
+    d.line([212, 202, 256, 202], fill=GOLD_SOFT, width=2)
+    f_eyebrow = load_font("sans-bold", 16)
+    d.text(
+        (270, 192),
+        "E A S T   A F R I C A N   T E N D E R   I N T E L L I G E N C E",
+        font=f_eyebrow,
+        fill=GOLD_SOFT,
+    )
+
+    # Wordmark: "Tender" upright + "Flow" italic gold
+    f_word = load_font("serif", 108)
+    f_word_it = load_font("serif-italic", 108)
+    d.text((212, 230), "Tender", font=f_word, fill=PAPER)
+    tender_bbox = d.textbbox((212, 230), "Tender", font=f_word)
+    tender_w = tender_bbox[2] - tender_bbox[0]
+    d.text((212 + tender_w, 230), "Flow", font=f_word_it, fill=GOLD_SOFT)
+
+    # Tagline (split: upright sans + italic serif gold)
+    f_tag = load_font("sans", 28)
+    f_tag_it = load_font("serif-italic", 30)
+    d.text((212, 386), "Government, NGO and SME tenders, ", font=f_tag, fill=CREAM_SOFT)
+    tag1_w = d.textbbox((212, 386), "Government, NGO and SME tenders, ", font=f_tag)[2] - 212
+    d.text((212 + tag1_w, 384), "all in one place.", font=f_tag_it, fill=GOLD_SOFT)
+
+    # Country chips
+    chip_y = 460
+    chip_w = 120
+    chip_h = 38
+    f_chip = load_font("sans", 18)
+    for i, name in enumerate(["Kenya", "Uganda", "Tanzania"]):
+        x0 = 212 + i * 132
+        d.rounded_rectangle(
+            [x0, chip_y, x0 + chip_w, chip_y + chip_h],
+            radius=4,
+            fill=(245, 246, 235, 16),
+            outline=(245, 246, 235, 40),
+            width=1,
+        )
+        # Center the label
+        tb = d.textbbox((0, 0), name, font=f_chip)
+        tw = tb[2] - tb[0]
+        th = tb[3] - tb[1]
+        d.text(
+            (x0 + (chip_w - tw) / 2, chip_y + (chip_h - th) / 2 - 2),
+            name,
+            font=f_chip,
+            fill=CREAM_SOFT,
+        )
+
+    # Gold hairline rule near the bottom (faded edges via simulated gradient)
+    rule_y = 586
+    for x in range(0, W, 4):
+        t = abs(x - W / 2) / (W / 2)
+        alpha = int(255 * (1 - t))
+        d.rectangle([x, rule_y, x + 4, rule_y + 2], fill=(*GOLD, alpha))
+
+    # URL footer
+    f_url = load_font("sans", 20)
+    d.text((212, 600), "tenderflow.co.ke", font=f_url, fill=(245, 246, 235, 158))
+
+    return img
+
+
+# --------------------------------------------------------------------------- #
+# Build                                                                       #
+# --------------------------------------------------------------------------- #
+
+
+def main() -> None:
+    # Favicons (mark on navy rounded square)
+    for size, name in [(48, "favicon-48.png"), (192, "favicon-192.png"), (512, "favicon-512.png")]:
+        out = PUB / name
+        render_favicon(size).save(out, "PNG", optimize=True)
+        print(f"Wrote {out}  ({out.stat().st_size / 1024:.1f} KB)")
+
+    # Multi-size ICO for legacy compatibility (favicon.ico)
+    ico_path = PUB / "favicon.ico"
+    base = render_favicon(48)
+    base.save(ico_path, format="ICO", sizes=[(16, 16), (32, 32), (48, 48)])
+    print(f"Wrote {ico_path}  ({ico_path.stat().st_size / 1024:.1f} KB)")
+
+    # Apple touch icon (180x180, mark on navy rounded)
+    apple = PUB / "apple-touch-icon.png"
+    render_favicon(180).save(apple, "PNG", optimize=True)
+    print(f"Wrote {apple}  ({apple.stat().st_size / 1024:.1f} KB)")
+
+    # Mark only PNG for JSON-LD Organization logo
+    mark_png = BRAND / "mark-512.png"
+    render_mark_transparent(512).save(mark_png, "PNG", optimize=True)
+    print(f"Wrote {mark_png}  ({mark_png.stat().st_size / 1024:.1f} KB)")
+
+    # OG cover
+    og = PUB / "og-cover.png"
+    render_og_cover().save(og, "PNG", optimize=True)
+    print(f"Wrote {og}  ({og.stat().st_size / 1024:.1f} KB)")
+
+
+if __name__ == "__main__":
+    main()
