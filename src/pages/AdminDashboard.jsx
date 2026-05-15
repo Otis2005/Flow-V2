@@ -16,6 +16,28 @@ const TABS = [
 const PAGE_SIZE_OPTIONS = [10, 25, 50, 100];
 const DEFAULT_PAGE_SIZE = 25;
 
+// Sort options exposed in the dropdown. `col` is the column name passed
+// to supabase.order(); `asc` is the direction; we always sort NULLs last
+// regardless of direction so empty values don't pollute the top of the
+// list when sorting by value or closing date.
+const SORT_OPTIONS = [
+  { k: 'updated_desc', label: 'Recently updated',   col: 'updated_at', asc: false },
+  { k: 'created_desc', label: 'Recently uploaded',  col: 'created_at', asc: false },
+  { k: 'closes_asc',   label: 'Closing soonest',    col: 'closes_at',  asc: true  },
+  { k: 'closes_desc',  label: 'Closing latest',     col: 'closes_at',  asc: false },
+  { k: 'value_desc',   label: 'Highest value',      col: 'value',      asc: false },
+  { k: 'value_asc',    label: 'Lowest value',       col: 'value',      asc: true  },
+  { k: 'title_asc',    label: 'Title A–Z',          col: 'title',      asc: true  }
+];
+
+// Strip characters that have meaning in Postgrest's .or() filter syntax
+// or the LIKE pattern language. Commas separate filters, parens group
+// them, backslash and percent are LIKE wildcards. Without this, a user
+// typing "Coffee, Tea" would break the query parser.
+function sanitizeSearch(s) {
+  return (s || '').trim().replace(/[,()%\\]/g, '');
+}
+
 export default function AdminDashboard() {
   const navigate = useNavigate();
   const [rows, setRows] = useState([]);
@@ -23,11 +45,26 @@ export default function AdminDashboard() {
   const [tab, setTab] = useState('published');
   const [error, setError] = useState(null);
 
-  // Pagination state. `total` is the row count for the current tab,
-  // returned by Postgrest when we pass count: 'exact'.
+  // Search: `searchInput` updates on every keystroke for instant UI feedback;
+  // `search` is the debounced value that actually hits the DB.
+  const [searchInput, setSearchInput] = useState('');
+  const [search, setSearch] = useState('');
+
+  // Sort
+  const [sortKey, setSortKey] = useState('updated_desc');
+
+  // Pagination state. `total` is the row count for the current filter
+  // set, returned by Postgrest when we pass count: 'exact'.
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [total, setTotal] = useState(0);
+
+  // Debounce the search input so each keystroke doesn't fire a query.
+  // 300 ms matches what Supabase Studio and most admin panels use.
+  useEffect(() => {
+    const t = setTimeout(() => setSearch(sanitizeSearch(searchInput)), 300);
+    return () => clearTimeout(t);
+  }, [searchInput]);
 
   async function load() {
     if (!isSupabaseConfigured) {
@@ -38,31 +75,45 @@ export default function AdminDashboard() {
     setLoading(true);
     const from = (page - 1) * pageSize;
     const to = from + pageSize - 1;
+
+    const sortOpt = SORT_OPTIONS.find(s => s.k === sortKey) || SORT_OPTIONS[0];
+
     let q = supabase
       .from('tenders')
       .select('*', { count: 'exact' })
-      .order('updated_at', { ascending: false })
+      .order(sortOpt.col, { ascending: sortOpt.asc, nullsFirst: false })
       .range(from, to);
     if (tab !== 'all') q = q.eq('status', tab);
+    if (search) {
+      // Free-text match across the three columns the admin most often
+      // searches by. ilike is case-insensitive substring match.
+      q = q.or(
+        `title.ilike.%${search}%,issuer.ilike.%${search}%,ref_no.ilike.%${search}%`
+      );
+    }
+
     const { data, count, error } = await q;
     if (error) setError(error.message);
+    else setError(null);
     setRows(data || []);
     setTotal(count || 0);
     setLoading(false);
 
     // If a delete or filter change leaves us on a page that no longer
-    // exists (e.g. deleted the last row on page 3 of 3), snap back to
-    // the last valid page on the next render.
+    // exists (e.g. deleted the last row on page 3 of 3), snap back.
     const maxPage = Math.max(1, Math.ceil((count || 0) / pageSize));
     if (page > maxPage) setPage(maxPage);
   }
 
-  useEffect(() => { load(); }, [tab, page, pageSize]);
+  useEffect(() => { load(); }, [tab, page, pageSize, sortKey, search]);
 
-  // Reset to page 1 whenever the tab or page size changes so the user
-  // doesn't end up looking at "page 3" of a tab that only has 1 page.
+  // Reset to page 1 whenever a filter, sort, or page size changes so
+  // the user doesn't end up looking at "page 3" of a view that only
+  // has 1 page.
   useEffect(() => { setPage(1); }, [tab]);
   useEffect(() => { setPage(1); }, [pageSize]);
+  useEffect(() => { setPage(1); }, [sortKey]);
+  useEffect(() => { setPage(1); }, [search]);
 
   async function handleDelete(id) {
     if (!confirm('Delete this tender? This is permanent.')) return;
@@ -70,7 +121,6 @@ export default function AdminDashboard() {
     if (error) {
       alert('Delete failed: ' + error.message);
     } else {
-      // Reload so totals + pagination snap to the new state.
       load();
     }
   }
@@ -110,16 +160,84 @@ export default function AdminDashboard() {
           <button className="tf-cta" onClick={() => navigate('/admin/upload')}>+ Upload new tender</button>
         </div>
 
-        <div className="tf-segmented" role="tablist" style={{ margin: '24px 0 16px' }}>
-          {TABS.map(t => (
+        {/* Search bar */}
+        <div style={{ marginTop: 24, position: 'relative' }}>
+          <input
+            type="search"
+            value={searchInput}
+            onChange={e => setSearchInput(e.target.value)}
+            placeholder="Search title, issuer, or reference number..."
+            style={{
+              width: '100%',
+              padding: '10px 36px 10px 14px',
+              fontSize: 14,
+              border: '1px solid var(--rule)',
+              background: 'var(--paper)',
+              color: 'var(--ink)'
+            }}
+          />
+          {searchInput && (
             <button
-              key={t.k}
-              className={tab === t.k ? 'is-active' : ''}
-              onClick={() => setTab(t.k)}
+              onClick={() => setSearchInput('')}
+              aria-label="Clear search"
+              style={{
+                position: 'absolute',
+                right: 10,
+                top: '50%',
+                transform: 'translateY(-50%)',
+                background: 'none',
+                border: 0,
+                cursor: 'pointer',
+                color: 'var(--muted)',
+                fontSize: 18,
+                lineHeight: 1
+              }}
             >
-              {t.label}
+              ×
             </button>
-          ))}
+          )}
+        </div>
+
+        {/* Tabs + sort */}
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexWrap: 'wrap',
+            gap: 12,
+            margin: '16px 0'
+          }}
+        >
+          <div className="tf-segmented" role="tablist">
+            {TABS.map(t => (
+              <button
+                key={t.k}
+                className={tab === t.k ? 'is-active' : ''}
+                onClick={() => setTab(t.k)}
+              >
+                {t.label}
+              </button>
+            ))}
+          </div>
+          <label style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 13, color: 'var(--muted)' }}>
+            <span>Sort:</span>
+            <select
+              value={sortKey}
+              onChange={e => setSortKey(e.target.value)}
+              style={{
+                padding: '6px 10px',
+                fontSize: 13,
+                border: '1px solid var(--rule)',
+                background: 'var(--paper)',
+                color: 'var(--ink)'
+              }}
+            >
+              {SORT_OPTIONS.map(o => (
+                <option key={o.k} value={o.k}>{o.label}</option>
+              ))}
+            </select>
+          </label>
         </div>
 
         {error && (
@@ -147,13 +265,21 @@ export default function AdminDashboard() {
               border: '1px solid var(--rule)'
             }}
           >
-            <div className="tf-eyebrow">No {tab === 'all' ? '' : tab} tenders yet</div>
+            <div className="tf-eyebrow">
+              {search
+                ? `No tenders match "${searchInput}"`
+                : `No ${tab === 'all' ? '' : tab} tenders yet`}
+            </div>
             <p style={{ marginTop: 12, color: 'var(--muted)' }}>
-              Upload your first tender to get started.
+              {search
+                ? 'Try a different search term, or clear the search to see all tenders.'
+                : 'Upload your first tender to get started.'}
             </p>
-            <button className="tf-cta" style={{ marginTop: 20 }} onClick={() => navigate('/admin/upload')}>
-              Upload tender
-            </button>
+            {!search && (
+              <button className="tf-cta" style={{ marginTop: 20 }} onClick={() => navigate('/admin/upload')}>
+                Upload tender
+              </button>
+            )}
           </div>
         ) : (
           <>
