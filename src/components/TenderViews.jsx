@@ -41,7 +41,7 @@ export function TenderCard({ tender }) {
               )}
             </div>
           </div>
-          <h3 className="tf-card-title">{tender.title}</h3>
+          <h3 className="tf-card-title" title={tender.title}>{tender.title}</h3>
           <p className="tf-card-summary">{tender.summary}</p>
           <div className="tf-card-foot">
             <div className="tf-card-foot-l">
