@@ -18,6 +18,12 @@ export default function TenderDetail() {
   const { user } = useAuth();
   const [savedToast, setSavedToast] = useState(null);
   const [onWatchlist, setOnWatchlist] = useState(false);
+  // Local mirror of the bid count so the UI updates immediately when a
+  // user downloads a doc, without re-fetching the tender row.
+  // IMPORTANT: this hook must live at the top of the component, BEFORE
+  // any early returns, or React's rules-of-hooks fire and the whole
+  // page renders blank.
+  const [bidCount, setBidCount] = useState(0);
 
   useEffect(() => {
     if (!tender) return;
@@ -34,6 +40,10 @@ export default function TenderDetail() {
       setOnWatchlist(list.includes(tender.id));
     }
   }, [tender, user]);
+
+  useEffect(() => {
+    setBidCount(tender?.download_count ?? 0);
+  }, [tender?.id, tender?.download_count]);
 
   if (loading) {
     return (
@@ -65,13 +75,6 @@ export default function TenderDetail() {
       new Date(b.created_at || b.published) - new Date(a.created_at || a.published)
     )
     .slice(0, 3);
-
-  // Local mirror of the bid count so the UI updates immediately when a
-  // user downloads a doc, without re-fetching the tender row.
-  const [bidCount, setBidCount] = useState(null);
-  useEffect(() => {
-    setBidCount(tender?.download_count ?? 0);
-  }, [tender?.id, tender?.download_count]);
 
   async function trackDownload() {
     if (!isSupabaseConfigured || !tender?.id) return;
