@@ -523,60 +523,6 @@
   flex-direction: column;
   align-items: flex-end;
   gap: 6px;
-  flex-shrink: 0;
-}
-
-/* ── Uniform tender card heights ──────────────────────────────────
-   Without these rules cards in the same grid row visually wobble
-   because CSS Grid stretches the OUTER FadeIn wrapper to the row's
-   tallest height, but the <Link> and <article> nested inside it
-   keep height: auto, so short cards leave dead space below the
-   footer. We chain display:flex through the wrappers so the card
-   always fills its grid cell, then cap the variable-length fields
-   (title, issuer name) so no one card blows up the row height.
-
-   Combined with `.tf-card-foot { margin-top: auto }` further up,
-   the footer now reliably sits flush at the bottom of every card
-   regardless of how much body content sits above it. */
-.tf-cards-grid > * {
-  display: flex;
-  flex-direction: column;
-}
-.tf-cards-grid > * > a {
-  display: flex;
-  flex: 1;
-  min-width: 0;
-}
-.tf-cards-grid > * > a > .tf-card {
-  flex: 1;
-  width: 100%;
-  min-height: 280px;
-}
-
-/* Cap the title to 2 lines and RESERVE the 2-line height so a
-   1-line title doesn't visually shrink the card. Without the
-   min-height reservation, single-line-title cards would have an
-   inconsistent vertical rhythm against their 2-line neighbours. */
-.tf-card-title {
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  min-height: calc(19px * 1.25 * 2); /* font-size * line-height * 2 lines */
-  word-break: break-word;
-}
-
-/* Issuer name truncates to a single line with ellipsis so a long
-   organisation name like "Kenya Coffee Co-operatives Society Ltd"
-   doesn't push past the badge column and crowd the source pill. */
-.tf-card-issuer {
-  min-width: 0; /* enables ellipsis on a flex child */
-}
-.tf-card-issuer-name {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
 }
 
 /* ── AGPO badge ─────────────────────────────────────────────────
