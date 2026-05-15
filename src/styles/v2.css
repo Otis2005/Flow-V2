@@ -1298,6 +1298,98 @@
   border-color: var(--gold);
 }
 
+/* ── Additional documents in the sidebar ──────────────────────────
+   When a tender has multiple documents, they all live here under the
+   primary PDF button. Compact rows so the sidebar doesn't bloat, but
+   the same colour-coded file-type badges as the (now removed) body
+   document grid so the visual language stays consistent. */
+.tf-sidebar-docs-extra {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed var(--rule);
+}
+.tf-sidebar-docs-extra-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+.tf-sidebar-doc-row {
+  display: grid;
+  grid-template-columns: 32px 1fr 18px;
+  gap: 10px;
+  align-items: center;
+  width: 100%;
+  padding: 8px 10px;
+  margin-top: 4px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  transition: border-color 160ms ease, background 160ms ease, transform 160ms ease;
+}
+.tf-sidebar-doc-row:first-of-type { margin-top: 0; }
+.tf-sidebar-doc-row:hover {
+  border-color: var(--navy);
+  background: var(--cream);
+  transform: translateX(2px);
+}
+.tf-sidebar-doc-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  font-family: var(--mono);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--paper);
+  background: var(--navy);
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+.tf-sidebar-doc-badge.is-pdf { background: #B23B3B; }
+.tf-sidebar-doc-badge.is-doc { background: #2A5DAA; }
+.tf-sidebar-doc-badge.is-xls { background: #1F7A4D; }
+.tf-sidebar-doc-badge.is-other { background: var(--navy); }
+.tf-sidebar-doc-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+.tf-sidebar-doc-name {
+  font-size: 12.5px;
+  font-weight: 500;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+  line-height: 1.2;
+}
+.tf-sidebar-doc-size {
+  font-family: var(--mono);
+  font-size: 10.5px;
+  color: var(--muted);
+  line-height: 1.2;
+}
+.tf-sidebar-doc-arrow {
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--muted);
+  transition: color 160ms ease, transform 180ms ease;
+}
+.tf-sidebar-doc-row:hover .tf-sidebar-doc-arrow {
+  color: var(--gold);
+  transform: translateY(2px);
+}
+
 /* ── Hire-consultant CTA on tender detail ─────────────────────── */
 .tf-hire-card {
   margin-top: 16px;

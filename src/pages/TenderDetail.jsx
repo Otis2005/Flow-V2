@@ -10,6 +10,24 @@ import { supabase, isSupabaseConfigured } from '../lib/supabaseClient.js';
 import { useAuth } from '../lib/AuthProvider.jsx';
 import TenderChecklist from '../components/TenderChecklist.jsx';
 
+// Small helpers for file-type display. Used by the sidebar download
+// zone to colour-code badges and label the primary button correctly
+// (Download PDF / Download DOC / Download XLS, etc).
+function docExtLabel(name) {
+  const ext = (name || '').split('.').pop()?.toLowerCase() || '';
+  if (ext === 'pdf') return 'PDF';
+  if (ext === 'doc' || ext === 'docx') return 'DOC';
+  if (ext === 'xls' || ext === 'xlsx') return 'XLS';
+  return ext.slice(0, 3).toUpperCase() || 'FILE';
+}
+function docExtTone(name) {
+  const ext = (name || '').split('.').pop()?.toLowerCase() || '';
+  if (ext === 'pdf') return 'pdf';
+  if (ext === 'doc' || ext === 'docx') return 'doc';
+  if (ext === 'xls' || ext === 'xlsx') return 'xls';
+  return 'other';
+}
+
 export default function TenderDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -242,45 +260,10 @@ export default function TenderDetail() {
             </div>
           </FadeIn>
 
-          {Array.isArray(tender.documents) && tender.documents.length > 0 && (
-            <FadeIn className="tf-detail-section tf-detail-section-tight" id="tender-documents">
-              <h3>
-                Tender documents
-                <span className="tf-detail-count">{tender.documents.length}</span>
-              </h3>
-              <div className="tf-doc-grid">
-                {tender.documents.map((d, i) => {
-                  const ext = (d.name || '').split('.').pop()?.toLowerCase() || '';
-                  const label = ext === 'pdf' ? 'PDF'
-                    : ext === 'doc' || ext === 'docx' ? 'DOC'
-                    : ext === 'xls' || ext === 'xlsx' ? 'XLS'
-                    : ext.slice(0, 3).toUpperCase() || 'FILE';
-                  const tone = ext === 'pdf' ? 'pdf'
-                    : ext === 'doc' || ext === 'docx' ? 'doc'
-                    : ext === 'xls' || ext === 'xlsx' ? 'xls'
-                    : 'other';
-                  return (
-                    <button
-                      key={d.name + i}
-                      type="button"
-                      className="tf-doc-card"
-                      onClick={() => handleDownload(d)}
-                      title={`Download ${d.name}`}
-                    >
-                      <span className={`tf-doc-card-badge is-${tone}`} aria-hidden="true">
-                        {label}
-                      </span>
-                      <span className="tf-doc-card-body">
-                        <span className="tf-doc-card-name">{d.name}</span>
-                        {d.size && <span className="tf-doc-card-size">{d.size}</span>}
-                      </span>
-                      <span className="tf-doc-card-arrow" aria-hidden="true">↓</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </FadeIn>
-          )}
+          {/* Tender documents body section removed. All downloads now
+             live in the right sidebar as a single canonical zone:
+             primary doc = the big "Download PDF" button; additional
+             docs = compact rows beneath it. See the aside block. */}
 
           <TenderChecklist tender={tender} user={user} />
         </div>
@@ -315,10 +298,15 @@ export default function TenderDetail() {
               <dd style={{ fontFamily: 'var(--mono)', fontSize: 13 }}>{tender.refNo}</dd>
             </dl>
             <div style={{ padding: '16px 22px 22px', borderTop: '1px solid var(--rule)' }}>
-              {/* Primary PDF download. Shows the actual filename + size
-                 + a PDF glyph so the action is unmistakable. If the
-                 tender has multiple documents we surface a small line
-                 below pointing at the full list further down the page. */}
+              {/* Canonical download zone for this tender.
+                 - Primary doc (documents[0]) renders as the big PDF
+                   button: file-type glyph + label + size + filename.
+                 - Additional docs (documents[1..]) render as compact
+                   rows directly below: small file-type badge + name +
+                   size + down-arrow that nudges on hover.
+                 No redundant body section, no scroll-to-anchor link;
+                 this is the one place to download anything attached
+                 to the tender. */}
               {tender.documents?.[0] ? (
                 <>
                   <button
@@ -339,12 +327,14 @@ export default function TenderDetail() {
                           fontFamily="Helvetica, Arial, sans-serif"
                           fill="var(--navy)"
                         >
-                          PDF
+                          {docExtLabel(tender.documents[0].name)}
                         </text>
                       </svg>
                     </span>
                     <span className="tf-sidebar-pdf-text">
-                      <span className="tf-sidebar-pdf-label">Download PDF</span>
+                      <span className="tf-sidebar-pdf-label">
+                        Download {docExtLabel(tender.documents[0].name)}
+                      </span>
                       <span className="tf-sidebar-pdf-meta">
                         {tender.documents[0].size || ''}
                         {tender.documents[0].size && tender.documents[0].name ? ' · ' : ''}
@@ -357,18 +347,35 @@ export default function TenderDetail() {
                     </span>
                     <span className="tf-sidebar-pdf-arrow" aria-hidden="true">↓</span>
                   </button>
+
                   {tender.documents.length > 1 && (
-                    <a
-                      href="#tender-documents"
-                      className="tf-sidebar-pdf-more"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        const target = document.getElementById('tender-documents');
-                        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                      }}
-                    >
-                      + {tender.documents.length - 1} more document{tender.documents.length === 2 ? '' : 's'} below ↓
-                    </a>
+                    <div className="tf-sidebar-docs-extra">
+                      <div className="tf-sidebar-docs-extra-label">
+                        + {tender.documents.length - 1} more
+                      </div>
+                      {tender.documents.slice(1).map((d, i) => {
+                        const tone = docExtTone(d.name);
+                        const label = docExtLabel(d.name);
+                        return (
+                          <button
+                            key={d.name + i}
+                            type="button"
+                            className="tf-sidebar-doc-row"
+                            onClick={() => handleDownload(d)}
+                            title={`Download ${d.name}`}
+                          >
+                            <span className={`tf-sidebar-doc-badge is-${tone}`} aria-hidden="true">
+                              {label}
+                            </span>
+                            <span className="tf-sidebar-doc-body">
+                              <span className="tf-sidebar-doc-name">{d.name}</span>
+                              {d.size && <span className="tf-sidebar-doc-size">{d.size}</span>}
+                            </span>
+                            <span className="tf-sidebar-doc-arrow" aria-hidden="true">↓</span>
+                          </button>
+                        );
+                      })}
+                    </div>
                   )}
                 </>
               ) : (
@@ -377,7 +384,7 @@ export default function TenderDetail() {
                   style={{ width: '100%', opacity: 0.6, cursor: 'not-allowed' }}
                   disabled
                 >
-                  No PDF attached yet
+                  No document attached yet
                 </button>
               )}
               <button
