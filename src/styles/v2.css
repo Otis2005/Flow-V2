@@ -1010,6 +1010,52 @@
   top: auto !important;
 }
 
+/* ── Consultant CTA chip in the tender detail hero ────────────────
+   Discoverable affordance that sits inside the navy header band,
+   right below the issuer/country line. Gold border + soft translucent
+   fill so it reads as a "complimentary option" rather than a pushy
+   banner. The full hire card in the sidebar carries the longer pitch
+   for users who click into the offer. */
+.tf-consult-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding: 9px 16px 9px 14px;
+  background: rgba(185, 138, 59, 0.10);
+  border: 1px solid rgba(185, 138, 59, 0.55);
+  color: var(--gold-soft);
+  font-family: var(--sans);
+  font-size: 13px;
+  cursor: pointer;
+  transition: background 180ms ease, border-color 180ms ease, transform 180ms ease;
+}
+.tf-consult-chip:hover {
+  background: rgba(185, 138, 59, 0.20);
+  border-color: var(--gold);
+  transform: translateY(-1px);
+}
+.tf-consult-chip:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
+}
+.tf-consult-chip svg {
+  color: var(--gold);
+  flex-shrink: 0;
+}
+.tf-consult-chip strong {
+  color: var(--paper);
+  font-weight: 600;
+}
+.tf-consult-chip-arrow {
+  margin-left: 2px;
+  color: var(--gold);
+  transition: transform 180ms ease;
+}
+.tf-consult-chip:hover .tf-consult-chip-arrow {
+  transform: translateX(3px);
+}
+
 /* ── Hire-consultant CTA on tender detail ─────────────────────── */
 .tf-hire-card {
   margin-top: 16px;
@@ -1069,30 +1115,196 @@
   margin-top: 10px;
 }
 
-/* ── Checklist on tender detail ───────────────────────────────── */
+/* ── Checklist on tender detail ─────────────────────────────────
+   Hero block treatment: cream fill, 4px gold left accent, generous
+   padding. The intent is "featured section" not "another box". */
+.tf-checklist {
+  margin-top: 28px;
+  padding: 26px 28px 22px;
+  background: var(--cream);
+  border: 1px solid var(--rule);
+  border-left: 4px solid var(--gold);
+  position: relative;
+}
+.tf-checklist-hero { /* alias kept for the JSX className */ }
+.tf-checklist h3,
+.tf-checklist-title {
+  font-family: var(--serif);
+  font-size: 24px;
+  color: var(--navy);
+  margin: 6px 0 6px;
+  font-weight: 500;
+  letter-spacing: -0.005em;
+}
+
 .tf-checklist-head {
   display: grid;
   grid-template-columns: 1fr auto;
-  gap: 16px;
+  gap: 18px;
   align-items: center;
 }
-.tf-checklist-head .tf-cta { white-space: nowrap; }
+.tf-checklist-head-text {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 14px;
+  align-items: start;
+}
+.tf-checklist-head .tf-cta { white-space: nowrap; align-self: center; }
+.tf-checklist-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--navy);
+  color: var(--gold-soft);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 4px;
+}
+.tf-checklist-sub {
+  font-size: 13.5px;
+  color: var(--muted);
+  margin: 0;
+  line-height: 1.55;
+}
 @media (max-width: 640px) {
   .tf-checklist-head { grid-template-columns: 1fr; }
+  .tf-checklist-head-text { grid-template-columns: 36px 1fr; }
+  .tf-checklist-icon { width: 36px; height: 36px; }
 }
 
-.tf-checklist {
-  margin-top: 20px;
-  padding: 22px;
+/* ── Teaser preview (collapsed state) ─────────────────────────────
+   Shows the first 3 items so anonymous + signed-in collapsed users
+   see what they're committing to before they expand or sign up. The
+   .is-locked variant fades the list slightly and blocks pointer
+   events so anonymous users can't tick boxes before signing up. */
+.tf-checklist-teaser {
+  margin-top: 18px;
+  padding-top: 18px;
+  border-top: 1px solid var(--rule);
+}
+.tf-checklist-teaser ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.tf-checklist-teaser li {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--rule-soft);
+  align-items: start;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.tf-checklist-teaser li:last-child { border-bottom: 0; }
+.tf-checklist-teaser.is-locked ul {
+  opacity: 0.55;
+  pointer-events: none;
+}
+.tf-checklist-more {
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  font-weight: 600;
+}
+
+/* ── Status bar (open state): progress ring + summary line ────── */
+.tf-checklist-status {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 22px;
+  padding: 14px 18px;
   background: var(--paper);
   border: 1px solid var(--rule);
+  border-radius: 2px;
 }
-.tf-checklist h3 {
+.tf-checklist-status-text { line-height: 1.4; }
+.tf-checklist-status-line {
   font-family: var(--serif);
-  font-size: 22px;
+  font-size: 18px;
   color: var(--navy);
-  margin: 0 0 14px;
   font-weight: 500;
+}
+.tf-checklist-status-line strong {
+  font-size: 22px;
+  color: var(--gold);
+  font-family: var(--serif);
+  font-weight: 600;
+}
+.tf-checklist-status-sub {
+  font-size: 12.5px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ── Progress ring ─────────────────────────────────────────────── */
+.tf-progress-ring {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  flex-shrink: 0;
+}
+.tf-progress-ring svg { display: block; }
+.tf-progress-ring-pct {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--serif);
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--navy);
+  letter-spacing: -0.01em;
+}
+
+/* ── Filter chips (All / Outstanding / Done) ───────────────────── */
+.tf-checklist-filters {
+  display: flex;
+  gap: 6px;
+  margin: 18px 0 6px;
+  flex-wrap: wrap;
+}
+.tf-checklist-filter {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background: transparent;
+  border: 1px solid var(--rule);
+  color: var(--ink);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 140ms ease, border-color 140ms ease, color 140ms ease;
+}
+.tf-checklist-filter:hover {
+  background: var(--paper);
+  border-color: var(--navy);
+}
+.tf-checklist-filter.is-active {
+  background: var(--navy);
+  color: var(--paper);
+  border-color: var(--navy);
+}
+.tf-checklist-filter-count {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--muted);
+  background: rgba(20, 30, 40, 0.06);
+  padding: 1px 6px;
+  border-radius: 999px;
+}
+.tf-checklist-filter.is-active .tf-checklist-filter-count {
+  color: var(--gold-soft);
+  background: rgba(245, 246, 235, 0.10);
 }
 .tf-checklist ul { list-style: none; padding: 0; margin: 0; }
 .tf-checklist li {

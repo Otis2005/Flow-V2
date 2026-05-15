@@ -175,6 +175,29 @@ export default function TenderDetail() {
             <span>·</span>
             <span>{tender.sector}</span>
           </div>
+
+          {/* Discoverable consultant CTA: subtle gold-trimmed chip inline
+             with the header metadata. Sits on the navy band so the gold
+             border + soft fill read as a "complimentary option" rather
+             than a pushy banner. The full hire card in the sidebar still
+             carries the longer value prop for anyone who wants detail. */}
+          <button
+            type="button"
+            className="tf-consult-chip"
+            onClick={() => navigate(`/hire?tender=${tender.id}`)}
+            aria-label="Hire a consultant to help with this tender"
+          >
+            <svg viewBox="0 0 20 20" width="16" height="16" aria-hidden="true">
+              <path
+                d="M6 9a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm8 0a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm-8 2c-3.3 0-5 1.7-5 4v2h10v-2c0-2.3-1.7-4-5-4Zm8 0c-.5 0-1 .05-1.46.13A5.7 5.7 0 0 1 16 15v2h4v-2c0-2.3-1.7-4-6-4Z"
+                fill="currentColor"
+              />
+            </svg>
+            <span>
+              Don't have time? <strong>Get a vetted consultant</strong>
+            </span>
+            <span className="tf-consult-chip-arrow" aria-hidden="true">→</span>
+          </button>
         </div>
       </div>
 
