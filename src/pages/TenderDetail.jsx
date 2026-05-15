@@ -222,45 +222,63 @@ export default function TenderDetail() {
             </FadeIn>
           )}
 
-          <FadeIn className="tf-detail-section">
+          {/* Key dates: compact 2-up card grid replacing the old table.
+             Closes card picks up a gold accent + urgent text when the
+             deadline is inside 14 days so it visually pops. */}
+          <FadeIn className="tf-detail-section tf-detail-section-tight">
             <h3>Key dates</h3>
-            <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: 14 }}>
-              <tbody>
-                {[
-                  ['Tender published', fmtDate(tender.published)],
-                  ['Bid submission deadline', fmtDate(tender.closes)]
-                ].map(([k, v]) => (
-                  <tr key={k} style={{ borderBottom: '1px solid var(--rule-soft)' }}>
-                    <td style={{ padding: '12px 0', color: 'var(--muted)', width: '45%' }}>{k}</td>
-                    <td style={{ padding: '12px 0', fontWeight: 500 }}>{v}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="tf-dates-grid">
+              <div className="tf-date-card">
+                <div className="tf-date-card-label">Published</div>
+                <div className="tf-date-card-value">{fmtDate(tender.published)}</div>
+              </div>
+              <div className={'tf-date-card tf-date-card-deadline' + (days <= 14 ? ' is-urgent' : '')}>
+                <div className="tf-date-card-label">Closes</div>
+                <div className="tf-date-card-value">{fmtDate(tender.closes)}</div>
+                <div className="tf-date-card-count">
+                  {days >= 0 ? `${days} day${days === 1 ? '' : 's'} · 14:00 local` : 'Closed'}
+                </div>
+              </div>
+            </div>
           </FadeIn>
 
           {Array.isArray(tender.documents) && tender.documents.length > 0 && (
-            <FadeIn className="tf-detail-section" id="tender-documents">
-              <h3>Tender documents</h3>
-              <ul className="tf-doc-list">
-                {tender.documents.map((d, i) => (
-                  <li
-                    key={d.name + i}
-                    className="tf-doc"
-                    onClick={() => handleDownload(d)}
-                    style={{ cursor: 'pointer' }}
-                  >
-                    <span className="tf-doc-name">
-                      <span className="tf-doc-icon"></span>
-                      {d.name}
-                    </span>
-                    <span style={{ display: 'flex', gap: 18, alignItems: 'center' }}>
-                      {d.size && <span className="tf-doc-size">{d.size}</span>}
-                      <span style={{ color: 'var(--navy)', fontSize: 13, fontWeight: 600 }}>Download →</span>
-                    </span>
-                  </li>
-                ))}
-              </ul>
+            <FadeIn className="tf-detail-section tf-detail-section-tight" id="tender-documents">
+              <h3>
+                Tender documents
+                <span className="tf-detail-count">{tender.documents.length}</span>
+              </h3>
+              <div className="tf-doc-grid">
+                {tender.documents.map((d, i) => {
+                  const ext = (d.name || '').split('.').pop()?.toLowerCase() || '';
+                  const label = ext === 'pdf' ? 'PDF'
+                    : ext === 'doc' || ext === 'docx' ? 'DOC'
+                    : ext === 'xls' || ext === 'xlsx' ? 'XLS'
+                    : ext.slice(0, 3).toUpperCase() || 'FILE';
+                  const tone = ext === 'pdf' ? 'pdf'
+                    : ext === 'doc' || ext === 'docx' ? 'doc'
+                    : ext === 'xls' || ext === 'xlsx' ? 'xls'
+                    : 'other';
+                  return (
+                    <button
+                      key={d.name + i}
+                      type="button"
+                      className="tf-doc-card"
+                      onClick={() => handleDownload(d)}
+                      title={`Download ${d.name}`}
+                    >
+                      <span className={`tf-doc-card-badge is-${tone}`} aria-hidden="true">
+                        {label}
+                      </span>
+                      <span className="tf-doc-card-body">
+                        <span className="tf-doc-card-name">{d.name}</span>
+                        {d.size && <span className="tf-doc-card-size">{d.size}</span>}
+                      </span>
+                      <span className="tf-doc-card-arrow" aria-hidden="true">↓</span>
+                    </button>
+                  );
+                })}
+              </div>
             </FadeIn>
           )}
 
