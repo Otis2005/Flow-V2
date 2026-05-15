@@ -155,11 +155,11 @@ export default function TenderDetail() {
             <span style={{ fontSize: 12, color: 'var(--muted)', fontFamily: 'var(--mono)' }}>Ref: {tender.refNo}</span>
             <span style={{ fontSize: 12, color: 'var(--muted)' }}>· Published {fmtDate(tender.published)}</span>
             {bidCount > 0 && (
-              <span className="tf-bids-pill" title={`${bidCount} downloads`}>
+              <span className="tf-bids-pill" title={`${bidCount} document download${bidCount === 1 ? '' : 's'}`}>
                 <svg viewBox="0 0 16 16" aria-hidden="true">
                   <path d="M8 2v9m-3-3 3 3 3-3M3 13h10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
-                {bidCount} {bidCount === 1 ? 'Bid' : 'Bids'}
+                <strong style={{ fontWeight: 700 }}>{bidCount}</strong>&nbsp;Interest
               </span>
             )}
           </div>

@@ -60,11 +60,11 @@ export function TenderCard({ tender }) {
             </span>
           </div>
           {(tender.download_count > 0) && (
-            <div className="tf-card-bids">
+            <div className="tf-card-bids" title={`${tender.download_count} document download${tender.download_count === 1 ? '' : 's'}`}>
               <svg viewBox="0 0 16 16" aria-hidden="true">
                 <path d="M8 2v9m-3-3 3 3 3-3M3 13h10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
               </svg>
-              {tender.download_count} {tender.download_count === 1 ? 'Bid' : 'Bids'}
+              <strong style={{ fontWeight: 700 }}>{tender.download_count}</strong>&nbsp;Interest
             </div>
           )}
         </div>
