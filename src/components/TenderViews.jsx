@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import Badge from './Badge.jsx';
 import AgpoBadge from './AgpoBadge.jsx';
+import CountryFlag from './CountryFlag.jsx';
 import { daysUntil, fmtDate } from '../lib/format.js';
 
 function formatBidSecurity(t) {
@@ -28,8 +29,9 @@ export function TenderCard({ tender }) {
           <div className="tf-card-meta-top">
             <div className="tf-card-issuer">
               <div className="tf-card-issuer-name">{tender.issuer}</div>
-              <div style={{ fontSize: 11, opacity: 0.7, marginTop: 2 }}>
-                {tender.country} · {tender.sector}
+              <div className="tf-card-country-row">
+                <CountryFlag country={tender.country} />
+                <span>{tender.country} · {tender.sector}</span>
               </div>
             </div>
             <div className="tf-card-badges">
@@ -57,6 +59,14 @@ export function TenderCard({ tender }) {
               </div>
             </span>
           </div>
+          {(tender.download_count > 0) && (
+            <div className="tf-card-bids">
+              <svg viewBox="0 0 16 16" aria-hidden="true">
+                <path d="M8 2v9m-3-3 3 3 3-3M3 13h10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              {tender.download_count} {tender.download_count === 1 ? 'Bid' : 'Bids'}
+            </div>
+          )}
         </div>
       </article>
     </Link>

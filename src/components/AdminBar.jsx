@@ -14,6 +14,27 @@ export default function AdminBar() {
   return (
     <div className="tf-admin-bar">
       <div className="tf-container tf-admin-bar-row" style={{ alignItems: 'center', display: 'flex' }}>
+        {/* Back-to-site link: lets the admin jump to the public homepage
+            without signing out. Visible left of the section label. */}
+        <Link
+          to="/"
+          title="Back to public site"
+          style={{
+            color: 'var(--paper)',
+            opacity: 0.7,
+            fontSize: 13,
+            marginRight: 18,
+            textDecoration: 'none',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: 6
+          }}
+        >
+          <svg viewBox="0 0 16 16" width="13" height="13" aria-hidden="true">
+            <path d="M2 8L8 2v3h6v6H8v3z" fill="none" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
+          </svg>
+          Back to site
+        </Link>
         <span className="tf-eyebrow">Internal · Admin</span>
         <span style={{ flex: 1 }} />
         {TABS.map(t => {

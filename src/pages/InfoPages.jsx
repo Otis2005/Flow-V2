@@ -161,36 +161,96 @@ export function Contact() {
     <PageShell
       eyebrow="Contact"
       title="Get in touch."
-      intro="Questions, feedback, partnerships, press,all welcome. We respond within one working day."
+      intro="Questions, feedback, partnerships, press, all welcome. We respond within one working day."
     >
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: 24 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: 28 }}>
         <div>
-          <h3 style={{ fontFamily: 'var(--serif)', fontSize: 22, color: 'var(--navy)', fontWeight: 500 }}>Direct</h3>
-          <ul style={{ listStyle: 'none', padding: 0, fontSize: 14, lineHeight: 1.9 }}>
-            <li>Email: <a href="mailto:help@tenderflow.co.ke" style={{ color: 'var(--navy)' }}>help@tenderflow.co.ke</a></li>
-            <li>
-              Alternative:{' '}
-              <a href="mailto:kennedy.nange@tenderflow.co.ke" style={{ color: 'var(--navy)' }}>
-                kennedy.nange@tenderflow.co.ke
-              </a>
-            </li>
-            <li>Phone: <a href="tel:+254724131492" style={{ color: 'var(--navy)' }}>0724 131 492</a></li>
-            <li style={{ marginTop: 8, lineHeight: 1.55 }}>
-              <strong>Office:</strong><br />
-              Eden Square Complex, Chiromo Road,<br />
-              Westlands, Block 1, 7th Floor,<br />
-              Nairobi, Kenya
-            </li>
-          </ul>
+          <h3 style={{ fontFamily: 'var(--serif)', fontSize: 22, color: 'var(--navy)', fontWeight: 500, marginTop: 0 }}>
+            Direct
+          </h3>
+          <div className="tf-contact-grid">
+            <a href="mailto:help@tenderflow.co.ke" className="tf-contact-item">
+              <span className="tf-contact-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 6h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" strokeWidth="1.8"/>
+                  <path d="M3 7l9 7 9-7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+              </span>
+              <span className="tf-contact-text">
+                <span className="tf-contact-label">Email</span>
+                <span className="tf-contact-value">help@tenderflow.co.ke</span>
+              </span>
+            </a>
+
+            <a href="mailto:kennedy.nange@tenderflow.co.ke" className="tf-contact-item">
+              <span className="tf-contact-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M3 6h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" strokeWidth="1.6"/>
+                  <path d="M3 7l9 7 9-7" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                  <path d="M16 4l3 3-3 3" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" opacity=".55"/>
+                </svg>
+              </span>
+              <span className="tf-contact-text">
+                <span className="tf-contact-label">Alternative</span>
+                <span className="tf-contact-value">kennedy.nange@tenderflow.co.ke</span>
+              </span>
+            </a>
+
+            <a href="tel:+254724131492" className="tf-contact-item">
+              <span className="tf-contact-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2 16 16 0 0 1-16-16 2 2 0 0 1 2-2z"
+                    fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+              <span className="tf-contact-text">
+                <span className="tf-contact-label">Phone</span>
+                <span className="tf-contact-value">0724 131 492</span>
+              </span>
+            </a>
+
+            <a
+              href="https://www.google.com/maps/search/?api=1&query=Eden+Square+Complex+Chiromo+Road+Westlands+Nairobi"
+              target="_blank"
+              rel="noopener"
+              className="tf-contact-item"
+            >
+              <span className="tf-contact-icon">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 21s-7-7.5-7-12a7 7 0 1 1 14 0c0 4.5-7 12-7 12z" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round"/>
+                  <circle cx="12" cy="9" r="2.5" fill="none" stroke="currentColor" strokeWidth="1.8"/>
+                </svg>
+              </span>
+              <span className="tf-contact-text">
+                <span className="tf-contact-label">Office</span>
+                <span className="tf-contact-value tf-contact-multiline">
+                  Eden Square Complex, Chiromo Road<br />
+                  Westlands, Block 1, 7th Floor<br />
+                  Nairobi, Kenya
+                </span>
+              </span>
+            </a>
+          </div>
+
+          <p style={{ marginTop: 22, fontSize: 12, color: 'var(--muted)', lineHeight: 1.6 }}>
+            We respond to email within one working day. Phone lines are open
+            Monday to Friday, 9am to 5pm East Africa Time.
+          </p>
         </div>
+
         <div>
+          <h3 style={{ fontFamily: 'var(--serif)', fontSize: 22, color: 'var(--navy)', fontWeight: 500, marginTop: 0 }}>
+            Send a message
+          </h3>
           {sent ? (
-            <div style={{ padding: 16, background: 'var(--paper)', border: '1px solid var(--rule)' }}>
-              <div className="tf-eyebrow" style={{ color: 'var(--gold)' }}>Sent.</div>
+            <div style={{ padding: 20, background: 'var(--paper)', border: '1px solid var(--rule)', borderLeft: '3px solid var(--gold)' }}>
+              <div className="tf-eyebrow" style={{ color: 'var(--gold)' }}>Sent</div>
               <p style={{ marginTop: 8 }}>We'll be in touch shortly.</p>
             </div>
           ) : (
-            <form onSubmit={send} style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <form onSubmit={send} style={{ display: 'flex', flexDirection: 'column', gap: 12, marginTop: 12 }}>
               <input className="tf-ob-input" placeholder="Your name" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required />
               <input type="email" className="tf-ob-input" placeholder="Email" value={form.email} onChange={e => setForm({ ...form, email: e.target.value })} required />
               <textarea className="tf-ob-input" rows={5} placeholder="Message" value={form.message} onChange={e => setForm({ ...form, message: e.target.value })} required />

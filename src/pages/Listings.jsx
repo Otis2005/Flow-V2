@@ -49,7 +49,12 @@ export default function Listings() {
       .sort((a, b) => {
         if (sortBy === 'closes') return new Date(a.closes) - new Date(b.closes);
         if (sortBy === 'value') return (b.value || 0) - (a.value || 0);
-        if (sortBy === 'published') return new Date(b.published) - new Date(a.published);
+        if (sortBy === 'published') {
+          // 'Newly published' label on the UI; we actually sort by
+          // when the tender was uploaded to TenderFlow (created_at),
+          // not the published date stamped on the source document.
+          return new Date(b.created_at || b.published) - new Date(a.created_at || a.published);
+        }
         return 0;
       });
   }, [q, source, country, sector, sortBy, tenders]);

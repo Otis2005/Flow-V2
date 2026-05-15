@@ -1,6 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import Badge from '../components/Badge.jsx';
+import CountryFlag from '../components/CountryFlag.jsx';
 import FadeIn from '../components/FadeIn.jsx';
 import { TenderCard } from '../components/TenderViews.jsx';
 import { useTender, useTenders } from '../lib/useTenders.js';
@@ -55,11 +56,36 @@ export default function TenderDetail() {
   const days = daysUntil(tender.closes);
   const bidSecurity = tender.bid_security && tender.bid_security.trim() ? tender.bid_security : 'Not Required';
 
-  // Similar tenders, latest uploaded first.
+  // Similar tenders, latest uploaded first (by created_at, which is when
+  // the admin uploaded to TenderFlow — falls back to published_at if
+  // created_at is missing, which happens with sample data).
   const related = tenders
     .filter(t => t.id !== tender.id && (t.sector === tender.sector || t.country === tender.country))
-    .sort((a, b) => new Date(b.published) - new Date(a.published))
+    .sort((a, b) =>
+      new Date(b.created_at || b.published) - new Date(a.created_at || a.published)
+    )
     .slice(0, 3);
+
+  // Local mirror of the bid count so the UI updates immediately when a
+  // user downloads a doc, without re-fetching the tender row.
+  const [bidCount, setBidCount] = useState(null);
+  useEffect(() => {
+    setBidCount(tender?.download_count ?? 0);
+  }, [tender?.id, tender?.download_count]);
+
+  async function trackDownload() {
+    if (!isSupabaseConfigured || !tender?.id) return;
+    try {
+      const { data, error } = await supabase
+        .rpc('increment_tender_download', { p_tender_id: tender.id });
+      if (!error && typeof data === 'number') {
+        setBidCount(data);
+      }
+    } catch (e) {
+      // Counter is best-effort; never block the actual download.
+      console.warn('[tender] download counter failed', e);
+    }
+  }
 
   async function handleDownload(doc) {
     if (!doc.url && !doc.storage_path) {
@@ -67,6 +93,8 @@ export default function TenderDetail() {
       setTimeout(() => setSavedToast(null), 3000);
       return;
     }
+    // Fire-and-forget the counter increment alongside the actual download.
+    trackDownload();
     if (doc.url) {
       window.open(doc.url, '_blank', 'noopener');
       return;
@@ -126,10 +154,23 @@ export default function TenderDetail() {
             <Badge source={tender.source} />
             <span style={{ fontSize: 12, color: 'var(--muted)', fontFamily: 'var(--mono)' }}>Ref: {tender.refNo}</span>
             <span style={{ fontSize: 12, color: 'var(--muted)' }}>· Published {fmtDate(tender.published)}</span>
+            {bidCount > 0 && (
+              <span className="tf-bids-pill" title={`${bidCount} downloads`}>
+                <svg viewBox="0 0 16 16" aria-hidden="true">
+                  <path d="M8 2v9m-3-3 3 3 3-3M3 13h10" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
+                </svg>
+                {bidCount} {bidCount === 1 ? 'Bid' : 'Bids'}
+              </span>
+            )}
           </div>
           <h1 className="tf-detail-title">{tender.title}</h1>
-          <div className="tf-detail-issuer">
-            <strong>{tender.issuer}</strong> · {tender.country} · {tender.sector}
+          <div className="tf-detail-issuer" style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
+            <strong>{tender.issuer}</strong>
+            <span>·</span>
+            <CountryFlag country={tender.country} size="md" />
+            <span>{tender.country}</span>
+            <span>·</span>
+            <span>{tender.sector}</span>
           </div>
         </div>
       </div>

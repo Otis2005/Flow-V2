@@ -434,6 +434,72 @@
   font-style: italic;
   font-weight: 500;
 }
+/* ── Bid count indicators (download counter as "Bids") ──────── */
+.tf-bids-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 9px;
+  background: rgba(216, 167, 59, 0.14);
+  border: 1px solid rgba(216, 167, 59, 0.32);
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  color: var(--navy);
+}
+.tf-bids-pill svg {
+  width: 12px;
+  height: 12px;
+  display: block;
+  color: var(--gold);
+}
+.tf-card-bids {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px dashed rgba(20, 30, 40, 0.10);
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--navy);
+  letter-spacing: 0.02em;
+}
+.tf-card-bids svg {
+  width: 13px;
+  height: 13px;
+  display: block;
+  color: var(--gold);
+}
+
+/* ── Country flag chip ─────────────────────────────────────────
+   Tiny inline SVG flag with a subtle border so it reads as a chip
+   rather than disappearing into the background. */
+.tf-flag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  flex-shrink: 0;
+  border-radius: 2px;
+  overflow: hidden;
+  box-shadow: 0 0 0 1px rgba(20, 30, 40, 0.18);
+}
+.tf-flag svg { display: block; width: 100%; height: 100%; }
+.tf-flag-sm { width: 18px; height: 11px; }
+.tf-flag-md { width: 24px; height: 14px; }
+.tf-flag-lg { width: 32px; height: 19px; }
+
+.tf-card-country-row {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  opacity: 0.85;
+  margin-top: 4px;
+}
+
 .tf-card-issuer-row {
   display: flex;
   align-items: center;
@@ -1209,6 +1275,94 @@
 @media (max-width: 720px) {
   .tf-footer-links { justify-content: flex-start; gap: 16px; }
   .tf-footer-base { flex-direction: column; gap: 6px; }
+}
+
+/* ── Tender body text rendering ──────────────────────────────
+   The admin form uses <textarea> which preserves explicit line breaks
+   when the user hits Enter. Without white-space:pre-wrap on the detail
+   page paragraphs, those line breaks collapse and the published copy
+   looks like one big run-on paragraph. pre-wrap preserves newlines
+   and still wraps long lines at the container edge. */
+.tf-detail-section p {
+  white-space: pre-wrap;
+  /* Inherit body font (sans) explicitly so admin's typed text matches
+     the rest of the page rather than picking up any browser default. */
+  font-family: var(--sans);
+}
+
+/* ── Contact page cards ──────────────────────────────────────
+   Each contact item is a clickable row with an icon, a label, and a
+   value. Border, hover lift, gold accent on hover for tactile feedback. */
+.tf-contact-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 16px;
+}
+.tf-contact-item {
+  display: grid;
+  grid-template-columns: 44px 1fr;
+  gap: 14px;
+  align-items: center;
+  padding: 14px 16px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 160ms ease, transform 200ms ease,
+              box-shadow 200ms ease, background 160ms ease;
+}
+.tf-contact-item:hover {
+  border-color: rgba(216, 167, 59, 0.5);
+  background: #fbfbf3;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 14px -10px rgba(20, 30, 40, 0.18);
+}
+.tf-contact-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--cream);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--navy);
+  flex-shrink: 0;
+  transition: background 200ms ease, color 200ms ease;
+}
+.tf-contact-icon svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+.tf-contact-item:hover .tf-contact-icon {
+  background: var(--navy);
+  color: var(--gold-soft);
+}
+.tf-contact-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.tf-contact-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--muted);
+  font-weight: 600;
+}
+.tf-contact-value {
+  font-size: 14.5px;
+  color: var(--navy);
+  font-weight: 500;
+  word-break: break-word;
+}
+.tf-contact-multiline {
+  font-weight: 400;
+  font-size: 13.5px;
+  line-height: 1.5;
 }
 
 /* ── Misc minor tightenings ───────────────────────────────────── */

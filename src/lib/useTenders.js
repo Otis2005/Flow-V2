@@ -28,7 +28,9 @@ function rowToTender(r) {
     issuer_logo_url: r.issuer_logo_url,
     issuer_logo_path: r.issuer_logo_path,
     checklist: r.checklist ?? [],
-    agpo_category: r.agpo_category
+    agpo_category: r.agpo_category,
+    download_count: r.download_count ?? 0,
+    created_at: r.created_at
   };
 }
 
@@ -47,11 +49,14 @@ export function useTenders({ status = 'published' } = {}) {
         setLoading(false);
         return;
       }
+      // Sort by created_at (when admin uploaded to TenderFlow), not
+      // published_at (the date stamped on the tender notice itself).
+      // Kennedy wants newest-uploaded first on Latest Tenders + listings.
       const { data, error } = await supabase
         .from('tenders')
         .select('*')
         .eq('status', status)
-        .order('published_at', { ascending: false });
+        .order('created_at', { ascending: false });
       if (!active) return;
       if (error) {
         console.error('[useTenders]', error);
