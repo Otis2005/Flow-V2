@@ -100,6 +100,112 @@ def render_mark_transparent(size: int) -> Image.Image:
 
 
 # --------------------------------------------------------------------------- #
+# Social media avatar (square, mark on navy, full-bleed)                      #
+# --------------------------------------------------------------------------- #
+
+
+def render_social_avatar(size: int = 1024) -> Image.Image:
+    """Square social-media profile image.
+
+    Solid navy background (no rounded corners; platforms crop to a circle
+    or rounded square themselves). Mark bars centered and scaled to fill
+    ~55% of the canvas so the icon reads clearly at the small sizes
+    LinkedIn / X / WhatsApp display in feeds (32-48 px).
+    """
+    img = Image.new("RGB", (size, size), NAVY)
+    d = ImageDraw.Draw(img)
+
+    # Bars are defined in a 64-coord viewBox the same as mark.svg.
+    # We center the mark inside the canvas and scale up so the three
+    # bars together span ~60% of the width.
+    target_span_pct = 0.55  # mark spans 55% of canvas width
+    mark_bbox_w = 38         # from mark.svg: bars span x=8..46 = 38 wide
+    mark_bbox_h = 48         # bars span y=8..56 = 48 tall
+    target_w = size * target_span_pct
+    scale = target_w / mark_bbox_w
+
+    # Offset so the mark is centered
+    offset_x = (size - mark_bbox_w * scale) / 2 - 8 * scale
+    offset_y = (size - mark_bbox_h * scale) / 2 - 8 * scale
+
+    bars = [
+        (8, 34, 10, 22, AMBER),
+        (22, 22, 10, 34, TEAL),
+        (36, 8, 10, 48, PAPER),  # third bar PAPER instead of NAVY so it pops on the navy bg
+    ]
+    for bx, by, bw, bh, color in bars:
+        x0 = offset_x + bx * scale
+        y0 = offset_y + by * scale
+        x1 = x0 + bw * scale
+        y1 = y0 + bh * scale
+        d.rectangle([int(x0), int(y0), int(x1), int(y1)], fill=color)
+
+    return img
+
+
+# --------------------------------------------------------------------------- #
+# Social media banner (wide, wordmark + tagline)                              #
+# --------------------------------------------------------------------------- #
+
+
+def render_social_banner() -> Image.Image:
+    """1500 x 500 banner for X / LinkedIn cover images.
+
+    LinkedIn cover safe-area is ~1128 x 191 centered; X header is
+    1500 x 500. We design for the larger canvas with the wordmark
+    centered horizontally and positioned so it sits inside LinkedIn's
+    safe area too. Navy field, italic-em wordmark in paper/gold,
+    eyebrow rule + tagline below.
+    """
+    W, H = 1500, 500
+    img = Image.new("RGB", (W, H), NAVY)
+    d = ImageDraw.Draw(img, "RGBA")
+
+    # Vertical gradient for depth (matches og-cover treatment)
+    top = (14, 42, 80)
+    bot = NAVY
+    steps = 60
+    for i in range(steps):
+        t = i / (steps - 1)
+        r = int(top[0] + (bot[0] - top[0]) * t)
+        g = int(top[1] + (bot[1] - top[1]) * t)
+        b = int(top[2] + (bot[2] - top[2]) * t)
+        y0 = int(H * i / steps)
+        y1 = int(H * (i + 1) / steps)
+        d.rectangle([0, y0, W, y1], fill=(r, g, b))
+
+    # Three-bar mark on the left
+    mark_x, mark_y = 380, 195
+    bars = [
+        (0, 56, 18, 60, AMBER),
+        (28, 34, 18, 82, TEAL),
+        (56, 0, 18, 116, PAPER),
+    ]
+    for bx, by, bw, bh, color in bars:
+        d.rectangle(
+            [mark_x + bx, mark_y + by, mark_x + bx + bw, mark_y + by + bh],
+            fill=color,
+        )
+
+    # Wordmark: "Tender" + italic "Flow"
+    f_word = load_font("serif", 96)
+    f_word_it = load_font("serif-italic", 96)
+    word_y = 200
+    d.text((480, word_y), "Tender", font=f_word, fill=PAPER)
+    tender_w = d.textbbox((480, word_y), "Tender", font=f_word)[2] - 480
+    d.text((480 + tender_w, word_y), "Flow", font=f_word_it, fill=GOLD_SOFT)
+
+    # Tagline below the wordmark
+    f_tag = load_font("sans", 22)
+    d.text((480, 330), "East African tender intelligence.", font=f_tag, fill=CREAM_SOFT)
+
+    # Gold rule under the wordmark
+    d.rectangle([480, 322, 480 + 220, 324], fill=GOLD)
+
+    return img
+
+
+# --------------------------------------------------------------------------- #
 # Fonts                                                                       #
 # --------------------------------------------------------------------------- #
 
@@ -263,6 +369,16 @@ def main() -> None:
     og = PUB / "og-cover.png"
     render_og_cover().save(og, "PNG", optimize=True)
     print(f"Wrote {og}  ({og.stat().st_size / 1024:.1f} KB)")
+
+    # Social media profile avatar (1024 square, mark on solid navy)
+    avatar = BRAND / "tenderflow-social-avatar.png"
+    render_social_avatar(1024).save(avatar, "PNG", optimize=True)
+    print(f"Wrote {avatar}  ({avatar.stat().st_size / 1024:.1f} KB)")
+
+    # Social media banner / header (1500 x 500, wordmark + tagline)
+    banner = BRAND / "tenderflow-social-banner.png"
+    render_social_banner().save(banner, "PNG", optimize=True)
+    print(f"Wrote {banner}  ({banner.stat().st_size / 1024:.1f} KB)")
 
 
 if __name__ == "__main__":
