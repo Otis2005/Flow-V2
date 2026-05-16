@@ -32,6 +32,9 @@ const ABOUT_SCHEMA = {
       { '@type': 'Country', 'name': 'Kenya' },
       { '@type': 'Country', 'name': 'Uganda' },
       { '@type': 'Country', 'name': 'Tanzania' }
+    ],
+    'sameAs': [
+      'https://www.linkedin.com/company/121913940'
     ]
   }
 };
