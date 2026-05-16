@@ -1929,6 +1929,47 @@
   color: var(--ink);
 }
 
+/* ── Social icon row on the contact page ─────────────────────────
+   Icon-only circular links. Same brand-aware hover as the contact
+   items (lift, navy fill, gold-soft icon) but tighter and circular,
+   sitting in a horizontal row below the address. */
+.tf-contact-social {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+.tf-contact-social-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  background: var(--paper);
+  border: 1px solid var(--rule);
+  border-radius: 50%;
+  color: var(--navy);
+  text-decoration: none;
+  transition: background 220ms ease, color 220ms ease,
+              border-color 220ms ease, transform 220ms ease,
+              box-shadow 220ms ease;
+}
+.tf-contact-social-link svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+}
+.tf-contact-social-link:hover {
+  background: var(--navy);
+  color: var(--gold-soft);
+  border-color: var(--navy);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 18px -10px rgba(20, 30, 40, 0.30);
+}
+.tf-contact-social-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+
 /* ── Misc minor tightenings ───────────────────────────────────── */
 .tf-eyebrow-rule::before {
   transition: width 240ms ease;
