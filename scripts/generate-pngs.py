@@ -206,6 +206,70 @@ def render_social_banner() -> Image.Image:
 
 
 # --------------------------------------------------------------------------- #
+# LinkedIn-specific cover (1584 x 396, 4:1)                                   #
+# --------------------------------------------------------------------------- #
+
+
+def render_linkedin_cover() -> Image.Image:
+    """1584 x 396 banner sized for LinkedIn personal + company covers.
+
+    LinkedIn's display area crops to a wider, shorter visible strip than
+    X / Twitter. The 1500x500 social banner uploads but gets rejected on
+    apply because the aspect doesn't fit LinkedIn's template. 4:1 fits.
+
+    Composition: brand block centered horizontally so it survives any
+    safe-zone crop. Mark (three bars) on the left of the block, "Tender"
+    upright + "Flow" italic gold, gold rule + tagline underneath.
+    """
+    W, H = 1584, 396
+    img = Image.new("RGB", (W, H), NAVY)
+    d = ImageDraw.Draw(img, "RGBA")
+
+    # Vertical gradient for depth, same recipe as the other banners
+    top = (14, 42, 80)
+    bot = NAVY
+    steps = 60
+    for i in range(steps):
+        t = i / (steps - 1)
+        r = int(top[0] + (bot[0] - top[0]) * t)
+        g = int(top[1] + (bot[1] - top[1]) * t)
+        b = int(top[2] + (bot[2] - top[2]) * t)
+        y0 = int(H * i / steps)
+        y1 = int(H * (i + 1) / steps)
+        d.rectangle([0, y0, W, y1], fill=(r, g, b))
+
+    # Brand block sizing. Mark bars: 14 wide each, 22 gap, total 58 wide.
+    # Wordmark at 72pt ≈ 440px wide (depends on system font; we use Georgia
+    # fallback). Total horizontal block ≈ 540px; center it.
+    mark_x, mark_y = 510, 154
+    bars = [
+        (0, 44, 14, 44, AMBER),
+        (22, 22, 14, 66, TEAL),
+        (44, 0, 14, 88, PAPER),
+    ]
+    for bx, by, bw, bh, color in bars:
+        d.rectangle(
+            [mark_x + bx, mark_y + by, mark_x + bx + bw, mark_y + by + bh],
+            fill=color,
+        )
+
+    # Wordmark
+    f_word = load_font("serif", 72)
+    f_word_it = load_font("serif-italic", 72)
+    word_x, word_y = 600, 156
+    d.text((word_x, word_y), "Tender", font=f_word, fill=PAPER)
+    tender_w = d.textbbox((word_x, word_y), "Tender", font=f_word)[2] - word_x
+    d.text((word_x + tender_w, word_y), "Flow", font=f_word_it, fill=GOLD_SOFT)
+
+    # Gold rule + tagline
+    d.rectangle([word_x, 252, word_x + 180, 254], fill=GOLD)
+    f_tag = load_font("sans", 18)
+    d.text((word_x, 262), "East African tender intelligence.", font=f_tag, fill=CREAM_SOFT)
+
+    return img
+
+
+# --------------------------------------------------------------------------- #
 # Fonts                                                                       #
 # --------------------------------------------------------------------------- #
 
@@ -379,6 +443,11 @@ def main() -> None:
     banner = BRAND / "tenderflow-social-banner.png"
     render_social_banner().save(banner, "PNG", optimize=True)
     print(f"Wrote {banner}  ({banner.stat().st_size / 1024:.1f} KB)")
+
+    # LinkedIn-specific cover (1584 x 396, 4:1 aspect, brand centered)
+    linkedin = BRAND / "tenderflow-linkedin-cover.png"
+    render_linkedin_cover().save(linkedin, "PNG", optimize=True)
+    print(f"Wrote {linkedin}  ({linkedin.stat().st_size / 1024:.1f} KB)")
 
 
 if __name__ == "__main__":
