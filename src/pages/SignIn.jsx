@@ -89,11 +89,11 @@ export default function SignIn() {
                 <input
                   type="email"
                   className="tf-ob-input"
-                  placeholder="you@yourcompany.co.ke"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
                   autoFocus
+                  autoComplete="email"
                 />
               </label>
               {mode === 'password' && (
@@ -102,10 +102,10 @@ export default function SignIn() {
                   <input
                     type="password"
                     className="tf-ob-input"
-                    placeholder="At least 8 characters"
                     value={password}
                     onChange={e => setPassword(e.target.value)}
                     required
+                    autoComplete="current-password"
                   />
                 </label>
               )}

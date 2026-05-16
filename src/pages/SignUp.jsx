@@ -3,6 +3,19 @@ import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/AuthProvider.jsx';
 import { isSupabaseConfigured, supabase } from '../lib/supabaseClient.js';
 
+// Password strength checker. Returns an object of boolean checks so the
+// UI can render each requirement with a tick or circle. All four must
+// pass before sign-up is allowed.
+function checkPassword(pw) {
+  return {
+    length: pw.length >= 10,
+    uppercase: /[A-Z]/.test(pw),
+    lowercase: /[a-z]/.test(pw),
+    number: /[0-9]/.test(pw),
+    symbol: /[^A-Za-z0-9]/.test(pw),
+  };
+}
+
 export default function SignUp() {
   const { signUpWithPassword, user } = useAuth();
   const navigate = useNavigate();
@@ -11,6 +24,7 @@ export default function SignUp() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [accepted, setAccepted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
@@ -19,12 +33,19 @@ export default function SignUp() {
 
   if (user) return <Navigate to={returnTo} replace />;
 
+  const pwChecks = checkPassword(password);
+  const pwScore = Object.values(pwChecks).filter(Boolean).length;
+  // Require length + at least 3 of the 4 character-class checks. This is
+  // stricter than the old "8 chars total" rule but doesn't force every
+  // symbol class which annoys users who prefer passphrase-style passwords.
+  const pwPasses = pwChecks.length && pwScore >= 4;
+
   async function handleSubmit(e) {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
-    if (password.length < 8) {
-      setError('Password must be at least 8 characters.');
+    if (!pwPasses) {
+      setError('Password must be at least 10 characters and include at least three of: uppercase, lowercase, number, symbol.');
       setSubmitting(false);
       return;
     }
@@ -136,23 +157,60 @@ export default function SignUp() {
                 <input
                   type="email"
                   className="tf-ob-input"
-                  placeholder="you@yourcompany.co.ke"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                   required
+                  autoComplete="email"
                 />
               </label>
               <label className="tf-ob-label">
                 <span className="tf-ob-label-text">Password</span>
-                <input
-                  type="password"
-                  className="tf-ob-input"
-                  placeholder="At least 8 characters"
-                  value={password}
-                  onChange={e => setPassword(e.target.value)}
-                  required
-                  minLength={8}
-                />
+                <div className="tf-pw-wrap">
+                  <input
+                    type={showPassword ? 'text' : 'password'}
+                    className="tf-ob-input"
+                    value={password}
+                    onChange={e => setPassword(e.target.value)}
+                    required
+                    minLength={10}
+                    autoComplete="new-password"
+                  />
+                  <button
+                    type="button"
+                    className="tf-pw-toggle"
+                    onClick={() => setShowPassword(s => !s)}
+                    aria-label={showPassword ? 'Hide password' : 'Show password'}
+                    tabIndex={-1}
+                  >
+                    {showPassword ? 'Hide' : 'Show'}
+                  </button>
+                </div>
+                {/* Strength meter + per-rule checklist. Each rule renders
+                   with a checkmark once met. Strength bar fills as more
+                   rules pass; turns gold at "strong" threshold. */}
+                <div
+                  className={'tf-pw-meter is-score-' + pwScore}
+                  aria-hidden="true"
+                >
+                  <span style={{ width: (pwScore / 5) * 100 + '%' }} />
+                </div>
+                <ul className="tf-pw-rules">
+                  <li className={pwChecks.length ? 'is-met' : ''}>
+                    {pwChecks.length ? '✓' : '○'} At least 10 characters
+                  </li>
+                  <li className={pwChecks.uppercase ? 'is-met' : ''}>
+                    {pwChecks.uppercase ? '✓' : '○'} An uppercase letter
+                  </li>
+                  <li className={pwChecks.lowercase ? 'is-met' : ''}>
+                    {pwChecks.lowercase ? '✓' : '○'} A lowercase letter
+                  </li>
+                  <li className={pwChecks.number ? 'is-met' : ''}>
+                    {pwChecks.number ? '✓' : '○'} A number
+                  </li>
+                  <li className={pwChecks.symbol ? 'is-met' : ''}>
+                    {pwChecks.symbol ? '✓' : '○'} A symbol (e.g. ! @ # $)
+                  </li>
+                </ul>
               </label>
               <label className="tf-ob-checkbox" style={{ marginTop: 4 }}>
                 <input
@@ -171,7 +229,7 @@ export default function SignUp() {
               <button
                 className="tf-cta"
                 type="submit"
-                disabled={submitting || !email || !password || !name || !accepted || !isSupabaseConfigured}
+                disabled={submitting || !email || !pwPasses || !name || !accepted || !isSupabaseConfigured}
                 style={{ alignSelf: 'flex-start' }}
               >
                 {submitting ? 'Creating account…' : 'Create account'}
