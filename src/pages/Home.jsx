@@ -5,6 +5,7 @@ import HeroBackdrop from '../components/HeroBackdrop.jsx';
 import { TenderCard } from '../components/TenderViews.jsx';
 import { useTenders } from '../lib/useTenders.js';
 import { useAuth } from '../lib/AuthProvider.jsx';
+import { daysUntil } from '../lib/format.js';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -19,7 +20,15 @@ export default function Home() {
 
   const liveToday = tenders.length;
   const countriesCount = new Set(tenders.map(t => t.country)).size;
-  const totalValue = tenders.reduce((s, t) => s + (t.value || 0), 0);
+  // Replaced "Combined contract value" (which read 0.0M because most
+  // gov tenders quote BoQ instead of a value): a "Closing this week"
+  // count is far more actionable. Updates daily, signals urgency, and
+  // gives bidders a clear "act now" framing.
+  const closingThisWeek = tenders.filter(t => {
+    if (!t.closes) return false;
+    const d = daysUntil(t.closes);
+    return d >= 0 && d <= 7;
+  }).length;
 
   return (
     <main className="tf-page-anim">
@@ -30,12 +39,13 @@ export default function Home() {
             <div>
               {/* Brand eyebrow above the display H1: gives crawlers a
                  textual "TenderFlow" anchor in close proximity to the
-                 H1 without disrupting the visual headline. Gold-soft
-                 on navy keeps the brand connection visible. Strong
-                 signal for ranking on the brand name. */}
+                 H1 without disrupting the visual headline. Paper white
+                 on navy reads much more crisply than gold-soft (which
+                 was the original choice and got flagged as low-
+                 contrast). Strong signal for ranking on the brand name. */}
               <FadeIn
                 className="tf-eyebrow tf-eyebrow-rule tf-hero-eyebrow"
-                style={{ color: 'var(--gold-soft)' }}
+                style={{ color: 'var(--paper)' }}
               >
                 TenderFlow &middot; East African tender intelligence
               </FadeIn>
@@ -71,12 +81,8 @@ export default function Home() {
               <div className="tf-hero-stat-label">East African countries</div>
             </div>
             <div className="tf-hero-stat">
-              <div className="tf-hero-stat-num">
-                USD <em>{totalValue >= 1_000_000_000
-                  ? (totalValue / 1_000_000_000).toFixed(1) + 'B'
-                  : (totalValue / 1_000_000).toFixed(1) + 'M'}</em>
-              </div>
-              <div className="tf-hero-stat-label">Combined contract value</div>
+              <div className="tf-hero-stat-num">{closingThisWeek}</div>
+              <div className="tf-hero-stat-label">Closing this week</div>
             </div>
             <div className="tf-hero-stat">
               <div className="tf-hero-stat-num">3</div>
