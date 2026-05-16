@@ -36,7 +36,7 @@ const ABOUT_SCHEMA = {
     'sameAs': [
       'https://www.linkedin.com/company/tenderflow-east-africa',
       'https://x.com/tenderflow_ea',
-      'https://www.facebook.com/profile.php?id=61590029544340'
+      'https://www.facebook.com/TenderFlowEastAfrica'
     ]
   }
 };
