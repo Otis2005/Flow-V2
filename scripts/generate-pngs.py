@@ -206,6 +206,87 @@ def render_social_banner() -> Image.Image:
 
 
 # --------------------------------------------------------------------------- #
+# Google Business Profile cover (1080 x 608, 16:9)                            #
+# --------------------------------------------------------------------------- #
+
+
+def render_gbp_cover() -> Image.Image:
+    """1080 x 608 cover image sized for Google Business Profile.
+
+    GBP cover photo displays at 16:9 in the Knowledge Panel and on the
+    business listing page. Smaller than the Facebook / LinkedIn covers
+    so the brand block scales down proportionally to keep readability
+    at the sizes Google renders it (often 320-500px wide).
+    """
+    W, H = 1080, 608
+    img = Image.new("RGB", (W, H), NAVY)
+    d = ImageDraw.Draw(img, "RGBA")
+
+    # Vertical gradient
+    top = (14, 42, 80)
+    bot = NAVY
+    steps = 60
+    for i in range(steps):
+        t = i / (steps - 1)
+        r = int(top[0] + (bot[0] - top[0]) * t)
+        g = int(top[1] + (bot[1] - top[1]) * t)
+        b = int(top[2] + (bot[2] - top[2]) * t)
+        y0 = int(H * i / steps)
+        y1 = int(H * (i + 1) / steps)
+        d.rectangle([0, y0, W, y1], fill=(r, g, b))
+
+    # Three-bar mark, centered horizontally above the wordmark
+    mark_x, mark_y = 410, 180
+    bars = [
+        (0, 56, 22, 70, AMBER),
+        (32, 32, 22, 94, TEAL),
+        (64, 0, 22, 126, PAPER),
+    ]
+    for bx, by, bw, bh, color in bars:
+        d.rectangle(
+            [mark_x + bx, mark_y + by, mark_x + bx + bw, mark_y + by + bh],
+            fill=color,
+        )
+
+    # Wordmark below the mark, centered
+    f_word = load_font("serif", 88)
+    f_word_it = load_font("serif-italic", 88)
+    word_y = 332
+    # Measure to center horizontally
+    tender_w = d.textbbox((0, 0), "Tender", font=f_word)[2]
+    flow_w = d.textbbox((0, 0), "Flow", font=f_word_it)[2]
+    total_w = tender_w + flow_w
+    word_x = (W - total_w) // 2
+    d.text((word_x, word_y), "Tender", font=f_word, fill=PAPER)
+    d.text((word_x + tender_w, word_y), "Flow", font=f_word_it, fill=GOLD_SOFT)
+
+    # Gold rule, centered
+    rule_y = 442
+    rule_w = 160
+    d.rectangle([(W - rule_w) // 2, rule_y, (W + rule_w) // 2, rule_y + 3], fill=GOLD)
+
+    # Tagline, centered
+    f_tag = load_font("sans", 22)
+    tag_text = "East African tender intelligence."
+    tag_w = d.textbbox((0, 0), tag_text, font=f_tag)[2]
+    d.text(((W - tag_w) // 2, 458), tag_text, font=f_tag, fill=CREAM_SOFT)
+
+    # Country line, centered, muted
+    f_meta = load_font("sans", 16)
+    meta_text = "Kenya  ·  Uganda  ·  Tanzania"
+    meta_w = d.textbbox((0, 0), meta_text, font=f_meta)[2]
+    d.text(((W - meta_w) // 2, 498), meta_text, font=f_meta, fill=(245, 246, 235, 178))
+
+    # URL bottom center
+    f_url = load_font("sans", 16)
+    url_text = "tenderflow.co.ke"
+    url_w = d.textbbox((0, 0), url_text, font=f_url)[2]
+    d.text(((W - url_w) // 2, 560), url_text, font=f_url, fill=(245, 246, 235, 158))
+
+    return img
+
+
+# --------------------------------------------------------------------------- #
 # Facebook-specific cover (1640 x 624, ~2.63:1)                               #
 # --------------------------------------------------------------------------- #
 
@@ -525,6 +606,11 @@ def main() -> None:
     fb = BRAND / "tenderflow-facebook-cover.png"
     render_facebook_cover().save(fb, "PNG", optimize=True)
     print(f"Wrote {fb}  ({fb.stat().st_size / 1024:.1f} KB)")
+
+    # Google Business Profile cover (1080 x 608, 16:9)
+    gbp = BRAND / "tenderflow-gbp-cover.png"
+    render_gbp_cover().save(gbp, "PNG", optimize=True)
+    print(f"Wrote {gbp}  ({gbp.stat().st_size / 1024:.1f} KB)")
 
 
 if __name__ == "__main__":
