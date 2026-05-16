@@ -206,6 +206,78 @@ def render_social_banner() -> Image.Image:
 
 
 # --------------------------------------------------------------------------- #
+# Facebook-specific cover (1640 x 624, ~2.63:1)                               #
+# --------------------------------------------------------------------------- #
+
+
+def render_facebook_cover() -> Image.Image:
+    """1640 x 624 banner sized for Facebook page covers (retina spec).
+
+    Facebook's cover aspect is narrower than X (which is 3:1) and much
+    narrower than LinkedIn (4:1). Using the X banner here would either
+    letterbox or crop awkwardly. Facebook displays the full canvas on
+    desktop; mobile crops slightly so we keep the brand block away
+    from the very edges.
+    """
+    W, H = 1640, 624
+    img = Image.new("RGB", (W, H), NAVY)
+    d = ImageDraw.Draw(img, "RGBA")
+
+    # Vertical gradient for depth
+    top = (14, 42, 80)
+    bot = NAVY
+    steps = 60
+    for i in range(steps):
+        t = i / (steps - 1)
+        r = int(top[0] + (bot[0] - top[0]) * t)
+        g = int(top[1] + (bot[1] - top[1]) * t)
+        b = int(top[2] + (bot[2] - top[2]) * t)
+        y0 = int(H * i / steps)
+        y1 = int(H * (i + 1) / steps)
+        d.rectangle([0, y0, W, y1], fill=(r, g, b))
+
+    # Three-bar mark on the left, scaled up
+    mark_x, mark_y = 160, 240
+    bars = [
+        (0, 64, 22, 76, AMBER),
+        (32, 36, 22, 104, TEAL),
+        (64, 0, 22, 140, PAPER),
+    ]
+    for bx, by, bw, bh, color in bars:
+        d.rectangle(
+            [mark_x + bx, mark_y + by, mark_x + bx + bw, mark_y + by + bh],
+            fill=color,
+        )
+
+    # Wordmark "Tender" + italic "Flow"
+    f_word = load_font("serif", 120)
+    f_word_it = load_font("serif-italic", 120)
+    word_x, word_y = 290, 248
+    d.text((word_x, word_y), "Tender", font=f_word, fill=PAPER)
+    tender_w = d.textbbox((word_x, word_y), "Tender", font=f_word)[2] - word_x
+    d.text((word_x + tender_w, word_y), "Flow", font=f_word_it, fill=GOLD_SOFT)
+
+    # Gold rule
+    d.rectangle([word_x, 392, word_x + 260, 395], fill=GOLD)
+
+    # Tagline below
+    f_tag = load_font("sans", 30)
+    d.text((word_x, 408), "East African tender intelligence.", font=f_tag, fill=CREAM_SOFT)
+
+    # Country line, smaller, muted
+    f_meta = load_font("sans", 18)
+    d.text((word_x, 460), "Kenya  ·  Uganda  ·  Tanzania", font=f_meta, fill=(245, 246, 235, 178))
+
+    # URL at bottom right
+    f_url = load_font("sans", 18)
+    url_text = "tenderflow.co.ke"
+    url_w = d.textbbox((0, 0), url_text, font=f_url)[2]
+    d.text((W - url_w - 60, H - 50), url_text, font=f_url, fill=(245, 246, 235, 158))
+
+    return img
+
+
+# --------------------------------------------------------------------------- #
 # LinkedIn-specific cover (1584 x 396, 4:1)                                   #
 # --------------------------------------------------------------------------- #
 
@@ -448,6 +520,11 @@ def main() -> None:
     linkedin = BRAND / "tenderflow-linkedin-cover.png"
     render_linkedin_cover().save(linkedin, "PNG", optimize=True)
     print(f"Wrote {linkedin}  ({linkedin.stat().st_size / 1024:.1f} KB)")
+
+    # Facebook-specific cover (1640 x 624, ~2.63:1, retina spec)
+    fb = BRAND / "tenderflow-facebook-cover.png"
+    render_facebook_cover().save(fb, "PNG", optimize=True)
+    print(f"Wrote {fb}  ({fb.stat().st_size / 1024:.1f} KB)")
 
 
 if __name__ == "__main__":
