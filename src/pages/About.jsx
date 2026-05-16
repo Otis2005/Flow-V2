@@ -34,7 +34,7 @@ const ABOUT_SCHEMA = {
       { '@type': 'Country', 'name': 'Tanzania' }
     ],
     'sameAs': [
-      'https://www.linkedin.com/company/121913940'
+      'https://www.linkedin.com/company/tenderflow-east-africa'
     ]
   }
 };
