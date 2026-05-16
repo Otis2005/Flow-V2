@@ -28,6 +28,17 @@ export default function Home() {
         <div className="tf-container">
           <div className="tf-hero-text">
             <div>
+              {/* Brand eyebrow above the display H1: gives crawlers a
+                 textual "TenderFlow" anchor in close proximity to the
+                 H1 without disrupting the visual headline. Gold-soft
+                 on navy keeps the brand connection visible. Strong
+                 signal for ranking on the brand name. */}
+              <FadeIn
+                className="tf-eyebrow tf-eyebrow-rule tf-hero-eyebrow"
+                style={{ color: 'var(--gold-soft)' }}
+              >
+                TenderFlow &middot; East African tender intelligence
+              </FadeIn>
               <FadeIn as="h1" className="tf-display">
                 Government, NGO and SME tenders, <em>all in one place.</em>
               </FadeIn>

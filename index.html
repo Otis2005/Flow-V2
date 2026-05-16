@@ -62,15 +62,29 @@
 
     <!-- ── Structured data: Organization (JSON-LD) ─────────────────
          Helps Google show a knowledge panel and surface contact info
-         in rich results. -->
+         in rich results. `sameAs` is the entity-consolidation signal:
+         once a social profile exists, list its URL here so Google
+         knows it belongs to the same TenderFlow brand. Strong signal
+         for outranking other "TenderFlow" sites in different regions.
+    -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "Organization",
       "name": "TenderFlow",
+      "alternateName": ["TenderFlow Kenya", "TenderFlow East Africa"],
       "url": "https://tenderflow.co.ke",
       "logo": "https://tenderflow.co.ke/brand/mark-512.png",
       "description": "East African tender intelligence. Government, NGO and SME tender opportunities across Kenya, Uganda and Tanzania, consolidated in one searchable feed.",
+      "foundingDate": "2026",
+      "foundingLocation": {
+        "@type": "Place",
+        "address": {
+          "@type": "PostalAddress",
+          "addressLocality": "Nairobi",
+          "addressCountry": "KE"
+        }
+      },
       "areaServed": [
         { "@type": "Country", "name": "Kenya" },
         { "@type": "Country", "name": "Uganda" },
@@ -80,6 +94,8 @@
         "@type": "PostalAddress",
         "streetAddress": "Eden Square Complex, Chiromo Road, Westlands, Block 1, 7th Floor",
         "addressLocality": "Nairobi",
+        "addressRegion": "Nairobi County",
+        "postalCode": "00100",
         "addressCountry": "KE"
       },
       "contactPoint": {
@@ -89,19 +105,29 @@
         "email": "help@tenderflow.co.ke",
         "areaServed": ["KE", "UG", "TZ"],
         "availableLanguage": ["English"]
-      }
+      },
+      "sameAs": []
     }
     </script>
 
     <!-- ── Structured data: WebSite with SearchAction ──────────────
          Tells Google your site has search; sometimes earns a search
-         box right inside the search results. -->
+         box right inside the search results. `inLanguage` reinforces
+         the Kenya geo-targeting so a Kenyan searcher's results pick
+         this site over a same-name site in another region. -->
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
       "@type": "WebSite",
       "name": "TenderFlow",
+      "alternateName": "TenderFlow Kenya",
       "url": "https://tenderflow.co.ke",
+      "inLanguage": "en-KE",
+      "publisher": {
+        "@type": "Organization",
+        "name": "TenderFlow",
+        "url": "https://tenderflow.co.ke"
+      },
       "potentialAction": {
         "@type": "SearchAction",
         "target": "https://tenderflow.co.ke/tenders?q={search_term_string}",

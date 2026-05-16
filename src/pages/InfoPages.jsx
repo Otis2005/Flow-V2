@@ -272,9 +272,31 @@ const FAQS = [
   ['Can I submit a tender myself?', 'Yes, anyone can suggest a tender via the Submit a tender page. Our team verifies before publishing.'],
   ['What countries do you cover?', 'Kenya, Uganda and Tanzania. We started with East Africa because the three economies share procurement rules, time zones, and bidder networks. The rest of the continent follows as we gain traction.']
 ];
+// FAQPage JSON-LD: lets Google render these Q&As as expandable rich
+// snippets directly in search results. Big real estate win because the
+// snippet pushes competitors further down the page even when we rank
+// below them. Generated from the same FAQS array the page renders.
+const FAQ_SCHEMA = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  'inLanguage': 'en-KE',
+  'mainEntity': FAQS.map(([q, a]) => ({
+    '@type': 'Question',
+    'name': q,
+    'acceptedAnswer': {
+      '@type': 'Answer',
+      'text': a
+    }
+  }))
+};
+
 export function FAQ() {
   return (
     <PageShell eyebrow="FAQ" title="Frequently asked questions">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(FAQ_SCHEMA) }}
+      />
       <div style={{ display: 'flex', flexDirection: 'column', gap: 4 }}>
         {FAQS.map(([q, a]) => (
           <details

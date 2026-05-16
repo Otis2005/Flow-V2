@@ -160,8 +160,27 @@ export default function TenderDetail() {
     setTimeout(() => setSavedToast(null), 3000);
   }
 
+  // BreadcrumbList JSON-LD: Home > Tenders > [Country] > [This tender].
+  // Helps Google understand the hierarchy and is the main signal for
+  // earning sitelinks on brand-name queries. Each ListItem must be a
+  // canonical absolute URL.
+  const breadcrumbSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    'itemListElement': [
+      { '@type': 'ListItem', 'position': 1, 'name': 'Home', 'item': 'https://tenderflow.co.ke/' },
+      { '@type': 'ListItem', 'position': 2, 'name': 'Tenders', 'item': 'https://tenderflow.co.ke/tenders' },
+      { '@type': 'ListItem', 'position': 3, 'name': tender.country || 'Kenya', 'item': `https://tenderflow.co.ke/tenders?country=${encodeURIComponent(tender.country || 'Kenya')}` },
+      { '@type': 'ListItem', 'position': 4, 'name': tender.title, 'item': `https://tenderflow.co.ke/tenders/${tender.id}` }
+    ]
+  };
+
   return (
     <main className="tf-page-anim">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
       <div className="tf-detail-head">
         {tender.issuer_logo_url && (
           <div
