@@ -168,6 +168,9 @@ export function Contact() {
           <h3 style={{ fontFamily: 'var(--serif)', fontSize: 22, color: 'var(--navy)', fontWeight: 500, marginTop: 0 }}>
             Direct
           </h3>
+          {/* Contact items: icon-only headers (no text labels), modern
+             larger value text. The icons are universally understood
+             (envelope, phone, pin). Alternative email block removed. */}
           <div className="tf-contact-grid">
             <a href="mailto:help@tenderflow.co.ke" className="tf-contact-item">
               <span className="tf-contact-icon">
@@ -176,24 +179,7 @@ export function Contact() {
                   <path d="M3 7l9 7 9-7" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
                 </svg>
               </span>
-              <span className="tf-contact-text">
-                <span className="tf-contact-label">Email</span>
-                <span className="tf-contact-value">help@tenderflow.co.ke</span>
-              </span>
-            </a>
-
-            <a href="mailto:kennedy.nange@tenderflow.co.ke" className="tf-contact-item">
-              <span className="tf-contact-icon">
-                <svg viewBox="0 0 24 24" aria-hidden="true">
-                  <path d="M3 6h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" strokeWidth="1.6"/>
-                  <path d="M3 7l9 7 9-7" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round"/>
-                  <path d="M16 4l3 3-3 3" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round" opacity=".55"/>
-                </svg>
-              </span>
-              <span className="tf-contact-text">
-                <span className="tf-contact-label">Alternative</span>
-                <span className="tf-contact-value">kennedy.nange@tenderflow.co.ke</span>
-              </span>
+              <span className="tf-contact-value">help@tenderflow.co.ke</span>
             </a>
 
             <a href="tel:+254724131492" className="tf-contact-item">
@@ -205,10 +191,7 @@ export function Contact() {
                   />
                 </svg>
               </span>
-              <span className="tf-contact-text">
-                <span className="tf-contact-label">Phone</span>
-                <span className="tf-contact-value">0724 131 492</span>
-              </span>
+              <span className="tf-contact-value">0724 131 492</span>
             </a>
 
             <a
@@ -223,13 +206,10 @@ export function Contact() {
                   <circle cx="12" cy="9" r="2.5" fill="none" stroke="currentColor" strokeWidth="1.8"/>
                 </svg>
               </span>
-              <span className="tf-contact-text">
-                <span className="tf-contact-label">Office</span>
-                <span className="tf-contact-value tf-contact-multiline">
-                  Eden Square Complex, Chiromo Road<br />
-                  Westlands, Block 1, 7th Floor<br />
-                  Nairobi, Kenya
-                </span>
+              <span className="tf-contact-value tf-contact-multiline">
+                Eden Square Complex, Chiromo Road<br />
+                Westlands, Block 1, 7th Floor<br />
+                Nairobi, Kenya
               </span>
             </a>
           </div>
