@@ -13,16 +13,20 @@ export default function Footer() {
             Government, NGO, and SME tenders across East Africa, in one feed.
           </p>
         </div>
-        <nav className="tf-footer-links" aria-label="Footer">
-          <Link to="/tenders">Tenders</Link>
-          <Link to="/consultants">Consultants</Link>
-          <Link to="/how-it-works">How it works</Link>
-          <Link to="/about">About</Link>
-          <Link to="/contact">Contact</Link>
-          <Link to="/privacy">Privacy</Link>
-          <Link to="/terms">Terms</Link>
-        </nav>
-        <div className="tf-footer-contact" aria-label="Contact TenderFlow">
+        {/* Right column: link nav stacked over the icon row. Both
+           right-aligned to the same edge so they read as a single
+           block. */}
+        <div className="tf-footer-right">
+          <nav className="tf-footer-links" aria-label="Footer">
+            <Link to="/tenders">Tenders</Link>
+            <Link to="/consultants">Consultants</Link>
+            <Link to="/how-it-works">How it works</Link>
+            <Link to="/about">About</Link>
+            <Link to="/contact">Contact</Link>
+            <Link to="/privacy">Privacy</Link>
+            <Link to="/terms">Terms</Link>
+          </nav>
+          <div className="tf-footer-contact" aria-label="Contact TenderFlow">
           <a href="mailto:info@tenderflow.co.ke" className="tf-footer-icon-link" aria-label="Email TenderFlow">
             <svg viewBox="0 0 24 24" aria-hidden="true">
               <path d="M3 6h18a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" strokeWidth="1.8"/>
@@ -80,6 +84,7 @@ export default function Footer() {
               />
             </svg>
           </a>
+        </div>
         </div>
       </div>
       <div className="tf-container tf-footer-base">

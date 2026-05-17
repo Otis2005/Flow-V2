@@ -145,6 +145,10 @@
   display: flex;
   flex-direction: column;
   box-shadow: -20px 0 60px -20px rgba(20, 30, 40, 0.35);
+  /* Hard clip the whole panel: animated children (item hover translates,
+     scaling icons) must never leak past the panel edges or trigger a
+     horizontal scrollbar. */
+  overflow: hidden;
 }
 .tf-rpanel.is-open { transform: translateX(0); }
 
@@ -272,6 +276,10 @@
   flex-direction: column;
   padding: 8px 0;
   overflow-y: auto;
+  /* Hover items animate translateX(+4px). Without overflow-x:hidden the
+     shifted row leaks 4px past the right edge and triggers a horizontal
+     scrollbar / wobble during navigation. */
+  overflow-x: hidden;
   flex: 1;
 }
 
@@ -2002,29 +2010,36 @@
 }
 .tf-footer-compact .tf-footer-row {
   display: grid;
-  grid-template-columns: minmax(220px, 1.2fr) auto auto;
-  gap: 28px 36px;
-  align-items: center;
+  grid-template-columns: minmax(220px, 1fr) auto;
+  gap: 28px;
+  align-items: start;
 }
-@media (max-width: 960px) {
+@media (max-width: 720px) {
   .tf-footer-compact .tf-footer-row {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr;
   }
-  .tf-footer-brand { grid-column: 1 / -1; }
-}
-@media (max-width: 600px) {
-  .tf-footer-compact .tf-footer-row { grid-template-columns: 1fr; }
+  .tf-footer-right { align-items: flex-start; }
 }
 
-/* Footer contact column: email + phone icons, then a small spacer,
-   then the three social platform icons. All in one horizontal row,
-   colour-coded the same as the contact page icons (paper glyph on
-   navy hover). */
+/* Right column: link nav stacked over the icon row. Both right-aligned
+   to the same edge so they read as a single column. The icon row sits
+   under the links, perfectly mirroring the right edge of the link list
+   above it. */
+.tf-footer-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 18px;
+}
+
+/* Contact + social icons row: now lives inside .tf-footer-right,
+   right-aligned via the parent's align-items:flex-end. */
 .tf-footer-contact {
   display: flex;
   align-items: center;
   gap: 8px;
   flex-wrap: wrap;
+  justify-content: flex-end;
 }
 .tf-footer-icon-link {
   display: inline-flex;
