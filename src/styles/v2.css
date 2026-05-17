@@ -148,39 +148,66 @@
 }
 .tf-rpanel.is-open { transform: translateX(0); }
 
+/* Header band: navy with gold rule + faded gold accent stripe at top.
+   Reads premium and immediately establishes the brand colour story
+   inside the panel (was cream before, which felt washed-out). */
 .tf-rpanel-head {
   display: grid;
   grid-template-columns: auto 1fr auto;
   gap: 14px;
-  padding: 22px 22px 18px;
+  padding: 26px 22px 22px;
   align-items: center;
-  border-bottom: 1px solid var(--rule);
-  background: var(--cream);
+  border-bottom: 1px solid rgba(245, 246, 235, 0.10);
+  background: linear-gradient(180deg, #1a3866 0%, #0A2240 100%);
+  position: relative;
+}
+.tf-rpanel-head::before {
+  /* gold hairline at the very top of the header for accent */
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg,
+    rgba(185, 138, 59, 0),
+    var(--gold) 25%,
+    var(--gold) 75%,
+    rgba(185, 138, 59, 0));
 }
 .tf-rpanel-avatar {
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: var(--navy);
-  color: var(--paper);
+  background: linear-gradient(135deg, var(--gold) 0%, #8e6826 100%);
+  color: var(--navy);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   font-family: var(--serif);
-  font-weight: 500;
-  font-size: 20px;
+  font-weight: 600;
+  font-size: 22px;
+  box-shadow:
+    0 0 0 2px rgba(245, 246, 235, 0.08),
+    0 4px 10px -2px rgba(0, 0, 0, 0.35);
+  background-size: cover;
+  background-position: center;
+}
+.tf-rpanel-avatar.has-photo {
+  /* Real photo from OAuth provider: drop the gradient fallback */
+  background-color: var(--navy);
+  background-image: var(--bg-image, none);
 }
 .tf-rpanel-userblock { min-width: 0; }
 .tf-rpanel-eyebrow {
   font-size: 11px;
   text-transform: uppercase;
   letter-spacing: 0.1em;
-  color: var(--muted);
+  color: var(--gold-soft);
+  font-weight: 600;
 }
 .tf-rpanel-name {
   font-family: var(--serif);
   font-size: 18px;
-  color: var(--navy);
+  color: var(--paper);
   font-weight: 500;
   margin-top: 2px;
   white-space: nowrap;
@@ -189,7 +216,7 @@
 }
 .tf-rpanel-email {
   font-size: 12px;
-  color: var(--muted);
+  color: rgba(245, 246, 235, 0.65);
   margin-top: 2px;
   white-space: nowrap;
   overflow: hidden;
@@ -198,24 +225,38 @@
 .tf-rpanel-pill {
   display: inline-block;
   margin-top: 6px;
-  padding: 2px 8px;
+  padding: 2px 9px;
   background: var(--gold);
   color: var(--navy);
   font-size: 10px;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.08em;
+  border-radius: 2px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 .tf-rpanel-close {
-  background: none;
-  border: none;
-  font-size: 28px;
-  color: var(--muted);
+  background: rgba(245, 246, 235, 0.08);
+  border: 1px solid rgba(245, 246, 235, 0.14);
+  font-size: 22px;
+  color: var(--paper);
   cursor: pointer;
   padding: 0;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
   line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 160ms ease, color 160ms ease,
+              border-color 160ms ease, transform 200ms ease;
+}
+.tf-rpanel-close:hover {
+  background: var(--gold);
+  color: var(--navy);
+  border-color: var(--gold);
+  transform: rotate(90deg);
 }
 .tf-rpanel-cta-row {
   display: flex;
@@ -233,11 +274,16 @@
   overflow-y: auto;
   flex: 1;
 }
+
+/* Menu item: three-column grid (icon | label+meta | arrow). Hover
+   shifts the row right 4px and lights the navy column with a subtle
+   gold-tinted background; icon shifts to gold. Active row appears to
+   "lift" with a soft shadow. */
 .tf-rpanel-item {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 2px;
+  display: grid;
+  grid-template-columns: 32px 1fr 18px;
+  gap: 14px;
+  align-items: center;
   padding: 14px 22px;
   background: none;
   border: none;
@@ -246,16 +292,81 @@
   font-weight: 500;
   cursor: pointer;
   text-align: left;
-  transition: background 140ms ease, color 140ms ease;
+  position: relative;
+  transition: background 200ms ease, color 200ms ease,
+              transform 220ms cubic-bezier(.2, .9, .3, 1);
+}
+.tf-rpanel-item::before {
+  /* gold left accent that animates in on hover */
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 8px;
+  bottom: 8px;
+  width: 3px;
+  background: var(--gold);
+  transform: scaleY(0);
+  transform-origin: center;
+  transition: transform 240ms cubic-bezier(.2, .9, .3, 1);
 }
 .tf-rpanel-item:hover {
-  background: rgba(20, 30, 40, 0.04);
+  background: rgba(185, 138, 59, 0.06);
   color: var(--navy);
+  transform: translateX(4px);
+}
+.tf-rpanel-item:hover::before {
+  transform: scaleY(1);
+}
+.tf-rpanel-item.is-tone-gold {
+  color: var(--gold);
+}
+.tf-rpanel-item.is-tone-gold:hover {
+  background: rgba(185, 138, 59, 0.10);
+  color: #8e6826;
+}
+.tf-rpanel-item-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  color: var(--muted);
+  transition: color 200ms ease, transform 240ms cubic-bezier(.2, .9, .3, 1);
+}
+.tf-rpanel-item:hover .tf-rpanel-item-icon {
+  color: var(--gold);
+  transform: scale(1.08);
+}
+.tf-rpanel-item.is-tone-gold .tf-rpanel-item-icon {
+  color: var(--gold);
+}
+.tf-rpanel-item-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.tf-rpanel-item-label {
+  font-size: 15px;
+  font-weight: 500;
 }
 .tf-rpanel-item-meta {
   font-size: 11.5px;
   color: var(--muted);
   font-weight: 400;
+  letter-spacing: 0;
+}
+.tf-rpanel-item-arrow {
+  color: var(--muted);
+  font-size: 16px;
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 200ms ease, transform 220ms cubic-bezier(.2, .9, .3, 1), color 200ms ease;
+}
+.tf-rpanel-item:hover .tf-rpanel-item-arrow {
+  opacity: 1;
+  transform: translateX(0);
+  color: var(--gold);
 }
 .tf-rpanel-item-sm {
   background: none;
@@ -1084,6 +1195,97 @@
   transform: translateX(5px);
 }
 
+/* ── Premium 3D hero CTAs ─────────────────────────────────────────
+   Applied only to the two homepage hero buttons (inside
+   .tf-hero-text-actions). Same depth recipe as the consultant chip:
+   navy gradient body, gold border, layered shadow, hover lifts and
+   adds a gold-tinted glow. The ghost variant flips the colour scheme
+   (paper body, navy text) but uses the same shadow structure.
+
+   Targets descendants of .tf-hero-text-actions so site-wide .tf-cta
+   buttons elsewhere stay on the standard treatment. */
+.tf-hero-text-actions .tf-cta,
+.tf-hero-text-actions .tf-cta-ghost {
+  padding: 14px 26px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  border-radius: 3px;
+  cursor: pointer;
+  transition:
+    transform 320ms cubic-bezier(.2, .9, .3, 1),
+    box-shadow 320ms cubic-bezier(.2, .9, .3, 1),
+    background 260ms ease,
+    border-color 260ms ease,
+    color 260ms ease;
+  position: relative;
+}
+
+/* Primary CTA: navy gradient, gold border, premium depth */
+.tf-hero-text-actions .tf-cta {
+  background: linear-gradient(180deg, #1a3866 0%, #0A2240 100%);
+  color: var(--paper);
+  border: 1px solid rgba(185, 138, 59, 0.55);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.14),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.32),
+    0 1px 2px rgba(0, 0, 0, 0.28),
+    0 8px 20px -2px rgba(10, 34, 64, 0.55),
+    0 16px 36px -8px rgba(10, 34, 64, 0.40);
+}
+.tf-hero-text-actions .tf-cta:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: linear-gradient(180deg, #21437a 0%, #0d2950 100%);
+  border-color: var(--gold);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.20),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.38),
+    0 2px 4px rgba(0, 0, 0, 0.30),
+    0 18px 36px -6px rgba(10, 34, 64, 0.65),
+    0 28px 56px -12px rgba(185, 138, 59, 0.30);
+}
+.tf-hero-text-actions .tf-cta:active {
+  transform: translateY(-1px) scale(1.0);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.38),
+    0 1px 2px rgba(0, 0, 0, 0.22),
+    0 4px 8px -2px rgba(10, 34, 64, 0.42);
+  transition-duration: 120ms;
+}
+
+/* Ghost CTA: inverted recipe — paper body, navy text + border.
+   Same depth structure so it reads as a sibling button. */
+.tf-hero-text-actions .tf-cta-ghost {
+  background: linear-gradient(180deg, #FFFFFF 0%, var(--paper) 100%);
+  color: var(--navy);
+  border: 1px solid var(--navy);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(20, 30, 40, 0.08),
+    0 1px 2px rgba(20, 30, 40, 0.10),
+    0 8px 20px -4px rgba(20, 30, 40, 0.22),
+    0 16px 32px -10px rgba(20, 30, 40, 0.18);
+}
+.tf-hero-text-actions .tf-cta-ghost:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: linear-gradient(180deg, var(--paper) 0%, var(--cream) 100%);
+  border-color: var(--gold);
+  color: var(--navy);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(20, 30, 40, 0.12),
+    0 2px 4px rgba(20, 30, 40, 0.15),
+    0 18px 36px -6px rgba(20, 30, 40, 0.28),
+    0 28px 56px -14px rgba(185, 138, 59, 0.32);
+}
+.tf-hero-text-actions .tf-cta-ghost:active {
+  transform: translateY(-1px) scale(1.0);
+  box-shadow:
+    inset 0 2px 4px rgba(20, 30, 40, 0.12),
+    0 1px 2px rgba(20, 30, 40, 0.10);
+  transition-duration: 120ms;
+}
+
 /* ── Tight detail section variant ─────────────────────────────────
    Used for Key dates + Tender documents so they read as compact info
    blocks rather than full prose sections. Tighter top padding, h3
@@ -1800,12 +2002,64 @@
 }
 .tf-footer-compact .tf-footer-row {
   display: grid;
-  grid-template-columns: minmax(220px, 1fr) auto;
-  gap: 28px;
+  grid-template-columns: minmax(220px, 1.2fr) auto auto;
+  gap: 28px 36px;
   align-items: center;
 }
-@media (max-width: 720px) {
+@media (max-width: 960px) {
+  .tf-footer-compact .tf-footer-row {
+    grid-template-columns: 1fr 1fr;
+  }
+  .tf-footer-brand { grid-column: 1 / -1; }
+}
+@media (max-width: 600px) {
   .tf-footer-compact .tf-footer-row { grid-template-columns: 1fr; }
+}
+
+/* Footer contact column: email + phone icons, then a small spacer,
+   then the three social platform icons. All in one horizontal row,
+   colour-coded the same as the contact page icons (paper glyph on
+   navy hover). */
+.tf-footer-contact {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.tf-footer-icon-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(245, 246, 235, 0.06);
+  border: 1px solid rgba(245, 246, 235, 0.14);
+  color: rgba(245, 246, 235, 0.78);
+  text-decoration: none;
+  transition: background 200ms ease, color 200ms ease,
+              border-color 200ms ease, transform 200ms ease;
+}
+.tf-footer-icon-link svg {
+  width: 15px;
+  height: 15px;
+  display: block;
+}
+.tf-footer-icon-link:hover {
+  background: var(--gold);
+  color: var(--navy);
+  border-color: var(--gold);
+  transform: translateY(-2px);
+}
+.tf-footer-icon-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 3px;
+}
+.tf-footer-icon-spacer {
+  width: 1px;
+  height: 22px;
+  background: rgba(245, 246, 235, 0.16);
+  margin: 0 4px;
 }
 .tf-footer-brand .tf-logo-text { color: var(--paper); font-size: 22px; }
 .tf-footer-brand .tf-logo-text em { color: var(--gold-soft); }
