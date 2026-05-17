@@ -194,23 +194,6 @@ export default function SignUp() {
                 >
                   <span style={{ width: (pwScore / 5) * 100 + '%' }} />
                 </div>
-                <ul className="tf-pw-rules">
-                  <li className={pwChecks.length ? 'is-met' : ''}>
-                    {pwChecks.length ? '✓' : '○'} At least 10 characters
-                  </li>
-                  <li className={pwChecks.uppercase ? 'is-met' : ''}>
-                    {pwChecks.uppercase ? '✓' : '○'} An uppercase letter
-                  </li>
-                  <li className={pwChecks.lowercase ? 'is-met' : ''}>
-                    {pwChecks.lowercase ? '✓' : '○'} A lowercase letter
-                  </li>
-                  <li className={pwChecks.number ? 'is-met' : ''}>
-                    {pwChecks.number ? '✓' : '○'} A number
-                  </li>
-                  <li className={pwChecks.symbol ? 'is-met' : ''}>
-                    {pwChecks.symbol ? '✓' : '○'} A symbol (e.g. ! @ # $)
-                  </li>
-                </ul>
               </label>
               <label className="tf-ob-checkbox" style={{ marginTop: 4 }}>
                 <input
@@ -220,9 +203,9 @@ export default function SignUp() {
                 />
                 <span style={{ fontSize: 13 }}>
                   I have read and accept the{' '}
-                  <Link to="/privacy" target="_blank" style={{ color: 'var(--navy)', borderBottom: '1px solid var(--gold)' }}>Privacy policy</Link>{' '}
+                  <Link to="/privacy" target="_blank" className="tf-policy-link">Privacy Policy</Link>{' '}
                   and{' '}
-                  <Link to="/terms" target="_blank" style={{ color: 'var(--navy)', borderBottom: '1px solid var(--gold)' }}>Terms of service</Link>.
+                  <Link to="/terms" target="_blank" className="tf-policy-link">Terms of Service</Link>.
                 </span>
               </label>
               {error && <p style={{ color: 'var(--danger)', fontSize: 13 }}>{error}</p>}

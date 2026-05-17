@@ -991,7 +991,100 @@
   max-width: 52ch;
   margin: 0;
 }
-.tf-cta-band-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+.tf-cta-band-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* Premium 3D treatment for buttons that sit inside .tf-cta-band-actions
+   (the "Get hired by serious bidders" navy band on the homepage).
+   Same depth recipe as the hero CTAs, adapted for the navy backdrop:
+     - Primary: gold gradient with navy text (high contrast pop)
+     - Ghost: faint paper outline with paper text (subtle sibling) */
+.tf-cta-band-actions .tf-cta,
+.tf-cta-band-actions .tf-cta-ghost {
+  padding: 13px 24px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.015em;
+  border-radius: 3px;
+  cursor: pointer;
+  transition:
+    transform 320ms cubic-bezier(.2, .9, .3, 1),
+    box-shadow 320ms cubic-bezier(.2, .9, .3, 1),
+    background 260ms ease,
+    border-color 260ms ease,
+    color 260ms ease;
+}
+
+/* Primary on navy: gold gradient body, navy text, layered shadow.
+   Hover: lift + scale + paper-tinted glow at the far edge. */
+.tf-cta-band-actions .tf-cta {
+  background: linear-gradient(180deg, #d8a553 0%, var(--gold) 60%, #8e6826 100%);
+  color: var(--navy);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.20),
+    0 1px 2px rgba(0, 0, 0, 0.30),
+    0 8px 20px -2px rgba(0, 0, 0, 0.42),
+    0 16px 36px -8px rgba(185, 138, 59, 0.40);
+}
+.tf-cta-band-actions .tf-cta:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: linear-gradient(180deg, #e4b568 0%, #c89a44 60%, #966f2c 100%);
+  border-color: var(--paper);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.55),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.22),
+    0 2px 4px rgba(0, 0, 0, 0.35),
+    0 18px 36px -6px rgba(0, 0, 0, 0.50),
+    0 28px 56px -12px rgba(245, 246, 235, 0.18);
+}
+.tf-cta-band-actions .tf-cta:active {
+  transform: translateY(-1px) scale(1.0);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.30),
+    0 1px 2px rgba(0, 0, 0, 0.22),
+    0 4px 8px -2px rgba(0, 0, 0, 0.32);
+  transition-duration: 120ms;
+}
+
+/* Ghost on navy: subtle transparent body with paper outline + paper
+   text. Hover fills with paper, flips text to navy. Same shadow
+   structure as the primary so they read as siblings. */
+.tf-cta-band-actions .tf-cta-ghost {
+  background: linear-gradient(180deg, rgba(245, 246, 235, 0.06) 0%, rgba(245, 246, 235, 0.02) 100%);
+  color: var(--paper);
+  border: 1px solid rgba(245, 246, 235, 0.45);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    inset 0 -1px 0 rgba(0, 0, 0, 0.25),
+    0 1px 2px rgba(0, 0, 0, 0.25),
+    0 8px 20px -4px rgba(0, 0, 0, 0.35),
+    0 16px 32px -10px rgba(0, 0, 0, 0.30);
+}
+.tf-cta-band-actions .tf-cta-ghost:hover {
+  transform: translateY(-3px) scale(1.02);
+  background: linear-gradient(180deg, var(--paper) 0%, var(--cream) 100%);
+  color: var(--navy);
+  border-color: var(--paper);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(20, 30, 40, 0.10),
+    0 2px 4px rgba(0, 0, 0, 0.28),
+    0 18px 36px -6px rgba(0, 0, 0, 0.45),
+    0 28px 56px -14px rgba(245, 246, 235, 0.20);
+}
+.tf-cta-band-actions .tf-cta-ghost:active {
+  transform: translateY(-1px) scale(1.0);
+  box-shadow:
+    inset 0 2px 4px rgba(0, 0, 0, 0.30),
+    0 1px 2px rgba(0, 0, 0, 0.20);
+  transition-duration: 120ms;
+}
+
+/* Legacy single-state variants kept so other surfaces using them
+   (e.g. /how-it-works) don't break. They're still functional on the
+   non-3D contexts; only .tf-cta-band-actions descendants get the
+   premium treatment. */
 .tf-cta-on-navy {
   background: var(--gold);
   border-color: var(--gold);
@@ -2299,28 +2392,27 @@
 .tf-pw-meter.is-score-3 span { background: var(--amber); }
 .tf-pw-meter.is-score-4 span { background: var(--teal); }
 .tf-pw-meter.is-score-5 span { background: var(--gold); }
-.tf-pw-rules {
-  list-style: none;
-  padding: 0;
-  margin: 10px 0 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 4px 14px;
-  font-size: 12px;
-  color: var(--muted);
+/* Highlighted policy / terms link. Used inline in the sign-up consent
+   checkbox copy. Gold text + bold + animated gold underline draws the
+   eye to legal-document links without being shouty. Picks up keyboard
+   focus accessibly. */
+.tf-policy-link {
+  color: var(--gold);
+  font-weight: 600;
+  text-decoration: none;
+  padding: 1px 4px;
+  margin: 0 -2px;
+  border-radius: 2px;
+  background: rgba(185, 138, 59, 0.06);
+  box-shadow: inset 0 -2px 0 rgba(185, 138, 59, 0.45);
+  transition: background 180ms ease, box-shadow 180ms ease, color 180ms ease;
 }
-.tf-pw-rules li {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  transition: color 160ms ease;
-  font-family: var(--sans);
-  letter-spacing: 0.005em;
+.tf-policy-link:hover {
+  color: var(--navy);
+  background: rgba(185, 138, 59, 0.16);
+  box-shadow: inset 0 -2px 0 var(--gold);
 }
-.tf-pw-rules li.is-met {
-  color: #1F7A4D;
-  font-weight: 500;
-}
-@media (max-width: 480px) {
-  .tf-pw-rules { grid-template-columns: 1fr; }
+.tf-policy-link:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
 }
