@@ -43,6 +43,11 @@ export default function AdminUpload() {
   const [saveStatus, setSaveStatus] = useState(null);
   const [extractError, setExtractError] = useState(null);
   const [logoUploading, setLogoUploading] = useState(false);
+  // When the issuer field changes, we look up issuer_logos for a
+  // remembered logo and offer to auto-fill it. autoLogoApplied tracks
+  // which issuer we've already auto-filled for, so we don't repeat
+  // the lookup on every keystroke for the same value.
+  const [autoLogoAppliedFor, setAutoLogoAppliedFor] = useState('');
 
   useEffect(() => {
     if (!editId || !isSupabaseConfigured) return;
@@ -77,6 +82,34 @@ export default function AdminUpload() {
       }
     })();
   }, [editId]);
+
+  // Auto-fill issuer logo from the issuer_logos lookup table. When the
+  // admin types or extracts an issuer name, debounce 500 ms, then check
+  // if we've remembered a logo for this organization. If so AND no
+  // logo is currently set, auto-fill it. Case-insensitive match.
+  useEffect(() => {
+    const issuer = (form.issuer || '').trim();
+    if (!issuer || !isSupabaseConfigured) return;
+    if (form.issuer_logo_url) return;            // already has a logo, don't overwrite
+    if (autoLogoAppliedFor === issuer.toLowerCase()) return;  // already applied for this issuer
+
+    const t = setTimeout(async () => {
+      const { data } = await supabase
+        .from('issuer_logos')
+        .select('logo_url, logo_path')
+        .ilike('issuer_name', issuer)             // case-insensitive
+        .maybeSingle();
+      if (data?.logo_url) {
+        setForm(f => ({
+          ...f,
+          issuer_logo_url: data.logo_url,
+          issuer_logo_path: data.logo_path || ''
+        }));
+        setAutoLogoAppliedFor(issuer.toLowerCase());
+      }
+    }, 500);
+    return () => clearTimeout(t);
+  }, [form.issuer, form.issuer_logo_url, autoLogoAppliedFor]);
 
   const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
 
@@ -321,6 +354,23 @@ export default function AdminUpload() {
         : res.error.message;
       setSaveStatus({ ok: false, msg });
     } else {
+      // Save succeeded. Upsert the issuer<>logo mapping so next time
+      // a tender for this organization is uploaded, the logo auto-
+      // fills. Best-effort: failures here don't block save.
+      if (form.issuer && form.issuer_logo_url) {
+        try {
+          await supabase
+            .from('issuer_logos')
+            .upsert({
+              issuer_name: form.issuer.trim(),
+              logo_url: form.issuer_logo_url,
+              logo_path: form.issuer_logo_path || null,
+              updated_at: new Date().toISOString()
+            }, { onConflict: 'issuer_name' });
+        } catch (e) {
+          console.warn('[admin] issuer_logos upsert failed', e);
+        }
+      }
       setSaveStatus({ ok: true, msg: status === 'published' ? 'Published.' : 'Saved as draft.' });
       setTimeout(() => navigate('/admin'), 800);
     }
